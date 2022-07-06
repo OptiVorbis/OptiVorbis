@@ -2,10 +2,14 @@ name: CI
 
 on:
   push:
+    branches-ignore:
+      - gh-pages
   pull_request:
     types:
       - opened
       - synchronize
+    branches-ignore:
+      - gh-pages
   release:
     types:
       - published

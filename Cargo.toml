@@ -3,9 +3,6 @@ members = ["packages/*"]
 default-members = ["packages/optivorbis", "packages/optivorbis_cli"]
 
 [patch.crates-io]
-# Contains PRs we submitted to fix Ogg parsing issues that were reviewed and
-# merged, but not yet released
-ogg = { git = "https://github.com/RustAudio/ogg", rev = "989e6849" }
 # Use the latest upstream commit to remove an unnecessary dependency
 ouroboros = { git = "https://github.com/joshua-maros/ouroboros", rev = "273af432" }
 

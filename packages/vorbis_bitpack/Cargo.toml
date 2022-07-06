@@ -1,0 +1,19 @@
+[package]
+name = "vorbis_bitpack"
+description = "Implementation of the Vorbis I bitpacking convention"
+authors = ["Alejandro González"]
+license = "BSD-3-Clause"
+version = "0.1.0"
+repository = "https://github.com/OptiVorbis/OptiVorbis"
+readme = true
+keywords = ["vorbis", "bitpacking", "bitpack", "compression", "serialization"]
+categories = ["compression", "no-std"]
+edition = "2021"
+rust-version = "1.61"
+
+[dependencies]
+acid_io = { version = "0.1.0", optional = true }
+libm = { version = "0.2.2", optional = true }
+
+[features]
+no-std = ["acid_io", "libm"]

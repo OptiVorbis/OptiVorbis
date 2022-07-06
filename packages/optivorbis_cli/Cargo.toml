@@ -1,0 +1,30 @@
+[package]
+name = "optivorbis_cli"
+description = "Command-line interface application for lossless Vorbis optimization and repair"
+authors = ["Alejandro González"]
+license = "AGPL-3.0-or-later"
+version = "0.1.0"
+repository = "https://github.com/OptiVorbis/OptiVorbis"
+readme = "../../README.md"
+keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
+categories = ["compression", "multimedia::audio"]
+edition = "2021"
+publish = false
+
+[dependencies]
+optivorbis = { version = "0.1.0", path = "../optivorbis" }
+
+getopts = "0.2.21"
+log = "0.4.17"
+stderrlog = { version = "0.5.3", default-features = false }
+
+[[bin]]
+name = "optivorbis"
+# This binary target has the same name as the main library target.
+# In general, Cargo does not support that, but it is only troublesome
+# for us when running rustdoc, as the binary and library executables
+# do not clash otherwise. See:
+# https://github.com/rust-lang/cargo/issues/6313
+# This binary crate is straightforward enough to not need documentation,
+# so let's just not document it.
+doc = false

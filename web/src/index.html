@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>OptiVorbis — Web demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark">
+	<meta name="description"
+		  content="A web demo application for OptiVorbis, a library for lossless optimization and repair of Ogg Vorbis files.">
+	<meta property="og:image" content="https://github.com/OptiVorbis/OptiVorbis/raw/master/web/src/static/optivorbis_logo.png">
+</head>
+<body class="bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-700 dark:to-sky-800 min-h-screen bg-no-repeat">
+
+<a href="https://github.com/OptiVorbis/OptiVorbis" class="github-corner" aria-label="View source on GitHub"
+   title="View source on GitHub">
+	<svg viewBox="0 0 250 250" class="fill-stone-800 text-stone-50 absolute top-0 right-0 w-[80px] h-[80px]">
+		<path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+		<path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+			  fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+		<path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+			  fill="currentColor" class="octo-body"></path>
+	</svg>
+</a>
+
+<main class="container mx-auto dark:text-stone-50">
+	<header class="flex flex-col items-center text-center">
+		<img id="optivorbis-logo" src="<%= require('./static/optivorbis_logo.png') %>" alt="OptiVorbis logo"
+			 class="mt-[80px] sm:mt-10 w-2/3 sm:w-1/2 max-h-[30vh] min-h-[130px] object-scale-down">
+		<h1 class="text-3xl font-bold mt-2">OptiVorbis</h1>
+		<p class="mt-5 p-2.5 w-5/6 sm:w-3/4 sm:text-lg rounded-xl bg-gradient-to-l from-amber-400 to-amber-500 dark:from-amber-600 dark:to-amber-700 shadow-md">
+			Easily <strong>optimize</strong> and <strong>repair Ogg Vorbis files</strong> within your web browser!</p>
+	</header>
+
+	<!-- File selector -->
+	<div id="file-input-section" class="flex flex-col items-center text-center">
+		<label class="mt-5 w-5/6 sm:w-3/4 rounded-xl border-dashed border-red-500 dark:border-red-800 border-4 block select-none cursor-pointer transition-colors"
+			   id="file-input-label">
+			<button class="text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm"
+					id="file-input-button">
+				Choose a file
+			</button>
+			<span class="mb-3 italic text-slate-600 dark:text-slate-300 block">Or drag and drop here</span>
+			<input type="file" id="file-input" accept=".ogg,.oga,audio/ogg" class="hidden">
+		</label>
+	</div>
+
+	<!-- Optimization in progress text -->
+	<p id="file-process-text" class="hidden text-center pt-14 pb-14 font-medium animate-pulse select-none">Hold on while
+		your file is processed...</p>
+
+	<!-- Optimization result -->
+	<section id="output-file-section" class="hidden flex flex-col items-center text-center">
+		<h2 class="text-lg font-bold mt-2">Your file is ready <span class="select-none">🚀</span></h2>
+		<audio controls loop id="output-file-preview"
+			   class="mt-3 w-5/6 sm:w-3/4 rounded-md h-8"></audio>
+		<div class="text-[0]"> <!-- 0-size text to avoid text between inline button elements -->
+			<button id="output-file-back"
+					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm">
+				<svg viewBox="0 0 48 48" class="inline w-[1.5rem] h-[1.5rem]">
+					<path d="M24 40 8 24 24 8 26.1 10.1 13.7 22.5H40V25.5H13.7L26.1 37.9Z" fill="currentColor"/>
+				</svg>
+				Back
+			</button>
+			<button id="output-file-download"
+					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm">
+				<svg viewBox="0 0 48 48" class="inline w-[1.5rem] h-[1.5rem]">
+					<path d="M24 32.35 14.35 22.7 16.5 20.55 22.5 26.55V8H25.5V26.55L31.5 20.55L33.65 22.7ZM11 40Q9.8 40 8.9 39.1Q8 38.2 8 37V29.85H11V37Q11 37 11 37Q11 37 11 37H37Q37 37 37 37Q37 37 37 37V29.85H40V37Q40 38.2 39.1 39.1Q38.2 40 37 40Z"
+						  fill="currentColor"/>
+				</svg>
+				Download
+			</button>
+		</div>
+	</section>
+
+	<!-- Highlights -->
+	<section class="flex flex-col items-center mt-10">
+		<div class="flex flex-row items-center w-5/6 sm:w-3/4">
+			<div class="w-full sm:w-1/2">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					Lossless Ogg Vorbis file size reduction in your browser</h2>
+				<p class="leading-relaxed sm:text-lg">OptiVorbis reduces the size of Ogg Vorbis files while keeping the
+					encoded audio sample data intact, ensuring that they <strong class="font-semibold">will sound the
+						same</strong>. The savings range from minor to substantial, depending on the software that
+					generated the file and the sound characteristics.</p>
+				<p class="mt-3 leading-relaxed sm:text-lg">Try it out for yourself: it's like getting
+					<strong class="font-semibold">more disk space for free</strong>!</p>
+				<p class="mt-3 leading-relaxed sm:text-lg">Moreover, thanks to the power of <i>WebAssembly</i> and <i>web
+					workers</i>, <strong class="font-semibold">the optimization code runs entirely in your web
+					browser</strong>, so you don't need to be online, and service usage limits or confidentiality
+					concerns do not apply.</p>
+			</div>
+			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">✨</div>
+		</div>
+
+		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
+			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">🛠️</div>
+			<div class="w-full sm:w-1/2">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					Automatic repairs</h2>
+				<p class="leading-relaxed sm:text-lg">Another OptiVorbis perk is that it can <strong
+						class="font-semibold">automatically repair some kinds of Ogg Vorbis file corruption</strong>. A
+					side effect of these repairs is that the decoded audio samples may be negligibly different, but, in
+					turn, they will be more consistent across decoders and devices.</p>
+				<p class="leading-relaxed sm:text-lg mt-3">If you have some quirky file that exhibits odd seek behavior,
+					causes warnings or problems, or works better with some programs than others, OptiVorbis may
+					help.</p>
+			</div>
+		</div>
+
+		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
+			<div class="w-full sm:w-1/2">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					State of the art techniques</h2>
+				<p class="leading-relaxed sm:text-lg">In a nutshell, <strong class="font-semibold">OptiVorbis corrects
+					non-optimalities of the current Ogg Vorbis encoder implementations</strong>, replacing codec header
+					data, framing data, and encoded audio packet codewords with functionally equivalent but more
+					space-efficient representations.</p>
+				<p class="leading-relaxed sm:text-lg mt-3">You can think of it as <i>OptiPNG</i> or <i>pngcrush</i> for
+					Ogg Vorbis files, although these projects are not related to OptiVorbis in any way.</p>
+			</div>
+			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">💡</div>
+		</div>
+
+		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
+			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">🧑‍💻</div>
+			<div class="w-full sm:w-1/2">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					Developer and power-user friendly</h2>
+				<p class="leading-relaxed sm:text-lg">OptiVorbis is an <strong class="font-semibold">open-source
+					software library</strong> written in <i>Rust</i>, a modern language that emphasizes performance and
+					code safety.</p>
+				<p class="leading-relaxed sm:text-lg mt-3">This website is only a simple, user-friendly frontend: any
+					developer may <strong class="font-semibold">use OptiVorbis in their libraries and
+						applications</strong> to optimize Ogg Vorbis files. Correspondingly, the OptiVorbis project
+					<strong class="font-semibold">welcomes contributions and improvements</strong>.</p>
+				<p class="leading-relaxed sm:text-lg mt-3">Are you a <strong class="font-semibold">power user</strong>
+					but not a developer? We got you covered: the OptiVorbis project also distributes an <strong
+							class="font-semibold">official CLI application</strong> you can run in an automated fashion
+					to batch optimize Ogg Vorbis files, with more advanced options, at native speed.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Links -->
+	<section class="sm:flex sm:flex-col sm:items-center mt-10">
+		<div class="sm:flex sm:flex-row sm:justify-around sm:w-3/4">
+			<div class="flex flex-col items-center text-center">
+				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					Get the CLI and contribute</h2>
+				<a href="https://github.com/OptiVorbis/OptiVorbis" rel="noopener">
+					<svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg"
+						 class="mt-4 w-24 transition hover:scale-105 dark:hidden">
+						<path fill-rule="evenodd" clip-rule="evenodd"
+							  d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"
+							  transform="scale(64)" fill="#1B1F23"></path>
+					</svg>
+					<svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg"
+						 class="mt-4 w-24 transition hover:scale-105 hidden dark:block">
+						<path fill-rule="evenodd" clip-rule="evenodd"
+							  d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"
+							  transform="scale(64)" fill="#ffffff"></path>
+					</svg>
+				</a>
+			</div>
+			<div class="flex flex-col items-center text-center">
+				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+					Begin building a better app</h2>
+				<a href="https://crates.io/crates/optivorbis" rel="noopener">
+					<div class="mt-4 w-24 transition hover:scale-105"><%= require('./static/Cargo logo.svg') %></div>
+				</a>
+			</div>
+		</div>
+	</section>
+</main>
+
+<footer class="text-center text-neutral-300 mt-10 bg-slate-800 p-5 sm:p-10">
+	<p>OptiVorbis is made with <span class="select-none">❤️</span> by Alejandro González</p>
+	<p class="mt-4">This website is hosted on <a class="text-blue-300 hover:text-blue-400 transition-colors"
+												 href="https://pages.github.com" rel="noopener">GitHub Pages</a> and
+		uses the awesome <a href="https://fonts.google.com/icons" rel="noopener">Material Icons</a> and <a
+				href="https://tholman.com/github-corners" rel="noopener">GitHub Corners</a></p>
+	<p class="mt-4">The OptiVorbis logo is a derivative work of the Vorbis <q>Many Fish</q> logo, which is <a
+			href="https://commons.wikimedia.org/wiki/File:Vorbis_many_fish_logo_2005.svg" rel="noopener">dual-licensed
+		under CC-BY 3.0 and BSD licenses</a>. <q>OptiVorbis</q> and the <q>OptiVorbis project</q> are not related to the
+		Xiph.Org Foundation</p>
+	<p class="mt-4">Special thanks to my friends Miguel and Souya for their little bit of help with making things look
+		great!</p>
+</footer>
+
+<div id="file-error-modal" class="hidden relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+	<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+	<div class="fixed z-10 inset-0 overflow-y-auto">
+		<div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+			<div class="relative bg-white dark:bg-slate-400 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+				<div class="bg-slate-100 dark:bg-slate-300 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+					<div class="sm:flex sm:items-start">
+						<div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+							<svg class="h-6 w-6 text-red-600" fill="none"
+								 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round"
+									  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+							</svg>
+						</div>
+						<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+							<h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">File error</h3>
+							<div class="mt-2">
+								<p class="text-sm text-gray-600 dark:text-gray-800">The following error happened while
+									processing your file:</p>
+								<pre id="file-error-modal-message"
+									 class="text-sm text-gray-600 dark:text-gray-800 mt-3 mb-3 font-semibold whitespace-pre-wrap"></pre>
+								<p class="text-sm text-gray-600 dark:text-gray-800">Please check that the file is indeed
+									in Ogg Vorbis format and try again.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bg-slate-200 dark:bg-slate-200 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+					<button type="button"
+							id="file-error-modal-close"
+							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+						OK
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

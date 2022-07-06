@@ -1,0 +1,53 @@
+[package]
+name = "optivorbis"
+description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
+authors = ["Alejandro González"]
+license = "AGPL-3.0-or-later OR BSD-3-Clause"
+version = "0.1.0"
+homepage = "https://optivorbis.github.io/OptiVorbis"
+repository = "https://github.com/OptiVorbis/OptiVorbis"
+readme = "../../README.md"
+keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
+categories = ["compression", "multimedia::audio"]
+edition = "2021"
+rust-version = "1.61"
+# Run cargo diet to maintain this include list
+include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
+
+[dependencies]
+ogg = "0.8.0"
+vorbis_bitpack = { version = "0.1.0", path = "../vorbis_bitpack" }
+
+indexmap = "1.9.1"
+bumpalo = "3.10.0"
+tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_55"] }
+
+getrandom = "0.2.7"
+rand_xoshiro = "0.6.0"
+
+thiserror = "1.0.31"
+strum_macros = "0.24.2"
+ouroboros = "0.15.0"
+slice-group-by = "0.3.0"
+
+log = "0.4.17"
+
+wasm-bindgen = { version = "0.2.81", default-features = false, optional = true }
+wee_alloc = { version = "0.4.5", optional = true }
+console_log = { version = "0.2.0", features = ["color"], optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[lib]
+crate-type = ["lib", "cdylib"]
+
+[build-dependencies]
+git2 = { version = "0.14.4", default-features = false }
+chrono = { version = "0.4.19", default-features = false, features = ["alloc"] }
+
+[dev-dependencies]
+pretty_env_logger = "0.4.0"
+oggvorbismeta = "0.1.0"
+
+[features]
+wasm-bindings = ["wasm-bindgen", "wee_alloc"]
+wasm-web-bindings = ["wasm-bindings", "console_log", "console_error_panic_hook", "getrandom/js"]

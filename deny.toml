@@ -82,4 +82,4 @@ highlight = "all"
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"
-allow-git = ["https://github.com/joshua-maros/ouroboros", "https://github.com/RustAudio/ogg"]
+allow-git = ["https://github.com/joshua-maros/ouroboros"]

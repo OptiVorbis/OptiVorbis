@@ -198,4 +198,4 @@ jobs:
         if: github.ref == 'refs/heads/master' # Only run for pushes to the master branch
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ../target/web
+          publish_dir: target/web

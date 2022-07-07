@@ -158,6 +158,10 @@ jobs:
     if: github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name != 'OptiVorbis/OptiVorbis'
 
+    defaults:
+      run:
+        working-directory: web
+
     steps:
       - name: 📥 Checkout source
         uses: actions/checkout@v3
@@ -184,18 +188,14 @@ jobs:
         uses: Swatinem/rust-cache@v1
 
       - name: 🔨 Build web demo
-        run: |
-          cd web
-          npm install
+        run: npm install
 
       - name: '🔍 Static analysis: ESLint'
-        run: |
-          cd web
-          npm run lint
+        run: npm run lint
 
       - name: 📤 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/master' # Only run for pushes to the master branch
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/web
+          publish_dir: ../target/web

@@ -52,6 +52,8 @@ If you want to go bleeding edge and try out code that was not yet released, you 
 
 Like any other dependency, add it to the `Cargo.toml` manifest of your project, and start calling its API as you like. Check out its page at [`crates.io`](https://crates.io/crates/optivorbis) and the API docs at [`docs.rs`](https://docs.rs/optivorbis) to get started.
 
+The minimum supported Rust version (MSRV) for every package in this repository is 1.61. Bumping this version is not considered a breaking change for semantic versioning purposes. We will try to do it only when we estimate that such a bump would not cause widespread inconvenience or breakage.
+
 # 📕 Usage
 
 By now, it should be obvious how to use the demo web page or Rust library. The CLI arguments follow a well-defined syntax. Several options are accepted to customize the optimization process and affect the output and operation of the CLI. The most important one to get started is `--help`, which shows the following usage help:

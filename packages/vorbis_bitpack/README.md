@@ -1,3 +1,5 @@
+[![docs.rs status](https://img.shields.io/docsrs/vorbis_bitpack?label=docs.rs)](https://docs.rs/vorbis_bitpack)
+
 This crate implements the bitpacking convention defined in the [Vorbis I specification](https://xiph.org/vorbis/doc/Vorbis_I_spec.pdf), section 2.
 
 # Overview

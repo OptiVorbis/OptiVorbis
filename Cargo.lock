@@ -447,7 +447,7 @@ checksum = "18a6dbe30758c9f83eb00cbea4ac95966305f5a7772f3f42ebfc7fc7eddbd8e1"
 
 [[package]]
 name = "optivorbis"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bumpalo",
  "chrono",
@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "optivorbis_cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "getopts",
  "log",
@@ -828,7 +828,7 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "vorbis_bitpack"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "acid_io",
  "libm",

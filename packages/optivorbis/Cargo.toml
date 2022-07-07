@@ -3,7 +3,7 @@ name = "optivorbis"
 description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
 authors = ["Alejandro González"]
 license = "AGPL-3.0-or-later OR BSD-3-Clause"
-version = "0.1.0"
+version = "0.1.1"
 homepage = "https://optivorbis.github.io/OptiVorbis"
 repository = "https://github.com/OptiVorbis/OptiVorbis"
 readme = "../../README.md"
@@ -16,7 +16,7 @@ include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
 
 [dependencies]
 ogg = "0.9.0"
-vorbis_bitpack = { version = "0.1.0", path = "../vorbis_bitpack" }
+vorbis_bitpack = { version = "0.1.1", path = "../vorbis_bitpack" }
 
 indexmap = "1.9.1"
 bumpalo = "3.10.0"

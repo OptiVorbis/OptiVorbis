@@ -3,7 +3,7 @@ name = "optivorbis_cli"
 description = "Command-line interface application for lossless Vorbis optimization and repair"
 authors = ["Alejandro González"]
 license = "AGPL-3.0-or-later"
-version = "0.1.0"
+version = "0.1.1"
 repository = "https://github.com/OptiVorbis/OptiVorbis"
 readme = "../../README.md"
 keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
@@ -12,7 +12,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-optivorbis = { version = "0.1.0", path = "../optivorbis" }
+optivorbis = { version = "0.1.1", path = "../optivorbis" }
 
 getopts = "0.2.21"
 log = "0.4.17"

@@ -101,20 +101,20 @@ jobs:
 
       - name: '🔍 Static analysis: run Clippy'
         uses: actions-rs/clippy-check@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           args: --no-deps --all-targets --all-features -- -D warnings
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: '🔍 Static analysis: run rustfmt'
         uses: actions-rs/cargo@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           command: fmt
           args: --check --all
 
       - name: '🔍 Static analysis: run cargo deny'
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         uses: EmbarkStudios/cargo-deny-action@v1
 
       - name: ✔️ Run tests
@@ -126,7 +126,7 @@ jobs:
 
       - name: 📚 Build documentation
         uses: actions-rs/cargo@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           command: doc
 

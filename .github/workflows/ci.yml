@@ -51,27 +51,23 @@ jobs:
   ci:
     strategy:
       matrix:
-        runner:
-          - ubuntu-20.04
-          - windows-2022
-          - macos-11
-        id: [0] # Dummy value to control whether to add or replace matrix combinations below
+        target:
+          - x86_64-unknown-linux-musl
+          - aarch64-unknown-linux-musl
+          - x86_64-pc-windows-gnu
+          - x86_64-apple-darwin
         include:
-          - runner: ubuntu-20.04
-            id: 0
-            target: x86_64-unknown-linux-musl
+          - target: x86_64-unknown-linux-musl
+            runner: ubuntu-20.04
             cli-executable: optivorbis
-          - runner: ubuntu-20.04
-            id: 1 # Add new combination
-            target: aarch64-unknown-linux-musl
+          - target: aarch64-unknown-linux-musl
+            runner: ubuntu-20.04
             cli-executable: optivorbis
-          - runner: windows-2022
-            id: 0
-            target: x86_64-pc-windows-gnu
+          - target: x86_64-pc-windows-gnu
+            runner: windows-2022
             cli-executable: optivorbis.exe
-          - runner: macos-11
-            id: 0
-            target: x86_64-apple-darwin
+          - target: x86_64-apple-darwin
+            runner: macos-11
             cli-executable: optivorbis
 
     name: CI (${{ matrix.target }})
@@ -105,20 +101,20 @@ jobs:
 
       - name: '🔍 Static analysis: run Clippy'
         uses: actions-rs/clippy-check@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           args: --no-deps --all-targets --all-features -- -D warnings
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: '🔍 Static analysis: run rustfmt'
         uses: actions-rs/cargo@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           command: fmt
           args: --check --all
 
       - name: '🔍 Static analysis: run cargo deny'
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         uses: EmbarkStudios/cargo-deny-action@v1
 
       - name: ✔️ Run tests
@@ -130,7 +126,7 @@ jobs:
 
       - name: 📚 Build documentation
         uses: actions-rs/cargo@v1
-        if: matrix.runner == 'ubuntu-20.04' && matrix.id == 0
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
           command: doc
 

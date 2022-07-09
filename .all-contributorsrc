@@ -24,7 +24,8 @@
         "projectManagement",
         "data",
         "content",
-        "research"
+        "research",
+        "infra"
       ]
     },
     {
@@ -51,7 +52,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/34268371?v=4",
       "profile": "https://github.com/sya-ri",
       "contributions": [
-        "ideas"
+        "ideas",
+        "infra"
       ]
     }
   ],

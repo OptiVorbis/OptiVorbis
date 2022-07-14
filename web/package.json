@@ -23,7 +23,7 @@
     "cssnano": "5.1.12",
     "eslint": "8.19.0",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-import-resolver-typescript": "3.2.4",
+    "eslint-import-resolver-typescript": "3.2.5",
     "eslint-plugin-import": "2.26.0",
     "favicons-webpack-plugin": "5.0.2",
     "html-webpack-plugin": "5.5.0",

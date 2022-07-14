@@ -1,9 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base", ":preserveSemverRanges"
+    "config:base"
   ],
-  "schedule": ["on monday"],
+  "addLabels": ["dependencies"],
+  "automergeType": "branch",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],

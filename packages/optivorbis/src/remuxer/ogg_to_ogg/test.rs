@@ -107,6 +107,7 @@ fn remuxing_and_mangling_works() {
 			randomize_stream_serials: false,
 			first_stream_serial_offset: 0,
 			ignore_start_sample_offset: true,
+			error_on_no_vorbis_streams: true,
 			vorbis_stream_mangler: {
 				struct Mangler;
 
@@ -147,4 +148,20 @@ fn empty_last_audio_packet_works() {
 		|_| ()
 	)
 	.expect("Unexpected remuxing error")
+}
+
+#[test]
+fn non_vorbis_data_returns_error() {
+	init_logging();
+
+	remux_with_settings(
+		include_bytes!("../../../resources/test/44100hz_500ms_mono_440hz_sine_wave_ogg_opus.ogg"),
+		|| Settings {
+			error_on_no_vorbis_streams: true,
+			..Default::default()
+		},
+		Default::default,
+		|_| ()
+	)
+	.expect_err("Expected remuxing error");
 }

@@ -89,6 +89,10 @@ fn run() -> Result<(), Cow<'static, str>> {
 			A zero or positive integer that sets the offset that will be added to the serial of the first \
 			stream. When not randomizing stream serials, the offset matches the serial that will be used \
 			for the first stream. The default value is 0.\n\
+			- error_on_no_vorbis_streams=BOOLEAN\n\
+			Sets whether not finding any Vorbis stream within the Ogg container will be considered an error \
+			condition. The default value is true, which means that not finding any Vorbis stream will be \
+			considered an error. This usually is the most desirable behavior.\n\
 			- ignore_start_sample_offset=BOOLEAN\n\
 			Sets whether a non-zero calculated granule position for the first audio sample will be honored \
 			when recomputing granule positions in the generated Ogg file or not. This usually is a good \
@@ -232,6 +236,7 @@ fn remux<F: Read + Seek>(
 			set_remuxer_option_value!(remuxer_settings, randomize_stream_serials);
 			set_remuxer_option_value!(remuxer_settings, first_stream_serial_offset);
 			set_remuxer_option_value!(remuxer_settings, ignore_start_sample_offset);
+			set_remuxer_option_value!(remuxer_settings, error_on_no_vorbis_streams);
 
 			info!(
 				"Processing {} and saving to {} with Ogg Vorbis remuxer...",

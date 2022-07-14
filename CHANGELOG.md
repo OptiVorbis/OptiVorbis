@@ -7,6 +7,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+- The Ogg to Ogg remuxer now errors out by default if no Vorbis audio streams
+  are found, better matching user expectations, as this usually signals usage
+  mistakes. The previous behavior of outputting an empty Ogg file can be
+  opted-in via the new `error_on_no_vorbis_streams` remuxer option.
+
 ## [0.1.1] - 2022-07-07
 ### Added
 - Document minimum supported Rust version (MSRV) in the `README.md` file.

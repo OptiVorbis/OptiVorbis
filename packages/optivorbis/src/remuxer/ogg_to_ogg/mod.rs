@@ -97,6 +97,15 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	///
 	/// **Default value**: `false`
 	pub ignore_start_sample_offset: bool,
+	/// Sets whether not finding any Vorbis stream within the Ogg container will be considered an
+	/// error condition. Returning an error when this happens usually is a good thing because
+	/// running OptiVorbis in such cases tends to be a usage mistake, and the otherwise silent
+	/// behavior of generating empty Ogg files is counter-intuitive for end-users. However, not
+	/// returning an error may be helpful for advanced use cases where returning an empty file is
+	/// desirable.
+	///
+	/// **Default value**: `true`
+	pub error_on_no_vorbis_streams: bool,
 	/// Sets the [mangler](OggVorbisStreamMangler) that will have a final say on some values
 	/// generated for the Ogg page and packet encapsulations. OptiVorbis almost always does the
 	/// right thing by itself, so **using manglers others than the
@@ -110,6 +119,7 @@ impl Default for Settings<OggVorbisStreamPassthroughMangler> {
 			randomize_stream_serials: true,
 			first_stream_serial_offset: 0,
 			ignore_start_sample_offset: false,
+			error_on_no_vorbis_streams: true,
 			vorbis_stream_mangler: OggVorbisStreamPassthroughMangler
 		}
 	}
@@ -140,6 +150,10 @@ pub enum RemuxError {
 	/// several streams are concurrently multiplexed.
 	#[error("Remuxing Ogg bitstreams with grouped logical bitstreams is not supported")]
 	UnsupportedStreamMultiplexing,
+	/// Represents a missing Vorbis stream error, which signals that no Vorbis audio
+	/// data was found in the Ogg container.
+	#[error("No Vorbis bitstream found. Is this Ogg Vorbis data?")]
+	NoVorbisStreamFound,
 	/// An I/O error outside of any of the previously mentioned error contexts happened.
 	#[error("I/O error: {0}")]
 	IoError(#[from] io::Error)
@@ -323,7 +337,11 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 		}
 	}
 
-	Ok(vorbis_streams)
+	if vorbis_streams.is_empty() && remuxer_settings.error_on_no_vorbis_streams {
+		Err(RemuxError::NoVorbisStreamFound)
+	} else {
+		Ok(vorbis_streams)
+	}
 }
 
 /// Executes the second remuxing pass, where Vorbis streams within the source Ogg physical

@@ -32,7 +32,7 @@ slice-group-by = "0.3.0"
 
 log = "0.4.17"
 
-wasm-bindgen = { version = "0.2.81", default-features = false, optional = true }
+wasm-bindgen = { version = "0.2.82", default-features = false, optional = true }
 wee_alloc = { version = "0.4.5", optional = true }
 console_log = { version = "0.2.0", features = ["color"], optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }

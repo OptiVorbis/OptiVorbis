@@ -15,8 +15,8 @@
     "../target/webpkg"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.30.7",
-    "@typescript-eslint/parser": "5.30.7",
+    "@typescript-eslint/eslint-plugin": "5.31.0",
+    "@typescript-eslint/parser": "5.31.0",
     "@wasm-tool/wasm-pack-plugin": "1.6.0",
     "autoprefixer": "10.4.7",
     "css-loader": "6.7.1",

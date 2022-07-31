@@ -471,8 +471,9 @@ checksum = "21326818e99cfe6ce1e524c2a805c189a99b5ae555a35d19f9a284b427d86afa"
 
 [[package]]
 name = "ouroboros"
-version = "0.15.0"
-source = "git+https://github.com/joshua-maros/ouroboros?rev=273af432#273af432322687d042387fd24f9303a9e53a9088"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0020e5088e4600e6b82e7c192de0d04c1f37d5b3cfd8dfec193cec1f81f15fa0"
 dependencies = [
  "aliasable",
  "ouroboros_macro",
@@ -480,8 +481,9 @@ dependencies = [
 
 [[package]]
 name = "ouroboros_macro"
-version = "0.15.0"
-source = "git+https://github.com/joshua-maros/ouroboros?rev=273af432#273af432322687d042387fd24f9303a9e53a9088"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df194bd9cdca62dad63764c2185d1a23b38a11582db74275847c45f99d440725"
 dependencies = [
  "Inflector",
  "proc-macro-error",
@@ -982,3 +984,8 @@ checksum = "0c4583db5cbd4c4c0303df2d15af80f0539db703fa1c68802d4cbbd2dd0f88f6"
 dependencies = [
  "dirs",
 ]
+
+[[patch.unused]]
+name = "ouroboros"
+version = "0.15.0"
+source = "git+https://github.com/joshua-maros/ouroboros?rev=273af432#273af432322687d042387fd24f9303a9e53a9088"

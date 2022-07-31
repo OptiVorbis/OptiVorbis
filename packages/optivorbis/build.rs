@@ -1,9 +1,8 @@
 use std::env::current_dir;
 use std::error::Error;
-use std::time::{SystemTime, UNIX_EPOCH};
 
-use chrono::{TimeZone, Utc};
 use git2::{DescribeFormatOptions, DescribeOptions, Repository};
+use time::OffsetDateTime;
 
 fn main() {
 	match git_version() {
@@ -48,17 +47,11 @@ fn git_version() -> Result<String, Box<dyn Error>> {
 }
 
 fn set_build_date_env() {
-	const DURATION_CAST_ERROR: &str =
-		"The current time cannot be represented as a signed 64-bit integer";
-
-	let now = Utc.timestamp(
-		SystemTime::now().duration_since(UNIX_EPOCH).map_or_else(
-			|err| -i64::try_from(err.duration().as_secs()).expect(DURATION_CAST_ERROR),
-			|duration| duration.as_secs().try_into().expect(DURATION_CAST_ERROR)
-		),
-		0
-	);
-
 	// ISO 8601 YYYY-MM-DD date
-	println!("cargo:rustc-env=OPTIVORBIS_BUILD_DATE={}", now.format("%F"));
+	let build_date = OffsetDateTime::now_utc();
+	let (build_year, build_month, build_day) = build_date.to_calendar_date();
+	println!(
+		"cargo:rustc-env=OPTIVORBIS_BUILD_DATE={:04}-{:02}-{:02}",
+		build_year, build_month as u8, build_day
+	);
 }

@@ -12,6 +12,8 @@ and this project adheres to
   are found, better matching user expectations, as this usually signals usage
   mistakes. The previous behavior of outputting an empty Ogg file can be
   opted-in via the new `error_on_no_vorbis_streams` remuxer option.
+- The build dependency on the `chrono` crate was removed. The build script now
+  depends on the `time` crate, which is more lightweight and better maintained.
 
 ## [0.1.1] - 2022-07-07
 ### Added

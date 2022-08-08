@@ -26,7 +26,7 @@ getrandom = "0.2.7"
 rand_xoshiro = "0.6.0"
 
 thiserror = "1.0.32"
-strum_macros = "0.24.2"
+strum_macros = "0.24.3"
 ouroboros = "0.15.1"
 slice-group-by = "0.3.0"
 

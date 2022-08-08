@@ -27,7 +27,7 @@ rand_xoshiro = "0.6.0"
 
 thiserror = "1.0.32"
 strum_macros = "0.24.3"
-ouroboros = "0.15.1"
+ouroboros = "0.15.2"
 slice-group-by = "0.3.0"
 
 log = "0.4.17"

@@ -40,6 +40,6 @@
   },
   "dependencies": {
     "core-js": "3.24.1",
-    "optivorbis": "^0.1.1"
+    "optivorbis": "^0.1.2"
   }
 }

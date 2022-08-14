@@ -2,10 +2,6 @@
 members = ["packages/*"]
 default-members = ["packages/optivorbis", "packages/optivorbis_cli"]
 
-[patch.crates-io]
-# Use the latest upstream commit to remove an unnecessary dependency
-ouroboros = { git = "https://github.com/joshua-maros/ouroboros", rev = "273af432" }
-
 [profile.release]
 lto = "fat"
 codegen-units = 1

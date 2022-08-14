@@ -7,6 +7,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.1.2] - 2022-08-14
+
 ### Changed
 - The Ogg to Ogg remuxer now errors out by default if no Vorbis audio streams
   are found, better matching user expectations, as this usually signals usage
@@ -28,6 +32,7 @@ and this project adheres to
 ### Added
 - First public release
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/OptiVorbis/OptiVorbis/releases/tag/v0.1.0

@@ -293,7 +293,7 @@ mod test {
 	#[test]
 	fn huffman_tree_from_codeword_lengths_works() {
 		// Example tree from the Vorbis I specification § 3.2.1
-		let tree = VorbisHuffmanTree::try_from_codeword_lengths(&[2, 4, 4, 4, 4, 2, 3, 3])
+		let tree = VorbisHuffmanTree::try_from_codeword_lengths([2, 4, 4, 4, 4, 2, 3, 3])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
 		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
@@ -339,7 +339,7 @@ mod test {
 
 	#[test]
 	fn single_entry_huffman_tree_works() {
-		let tree = VorbisHuffmanTree::try_from_codeword_lengths(&[1])
+		let tree = VorbisHuffmanTree::try_from_codeword_lengths([1])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
 		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
@@ -365,7 +365,7 @@ mod test {
 	fn overspecified_huffman_tree_is_rejected() {
 		// Example tree from the Vorbis I specification § 3.2.1,
 		// but with an additional codeword length
-		VorbisHuffmanTree::try_from_codeword_lengths(&[2, 4, 4, 4, 4, 2, 3, 3, 32])
+		VorbisHuffmanTree::try_from_codeword_lengths([2, 4, 4, 4, 4, 2, 3, 3, 32])
 			.expect_err("The Huffman tree was assumed to be overspecified");
 	}
 
@@ -373,7 +373,7 @@ mod test {
 	fn underspecified_huffman_tree_codewords_are_rejected() {
 		// Example tree from the Vorbis I specification § 3.2.1,
 		// but without the codeword length for entry 4
-		let tree = VorbisHuffmanTree::try_from_codeword_lengths(&[2, 4, 4, 4, 2, 3, 3])
+		let tree = VorbisHuffmanTree::try_from_codeword_lengths([2, 4, 4, 4, 2, 3, 3])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
 		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
@@ -425,7 +425,7 @@ mod test {
 	fn monstrous_codeword_lengths_list_has_reasonable_resource_consumption() {
 		const MONSTROUS_CODEWORD_LENGTH: u8 = 16;
 		let tree = VorbisHuffmanTree::try_from_codeword_lengths(
-			&[MONSTROUS_CODEWORD_LENGTH; 2_usize.pow(MONSTROUS_CODEWORD_LENGTH as u32)]
+			[MONSTROUS_CODEWORD_LENGTH; 2_usize.pow(MONSTROUS_CODEWORD_LENGTH as u32)]
 		)
 		.expect("The Huffman tree was assumed to not be overspecified");
 
@@ -442,7 +442,7 @@ mod test {
 		// Example codeword length list from the Vorbis I specification, § 3.2.1,
 		// but adding an unused codebook entry in the middle
 		let codewords =
-			VorbisHuffmanTree::try_codewords_from_codeword_lengths(&[2, 4, 4, 4, 0, 4, 2, 3, 3])
+			VorbisHuffmanTree::try_codewords_from_codeword_lengths([2, 4, 4, 4, 0, 4, 2, 3, 3])
 				.expect("The Huffman tree was assumed to not be overspecified");
 
 		// Codeword assignment from the Vorbis I specification, § 3.2.1, but reversing

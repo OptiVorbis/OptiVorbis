@@ -39,7 +39,7 @@
     "webpack-dev-server": "4.11.0"
   },
   "dependencies": {
-    "core-js": "3.25.0",
+    "core-js": "3.25.1",
     "optivorbis": "^0.1.2"
   }
 }

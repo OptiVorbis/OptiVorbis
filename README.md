@@ -109,6 +109,12 @@ Options:
                         increased compatibility with some players or dedicated
                         purposes it may be advised to ignore this offset. The
                         default value is false.
+                        - error_on_no_vorbis_streams=BOOLEAN
+                        Sets whether not finding any Vorbis stream within the
+                        Ogg container will be considered an error condition.
+                        The default value is true, which means that not
+                        finding any Vorbis stream will be considered an error.
+                        This usually is the most desirable behavior.
 ```
 
 # 📊 Testing and results

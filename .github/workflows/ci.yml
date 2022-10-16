@@ -40,7 +40,7 @@ jobs:
           default: true
 
       - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
 
       - name: ⚙️ Run tests
         uses: actions-rs/cargo@v1
@@ -97,7 +97,7 @@ jobs:
         run: sudo apt install -yq gcc-aarch64-linux-gnu qemu-user
 
       - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
 
       - name: '🔍 Static analysis: run Clippy'
         uses: actions-rs/clippy-check@v1
@@ -181,7 +181,7 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
 
       - name: 🔨 Build web demo
         run: npm install

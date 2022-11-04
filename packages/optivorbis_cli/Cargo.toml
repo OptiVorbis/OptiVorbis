@@ -16,7 +16,7 @@ optivorbis = { version = "0.1.2", path = "../optivorbis" }
 
 getopts = "0.2.21"
 log = "0.4.17"
-stderrlog = { version = "0.5.3", default-features = false }
+stderrlog = { version = "0.5.4", default-features = false }
 
 [[bin]]
 name = "optivorbis"

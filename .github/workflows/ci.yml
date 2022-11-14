@@ -40,10 +40,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: ⚙️ Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: -p optivorbis -p optivorbis_cli -p vorbis_bitpack
+        run: cargo test -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
   ci:
     strategy:
@@ -101,34 +98,23 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: '🔍 Static analysis: run rustfmt'
-        uses: actions-rs/cargo@v1
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        with:
-          command: fmt
-          args: --check --all
+        run: cargo fmt --check --all
 
       - name: '🔍 Static analysis: run cargo deny'
         if: matrix.target == 'x86_64-unknown-linux-musl'
         uses: EmbarkStudios/cargo-deny-action@v1
 
       - name: ✔️ Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --release --target ${{ matrix.target }}
-            -p optivorbis -p optivorbis_cli -p vorbis_bitpack
+        run: cargo test --release --target ${{ matrix.target }}
+          -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
       - name: 📚 Build documentation
-        uses: actions-rs/cargo@v1
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        with:
-          command: doc
+        run: cargo doc
 
       - name: 🔨 Build CLI executable
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --target ${{ matrix.target }} --release
+        run: cargo build --target ${{ matrix.target }} --release
             -Z build-std=panic_abort,core,std,alloc,proc_macro
             -Z build-std-features=panic_immediate_abort
 

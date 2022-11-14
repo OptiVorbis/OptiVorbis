@@ -184,7 +184,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: 🔨 Build web demo
-        run: npm install
+        run: npm ci
 
       - name: '🔍 Static analysis: ESLint'
         run: npm run lint

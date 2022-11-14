@@ -15,7 +15,6 @@ on:
       - published
 
 env:
-  CARGO_TERM_COLOR: always
   MSRV: '1.61'
 
 jobs:

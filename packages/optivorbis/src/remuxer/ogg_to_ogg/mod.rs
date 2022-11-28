@@ -176,7 +176,7 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 		mut sink: W
 	) -> Result<W, Self::RemuxError> {
 		// Remember the source stream position to rewind to it later
-		let initial_source_pos = source.seek(SeekFrom::Current(0))?;
+		let initial_source_pos = source.stream_position()?;
 		let remuxer_settings = &mut *self.remuxer_settings.borrow_mut();
 
 		// Get the serial for the first stream, and the increment to add for the next streams.

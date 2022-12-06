@@ -22,7 +22,7 @@ fn main() {
 	exit(match run() {
 		Ok(_) => 0,
 		Err(err) => {
-			eprintln!("{}", err);
+			eprintln!("{err}");
 			1
 		}
 	})
@@ -133,7 +133,7 @@ fn run() -> Result<(), Cow<'static, str>> {
 				let input_file_name = &*matches.free[0];
 				let input_file = BufReader::new(
 					File::open(input_file_name)
-						.map_err(|err| format!("Could not open input file: {}", err))?
+						.map_err(|err| format!("Could not open input file: {err}"))?
 				);
 
 				let output_file_name = &*matches.free[1];
@@ -146,10 +146,10 @@ fn run() -> Result<(), Cow<'static, str>> {
 							(&mut output_stdout, None)
 						}
 						file_path => {
-							output_file =
-								BufWriter::new(File::create(file_path).map_err(|err| {
-									format!("Could not open output file: {}", err)
-								})?);
+							output_file = BufWriter::new(
+								File::create(file_path)
+									.map_err(|err| format!("Could not open output file: {err}"))?
+							);
 
 							let guessed_remuxer = match Path::new(file_path)
 								.extension()
@@ -257,7 +257,7 @@ fn remux<F: Read + Seek>(
 
 			Ok(())
 		}
-		Err(err) => Err(format!("Error while optimizing the input file: {}", err))?
+		Err(err) => Err(format!("Error while optimizing the input file: {err}"))?
 	}
 }
 
@@ -280,7 +280,7 @@ fn get_remuxer_option_value<E: Display, T: FromStr<Err = E>>(
 				})
 		})
 		.transpose()
-		.map_err(|err| format!("Invalid value for {} remuxer option: {}", option, err))
+		.map_err(|err| format!("Invalid value for {option} remuxer option: {err}"))
 }
 
 fn init_logging(option_matches: &Matches, quiet_mode: bool) {
@@ -297,7 +297,7 @@ fn init_logging(option_matches: &Matches, quiet_mode: bool) {
 }
 
 fn print_header() {
-	println!("{}", OPTIVORBIS_VERSION_TAG);
+	println!("{OPTIVORBIS_VERSION_TAG}");
 	println!("{}", env!("CARGO_PKG_DESCRIPTION"));
 	println!("Copyright (C) {}", env!("CARGO_PKG_AUTHORS"));
 }
@@ -312,7 +312,7 @@ impl FromStr for AvailableRemuxer {
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		match s {
 			"ogg2ogg" => Ok(Self::OggToOgg),
-			_ => Err(format!("The specified remuxer is not valid: {}", s).into())
+			_ => Err(format!("The specified remuxer is not valid: {s}").into())
 		}
 	}
 }

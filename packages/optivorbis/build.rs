@@ -7,13 +7,12 @@ use time::OffsetDateTime;
 fn main() {
 	match git_version() {
 		Ok(version) => {
-			println!("cargo:rustc-env=OPTIVORBIS_VERSION={}", version);
+			println!("cargo:rustc-env=OPTIVORBIS_VERSION={version}");
 		}
 		Err(git_err) => {
 			println!(
-				"cargo:warning=Could not get version via git: {}. \
-				Falling back to Cargo package version",
-				git_err
+				"cargo:warning=Could not get version via git: {git_err}. \
+				Falling back to Cargo package version"
 			);
 			println!(
 				"cargo:rustc-env=OPTIVORBIS_VERSION=v{}",

@@ -296,7 +296,7 @@ mod test {
 		let tree = VorbisHuffmanTree::try_from_codeword_lengths([2, 4, 4, 4, 4, 2, 3, 3])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
-		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
+		tree.with_root(|root| eprintln!("Tree: {root:#?}"));
 		eprintln!(
 			"Tree nodes arena allocated bytes: {}",
 			tree.borrow_arena().allocated_bytes()
@@ -315,7 +315,7 @@ mod test {
 		.into_iter()
 		.enumerate()
 		{
-			eprintln!("Testing decode of codeword {:0codeword_length$b}", codeword);
+			eprintln!("Testing decode of codeword {codeword:0codeword_length$b}");
 
 			tree.with_walker(|mut walker| {
 				let mut read_entry = None;
@@ -342,7 +342,7 @@ mod test {
 		let tree = VorbisHuffmanTree::try_from_codeword_lengths([1])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
-		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
+		tree.with_root(|root| eprintln!("Tree: {root:#?}"));
 		eprintln!(
 			"Tree nodes arena allocated bytes: {}",
 			tree.borrow_arena().allocated_bytes()
@@ -376,7 +376,7 @@ mod test {
 		let tree = VorbisHuffmanTree::try_from_codeword_lengths([2, 4, 4, 4, 2, 3, 3])
 			.expect("The Huffman tree was assumed to not be overspecified");
 
-		tree.with_root(|root| eprintln!("Tree: {:#?}", root));
+		tree.with_root(|root| eprintln!("Tree: {root:#?}"));
 		eprintln!(
 			"Tree nodes arena allocated bytes: {}",
 			tree.borrow_arena().allocated_bytes()
@@ -430,7 +430,7 @@ mod test {
 		.expect("The Huffman tree was assumed to not be overspecified");
 
 		let allocated_bytes = tree.borrow_arena().allocated_bytes();
-		eprintln!("Tree nodes arena allocated bytes: {}", allocated_bytes);
+		eprintln!("Tree nodes arena allocated bytes: {allocated_bytes}");
 
 		if allocated_bytes > 8 * 1024 * 1024 {
 			panic!("More than 8 MiB of RAM were allocated for the Huffman tree");

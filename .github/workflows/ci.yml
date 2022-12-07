@@ -85,7 +85,7 @@ jobs:
 
       - name: 🧰 Install ARM64 cross-compilation toolchain
         if: matrix.target == 'aarch64-unknown-linux-musl'
-        run: sudo apt install -yq gcc-aarch64-linux-gnu qemu-user
+        run: sudo apt update && sudo apt install -yq gcc-aarch64-linux-gnu qemu-user
 
       - name: 💨 Cache Rust artifacts
         uses: Swatinem/rust-cache@v2

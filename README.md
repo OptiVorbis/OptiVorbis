@@ -15,16 +15,20 @@ src="https://github.com/OptiVorbis/OptiVorbis/actions/workflows/ci.yml/badge.svg
 
 # 🔍 Overview
 
-OptiVorbis does lossless optimizations and repairs of complete, seekable Vorbis I audio streams, usually contained in Ogg Vorbis (`.ogg`) files, as defined in the [Vorbis I specification](https://xiph.org/vorbis/doc/Vorbis_I_spec.pdf). It leverages the great flexibility the Vorbis I stream setup configuration header provides to achieve its goals.
+OptiVorbis does lossless optimizations and repairs of complete, seekable Vorbis I audio streams, usually contained in Ogg Vorbis (`.ogg`) files, as defined in the [Vorbis I specification](https://xiph.org/vorbis/doc/Vorbis_I_spec.pdf).
 
-The optimization is _lossless_: streams processed by this library are guaranteed to be decoded to the same audio samples as before by any sane decoder. The internal file structure may differ substantially, but these differences are transparent for end-users, as the resulting streams still conform to the specification. At the user's discretion, it is possible to save even more space by removing comments (track title, author, etc.) and encoder version information.
+The optimization is _lossless_: streams processed by this library are guaranteed to be decoded to the same audio samples as before by any sane decoder. The internal file structure may differ substantially, but these differences are transparent for end-users, as the resulting streams still conform to the specification.
 
 In addition, OptiVorbis' understanding of the Vorbis format and container encapsulations, combined with the somewhat more lenient, purpose-built parsers it uses, provide it with some repair capabilities. It also tends to output more detailed and actionable error information on failure than other tools, rendering it suitable for sanity-checking Vorbis streams.
 
-In a nutshell, the optimization works by doing two passes over the Vorbis stream data, which requires the whole stream to be available and seekable, usually either in a memory buffer or a file:
+Currently, OptiVorbis optimizes Ogg Vorbis streams in the following ways, leveraging the great flexibility provided by the Vorbis I specification. Some of these require doing two passes over the entire Vorbis stream:
 
-- The first pass analyzes the stream, gathering internal data structure statistics.
-- The second pass uses the data obtained in the first pass to select the most optimal data structures to use and rewrites the stream accordingly. At this point, OptiVorbis has more knowledge about the usage of data structures than every known Vorbis encoder, making better choices.
+- It records the usage frequencies of the symbols defined for every codebook, and calculates a mathematically optimal codeword assignment for them, minimizing the expected per-symbol bit cost, using the Huffman algorithm described in [this paper](https://dl.acm.org/doi/10.1145/3342555).
+- It encapsulates Vorbis packets as tightly as possible into Ogg pages. Usual encoders extralimit themselves to better support network live-streaming scenarios, but these are not a concern on files.
+- It removes any padding at the end of Vorbis packets and after Ogg pages. This can be useful because reference encoder may pad audio packets with extra bytes when its bitrate management engine is used and there is extreme pressure to meet a minimum bitrate.
+- It strips out non-Vorbis logical bitstreams, such as Ogg Skeleton metadata.
+- It may empty the vendor string and user comments in the Vorbis comment header, depending on the options used.
+- It drops to-be-discarded (i.e., zero-sized) audio packets.
 
 # 📥 Installation
 

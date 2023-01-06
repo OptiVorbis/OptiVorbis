@@ -23,11 +23,11 @@ In addition, OptiVorbis' understanding of the Vorbis format and container encaps
 
 Currently, OptiVorbis optimizes Ogg Vorbis streams in the following ways, leveraging the great flexibility provided by the Vorbis I specification. Some of these require doing two passes over the entire Vorbis stream:
 
-- It records the usage frequencies of the symbols defined for every codebook, and calculates a mathematically optimal codeword assignment for them, minimizing the expected per-symbol bit cost, using the Huffman algorithm described in [this paper](https://dl.acm.org/doi/10.1145/3342555).
-- It encapsulates Vorbis packets as tightly as possible into Ogg pages. Usual encoders extralimit themselves to better support network live-streaming scenarios, but these are not a concern on files.
-- It removes any padding at the end of Vorbis packets and after Ogg pages. This can be useful because reference encoder may pad audio packets with extra bytes when its bitrate management engine is used and there is extreme pressure to meet a minimum bitrate.
+- It records the usage frequencies of the symbols defined for every codebook, then calculates a mathematically optimal codeword assignment for them, minimizing the expected per-symbol bit cost, using the Huffman algorithm described in [this paper](https://dl.acm.org/doi/10.1145/3342555).
+- It encapsulates Vorbis packets as tightly as possible into Ogg pages. Usual encoders extralimit themselves to support network live-streaming scenarios better, but these are not a concern on files.
+- It removes any padding at the end of Vorbis packets and after Ogg pages. This can be useful because the reference encoder may pad audio packets with extra bytes when there is extreme pressure to meet a minimum bitrate and its bitrate management engine is used.
 - It strips out non-Vorbis logical bitstreams, such as Ogg Skeleton metadata.
-- It may empty the vendor string and user comments in the Vorbis comment header, depending on the options used.
+- Depending on the selected options, it may empty the vendor string and user comments in the Vorbis comment header.
 - It drops to-be-discarded (i.e., zero-sized) audio packets.
 
 # 📥 Installation

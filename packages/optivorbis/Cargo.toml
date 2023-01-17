@@ -19,7 +19,7 @@ ogg = "0.9.0"
 vorbis_bitpack = { version = "0.1.1", path = "../vorbis_bitpack" }
 
 indexmap = "1.9.2"
-bumpalo = "3.11.1"
+bumpalo = "3.12.0"
 tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_55"] }
 
 getrandom = "0.2.8"

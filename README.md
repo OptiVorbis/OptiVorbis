@@ -23,12 +23,11 @@ In addition, OptiVorbis' understanding of the Vorbis format and container encaps
 
 Currently, OptiVorbis optimizes Ogg Vorbis streams in the following ways, leveraging the great flexibility provided by the Vorbis I specification. Some of these require doing two passes over the entire Vorbis stream:
 
-- It records the usage frequencies of the symbols defined for every codebook, then calculates a mathematically optimal codeword assignment for them, minimizing the expected per-symbol bit cost, using the Huffman algorithm described in [this paper](https://dl.acm.org/doi/10.1145/3342555).
-- It encapsulates Vorbis packets as tightly as possible into Ogg pages. Usual encoders extralimit themselves to support network live-streaming scenarios better, but these are not a concern on files.
-- It removes any padding at the end of Vorbis packets and after Ogg pages. This can be useful because the reference encoder may pad audio packets with extra bytes when there is extreme pressure to meet a minimum bitrate and its bitrate management engine is used.
-- It strips out non-Vorbis logical bitstreams, such as Ogg Skeleton metadata.
-- Depending on the selected options, it may empty the vendor string and user comments in the Vorbis comment header.
-- It drops to-be-discarded (i.e., zero-sized) audio packets.
+- It determines the usage frequency of the symbols defined for each codebook and computes a mathematically optimal codeword assignment for them, minimizing the expected bit cost per symbol by using the Huffman algorithm described in [this paper](https://dl.acm.org/doi/10.1145/3342555).
+- It encapsulates Vorbis packets into Ogg pages as tightly as possible. Conventional encoders better support network live-streaming scenarios by stuffing fewer packets per page, but this is not an issue with files.
+- It removes all padding at the end of Vorbis packets and after Ogg pages: the reference encoder may pad audio packets with extra bytes when under extreme pressure to meet a minimum bitrate and using its bitrate management engine.
+- It strips out non-Vorbis logical bitstreams, such as Ogg skeleton metadata. Depending on the options selected, it may strip the vendor string and user comments in the Vorbis comment header.
+- It drops audio packets that should be discarded (i.e., zero-sized).
 
 # 📥 Installation
 

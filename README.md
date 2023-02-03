@@ -195,7 +195,7 @@ If you found OptiVorbis useful, you may be interested in programs such as:
 - [`rogg`](https://gitlab.xiph.org/xiph/rogg): a small library for manipulating Ogg Vorbis files, which offers advanced and unusual features such as adjusting granule positions, replacing stream serial numbers, and recomputing the CRC of every Ogg page.
 - [`oggz`](https://gitlab.xiph.org/xiph/liboggz): a library and set of command-line tools for low-level inspection and manipulation of Ogg Vorbis files.
 - [`revorb`](https://github.com/ItsBranK/ReVorb): a command-line tool for recomputing granule positions of Ogg Vorbis files. OptiVorbis does such recomputation automatically, too.
-- [`rehuff`](https://wiki.xiph.org/Rehuff): a proprietary, buggy, proof of concept program for optimizing Vorbis streams from 2002, written by Segher Boessenkool. OptiVorbis expands upon the optimization techniques said to be implemented in `rehuff`, offering a much more finished, reliable solution that is open-source.
+- [`rehuff`](https://wiki.xiph.org/Rehuff): a proprietary, proof of concept program for optimizing Vorbis streams from 2002, written by Segher Boessenkool. OptiVorbis expands upon the optimization techniques said to be implemented in `rehuff`, offering a much more finished, reliable solution that is open-source.
 
 # ⛔ Known limitations
 

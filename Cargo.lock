@@ -21,12 +21,13 @@ dependencies = [
 
 [[package]]
 name = "afl"
-version = "0.12.12"
+version = "0.12.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcb7c2f23f9a940474a22088ff3fe75bd2d7fdc6174be00c10e4f8611d23e745"
+checksum = "b075719b00b9b89e7bf3001b505e71dbf26677be17372bf97062949dcf52ec97"
 dependencies = [
  "clap",
  "fs_extra",
+ "home",
  "libc",
  "rustc_version",
  "tempfile",
@@ -287,6 +288,15 @@ name = "hermit-abi"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "856b5cb0902c2b6d65d5fd97dfa30f9b70c7538e770b98eab5ed52d8db923e01"
+
+[[package]]
+name = "home"
+version = "0.5.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "747309b4b440c06d57b0b25f2aee03ee9b5e5397d288c60e21fc709bb98a7408"
+dependencies = [
+ "winapi",
+]
 
 [[package]]
 name = "humantime"

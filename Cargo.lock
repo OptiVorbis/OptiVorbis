@@ -21,9 +21,9 @@ dependencies = [
 
 [[package]]
 name = "afl"
-version = "0.12.13"
+version = "0.12.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b075719b00b9b89e7bf3001b505e71dbf26677be17372bf97062949dcf52ec97"
+checksum = "fc9414e3ccb11f46a0baf4fa75e46821183be5a993d605cf0bb73360e02bd4dd"
 dependencies = [
  "clap",
  "fs_extra",

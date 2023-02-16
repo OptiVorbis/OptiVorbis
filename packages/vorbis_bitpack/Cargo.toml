@@ -9,7 +9,7 @@ readme = true
 keywords = ["vorbis", "bitpacking", "bitpack", "compression", "serialization"]
 categories = ["compression", "no-std"]
 edition = "2021"
-rust-version = "1.61"
+rust-version = "1.62"
 
 [dependencies]
 acid_io = { version = "0.1.0", optional = true }

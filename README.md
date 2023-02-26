@@ -28,6 +28,7 @@ Currently, OptiVorbis optimizes Ogg Vorbis streams in the following ways, levera
 - It removes all padding at the end of Vorbis packets and after Ogg pages: the reference encoder may pad audio packets with extra bytes when under extreme pressure to meet a minimum bitrate and using its bitrate management engine.
 - It strips out non-Vorbis logical bitstreams, such as Ogg skeleton metadata. Depending on the options selected, it may strip the vendor string and user comments in the Vorbis comment header.
 - It drops audio packets that should be discarded (i.e., zero-sized).
+- At the user's discretion, it may shorten or clear out Vorbis header metadata that is not relevant to audio playback. This metadata is composed of the encoder vendor string and user comment fields.
 
 # 📥 Installation
 

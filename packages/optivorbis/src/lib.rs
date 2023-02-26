@@ -1,29 +1,26 @@
 //! OptiVorbis is a Rust library for lossless optimization and repair of complete,
-//! seekable Vorbis I audio streams (files), as defined in the [Vorbis I
-//! specification]. It leverages the great flexibility that the Vorbis I stream
-//! setup configuration header provides to achieve its goals.
+//! seekable Vorbis I audio streams, as defined in the [Vorbis I specification].
 //!
 //! The optimization is _lossless_: streams processed by this library are guaranteed
 //! to be decoded to the same audio samples as before by any compliant decoder. The
 //! internal file structure may differ substantially, but these differences are
-//! transparent for end-users. At the user's discretion, it is possible to save even
-//! more space by removing comments (track title, author, etc.) and encoder version
-//! information.
+//! transparent for end-users, as the resulting streams still conform to the
+//! specification.
 //!
 //! In addition, OptiVorbis' understanding of the Vorbis format and container
 //! encapsulations, combined with the somewhat more lenient, purpose-built parsers
 //! it uses, provide it with some repair capabilities. It also tends to output more
-//! detailed and actionable error messages on failure than other tools.
+//! detailed and actionable error messages on failure than other tools, rendering it
+//! suitable for sanity-checking Vorbis streams.
 //!
 //! # Remuxers
 //!
 //! Typically, Vorbis streams are neither stored nor transmitted raw, as the Vorbis
 //! format does not provide any support for features such as seeking or packet loss
 //! handling. Nevertheless, to make this library as flexible as possible, its
-//! optimization logic is coupled only with the Vorbis streams and does not assume
-//! any particular container. _Remuxers_ handle extracting Vorbis streams and
-//! encapsulating their optimized representations from and to containers,
-//! respectively.
+//! optimization logic is only coupled to Vorbis streams and does not assume any
+//! particular container. _Remuxers_ handle extracting Vorbis streams and
+//! encapsulating their optimized representations into containers.
 //!
 //! The available remuxers can be found in the [`remuxer`] module. Remuxers are the
 //! recommended entry point for the API offered by this library.
@@ -36,48 +33,58 @@
 //!
 //! ## Ogg Vorbis to Ogg Vorbis remuxer
 //!
-//! OptiVorbis currently ships with an Ogg Vorbis to Ogg Vorbis remuxer, which deals
-//! with Vorbis packets on unmultiplexed Ogg containers, usually stored in files
-//! with a `.ogg` extension. These Ogg Vorbis streams must not contain other
+//! OptiVorbis currently ships with an Ogg Vorbis to Ogg Vorbis remuxer, [`OggToOgg`],
+//! which deals with Vorbis packets on unmultiplexed Ogg containers, usually stored in
+//! files with `.ogg` extension. These Ogg Vorbis streams must not contain other
 //! interleaved streams, such as a video stream, but may contain chained
-//! (concatenated) Ogg Vorbis streams. Non-Vorbis streams (for example, Ogg Skeleton
-//! metadata streams) are ignored and not copied. Granule positions (timestamps) are
-//! recomputed, fixing any incorrect information that may be present in the original
+//! (concatenated) Vorbis streams. Non-Vorbis streams (such as Ogg Skeleton metadata
+//! streams) are ignored and not copied. Granule positions (timestamps) are
+//! recomputed, correcting any erroneous information that may be present in the original
 //! stream. Non-zero initial timestamps, chiefly used in live recordings and for
-//! lossless sample truncation of Vorbis streams, are supported. Stream serials may
-//! be randomized, making it easier to concatenate (chain) several generated files
-//! together. This encapsulation is the most common means of storage and distribution
-//! of Vorbis audio streams.
+//! lossless sample truncation, are supported. Stream serials can be randomized,
+//! making it easier to concatenate (chain) multiple generated files. This encapsulation
+//! is the most common means of storing and distributing Vorbis audio streams.
 //!
 //! # Implemented optimizations
 //!
-//! For technically-inclined people curious about what kind of low-level magic
-//! OptiVorbis does, here lies a brief overview of its optimization techniques.
+//! Currently, OptiVorbis optimizes Ogg Vorbis streams in the following ways, leveraging
+//! the great flexibility provided by the [Vorbis I specification]. Some of these require
+//! doing two passes over the entire Vorbis stream:
 //!
 //! - **Codebook [Huffman codes](https://en.wikipedia.org/wiki/Huffman_coding)
 //!   recoding**. Vorbis is designed to support live audio streaming applications,
 //!   so virtually every encoder assumes a non-optimal, fixed symbol probability
 //!   distribution based on the bitrate, the number of channels, sampling frequency
 //!   and target bitrate to avoid imposing buffering requirements. OptiVorbis
-//!   disregards this requirement, which allows it to know the real symbol probability
+//!   disregards this requirement, allowing it to know the true symbol probability
 //!   distribution and generate optimal Huffman codes.
-//! - _(Optional)_ **Comment header emptying**.
-//! - _(For the Ogg Vorbis encapsulation)_ **Muxing overhead reduction**, achieved
-//!   by putting as many Vorbis packets per Ogg page as possible. This might slow
-//!   down seeking operations and negate the error detection capabilities of smaller
-//!   pages but, in turn, speeds up sequential decoding, which is a better tradeoff
-//!   for files.
+//! - **Comment header optimization**. At the user's discretion, Vorbis metadata that
+//!   is not relevant to the stream playback may be shortened or cleared. The
+//!   [`VorbisCommentFieldsAction`] and [`VorbisVendorStringAction`] enums allow users
+//!   to specify the desired metadata treatment.
+//! - **Audio packet padding removal**. OptiVorbis automatically removes the padding
+//!   that some encoders may append to the end of Vorbis audio packets under some
+//!   circumstances.
+//! - **Dummy audio packet removal**. The Vorbis specification states that too short
+//!   or empty audio packets must be ignored by decoders. OptiVorbis deletes these
+//!   from the stream.
+//!
+//! When using the provided [`OggToOgg`] remuxer, the following optimizations are also
+//! carried out:
+//!
+//! - **Muxing overhead reduction**, by putting as many Vorbis packets per Ogg page as
+//!   possible.
+//! - **Non-Vorbis stream removal**.
 //!
 //! # Repair capabilities
 //!
 //! OptiVorbis is not meant to be a thorough repair tool that turns any corrupt
 //! stream into something usable. However, it does not enforce some checks mandated
-//! by the specification on purpose, with the expectation of making it able to
+//! by the specification on purpose, with the expectation of rendering it able to
 //! accept and fix streams that were accidentally slightly broken. It also handles
 //! some technically legal but practically troublesome edge cases carefully, making
 //! the generated files more interoperable:
 //!
-//! - Unnecessary packet padding is removed, which also saves space.
 //! - Window, mapping, time-domain transform types, and some reserved fields which
 //!   should always be set to zero are not checked. These fields are meant to allow
 //!   future expansion of the Vorbis codec, but in practice, it seems extremely
@@ -95,10 +102,6 @@
 //! - Strings in the comment header with invalid UTF-8 characters are not considered
 //!   errors to keep their original values intact. It is possible to replace these
 //!   with valid UTF-8 strings with the appropriate settings.
-//! - Audio packets that should be completely discarded by decoders according to the
-//!   specification are removed, yielding identical results for the reference
-//!   implementation, while saving more troublesome implementations the hassle of
-//!   dealing with such a case.
 //!
 //! Please note that these repair capabilities are not meant to be an excuse for
 //! encoders to be buggy or non-conformant. Encoders should generate correct and
@@ -117,6 +120,16 @@
 //! known encoders for more than 20 years, so this limitation should not matter in
 //! practice. Some decoders do not support this format either, rendering it less
 //! interoperable in practice.
+//!
+//! The Vorbis I setup header codebook format is vulnerable to denial of service
+//! attacks, as extremely dense prefix code trees, which take a significantly long
+//! time to parse, are valid according to the specification. OptiVorbis does not
+//! impose a depth or density limit in such trees, which guarantees its
+//! interoperability, but renders it vulnerable to specially-crafted files. This
+//! may be addressed in the future as information about the interoperability and
+//! mitigation impact of limiting the tree depth is gathered. In the meantime,
+//! applications dealing with untrusted files should be aware of this and resort
+//! to using OS features to bound resource consumption when applicable.
 //!
 //! # Logging
 //!

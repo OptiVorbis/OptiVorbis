@@ -1,7 +1,7 @@
 [package]
 name = "vorbis_bitpack"
 description = "Implementation of the Vorbis I bitpacking convention"
-authors = ["Alejandro González"]
+authors = ["Alejandro González <me@alegon.dev>"]
 license = "BSD-3-Clause"
 version = "0.1.1"
 repository = "https://github.com/OptiVorbis/OptiVorbis"

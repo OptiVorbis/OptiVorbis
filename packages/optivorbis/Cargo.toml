@@ -1,7 +1,7 @@
 [package]
 name = "optivorbis"
 description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
-authors = ["Alejandro González"]
+authors = ["Alejandro González <me@alegon.dev>"]
 license = "AGPL-3.0-or-later OR BSD-3-Clause"
 version = "0.1.2"
 homepage = "https://optivorbis.github.io/OptiVorbis"

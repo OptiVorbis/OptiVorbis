@@ -25,7 +25,7 @@ tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "r
 getrandom = "0.2.8"
 rand_xoshiro = "0.6.0"
 
-thiserror = "1.0.38"
+thiserror = "1.0.39"
 strum_macros = "0.24.3"
 ouroboros = "0.15.6"
 slice-group-by = "0.3.0"

@@ -10,7 +10,7 @@ readme = "../../README.md"
 keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
 categories = ["compression", "multimedia::audio"]
 edition = "2021"
-rust-version = "1.62"
+rust-version = "1.63"
 # Run cargo diet to maintain this include list
 include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
 

@@ -36,7 +36,7 @@ log = "0.4.17"
 # https://github.com/rustwasm/wasm-bindgen/issues/3276
 wasm-bindgen = { version = "=0.2.83", default-features = false, optional = true }
 wee_alloc = { version = "0.4.5", optional = true }
-console_log = { version = "0.2.1", features = ["color"], optional = true }
+console_log = { version = "0.2.2", features = ["color"], optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
 [lib]

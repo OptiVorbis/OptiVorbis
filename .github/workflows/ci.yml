@@ -17,6 +17,8 @@ on:
 env:
   MSRV: 1.63
 
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
 jobs:
   msrv_check:
     name: MSRV check

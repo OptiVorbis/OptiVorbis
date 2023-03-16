@@ -7,4 +7,4 @@ publish = false
 
 [dependencies]
 optivorbis = { version = "0.1.1", path = "../optivorbis" }
-afl = "0.12.15"
+afl = "0.12.16"

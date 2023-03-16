@@ -27,7 +27,7 @@
     "eslint-plugin-import": "2.27.5",
     "favicons-webpack-plugin": "6.0.0",
     "html-webpack-plugin": "5.5.0",
-    "mini-css-extract-plugin": "2.7.3",
+    "mini-css-extract-plugin": "2.7.4",
     "postcss": "8.4.21",
     "postcss-loader": "7.0.2",
     "svg-inline-loader": "0.8.2",

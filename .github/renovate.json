@@ -10,7 +10,5 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     }
-  ],
-  "description": "TODO The dependencies ignored below workaround upstream regressions",
-  "ignoreDeps": ["wasm-bindgen"]
+  ]
 }

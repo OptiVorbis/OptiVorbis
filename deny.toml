@@ -86,3 +86,6 @@ highlight = "all"
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"
+allow-git = [
+	"https://github.com/rustwasm/wasm-bindgen"
+]

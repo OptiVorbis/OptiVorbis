@@ -33,8 +33,3 @@ inherits = "release"
 panic = "unwind"
 debug = true
 strip = "none"
-
-[patch.crates-io]
-# Use a newer commit of wasm-bindgen that has a PR for a critical regression merged.
-# See: https://github.com/rustwasm/wasm-pack/pull/1224
-wasm-bindgen = { git = "https://github.com/rustwasm/wasm-bindgen", rev = "9958e2ec" }

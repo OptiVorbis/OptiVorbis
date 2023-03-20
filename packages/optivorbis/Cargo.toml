@@ -1,22 +1,22 @@
 [package]
 name = "optivorbis"
 description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
-authors = ["Alejandro González <me@alegon.dev>"]
+authors.workspace = true
 license = "AGPL-3.0-or-later OR BSD-3-Clause"
-version = "0.1.2"
-homepage = "https://optivorbis.github.io/OptiVorbis"
-repository = "https://github.com/OptiVorbis/OptiVorbis"
+version.workspace = true
+homepage.workspace = true
+repository.workspace = true
 readme = "../../README.md"
-keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
-categories = ["compression", "multimedia::audio"]
-edition = "2021"
-rust-version = "1.63"
+keywords.workspace = true
+categories.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 # Run cargo diet to maintain this include list
 include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
 
 [dependencies]
 ogg = "0.9.0"
-vorbis_bitpack = { version = "0.1.1", path = "../vorbis_bitpack" }
+vorbis_bitpack.workspace = true
 
 indexmap = "1.9.2"
 bumpalo = "3.12.0"
@@ -30,7 +30,7 @@ strum_macros = "0.24.3"
 ouroboros = "0.15.6"
 slice-group-by = "0.3.0"
 
-log = "0.4.17"
+log.workspace = true
 
 # Pin wasm-bindgen as a temporary workaround for a critical regression:
 # https://github.com/rustwasm/wasm-bindgen/issues/3276

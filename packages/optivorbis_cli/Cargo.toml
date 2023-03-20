@@ -1,21 +1,22 @@
 [package]
 name = "optivorbis_cli"
 description = "Command-line interface application for lossless Vorbis optimization and repair"
-authors = ["Alejandro González <me@alegon.dev>"]
+authors.workspace = true
 license = "AGPL-3.0-or-later"
-version = "0.1.2"
-repository = "https://github.com/OptiVorbis/OptiVorbis"
+version.workspace = true
+homepage.workspace = true
+repository.workspace = true
 readme = "../../README.md"
-keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
-categories = ["compression", "multimedia::audio"]
-edition = "2021"
+keywords.workspace = true
+categories.workspace = true
+edition.workspace = true
 publish = false
 
 [dependencies]
-optivorbis = { version = "0.1.2", path = "../optivorbis" }
+optivorbis.workspace = true
 
 getopts = "0.2.21"
-log = "0.4.17"
+log.workspace = true
 stderrlog = { version = "0.5.4", default-features = false }
 
 [[bin]]

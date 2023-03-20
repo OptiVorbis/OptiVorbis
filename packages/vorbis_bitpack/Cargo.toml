@@ -1,15 +1,15 @@
 [package]
 name = "vorbis_bitpack"
 description = "Implementation of the Vorbis I bitpacking convention"
-authors = ["Alejandro González <me@alegon.dev>"]
+authors.workspace = true
 license = "BSD-3-Clause"
 version = "0.1.1"
-repository = "https://github.com/OptiVorbis/OptiVorbis"
+repository.workspace = true
 readme = true
 keywords = ["vorbis", "bitpacking", "bitpack", "compression", "serialization"]
 categories = ["compression", "no-std"]
-edition = "2021"
-rust-version = "1.63"
+edition.workspace = true
+rust-version.workspace = true
 
 [dependencies]
 acid_io = { version = "0.1.0", optional = true }

@@ -9,6 +9,21 @@ and this project adheres to
 
 No changes yet.
 
+## [0.1.3] - 2023-04-03
+
+### Changed
+- Bump MSRV to 1.64.
+- Improve some documentation wording.
+- The author field of the Cargo packages in the repository now includes an
+  e-mail address.
+- The CI workflow now passes the unstable `-Zdoctest-xcompile` option to run
+  doctests when cross-compiling AArch64/ARM64 binaries, increasing test coverage
+  for these platforms.
+- Refactor the Cargo workspace to leverage property inheritance.
+- Several dependency updates. The most important of these is the build-time
+  dependency on `git2`, which is necessary to avoid `libgit2-sys` conflicts on
+  projects that depend on the latest `git2` version.
+
 ## [0.1.2] - 2022-08-14
 
 ### Changed
@@ -30,9 +45,10 @@ No changes yet.
 
 ## [0.1.0] - 2022-07-06
 ### Added
-- First public release
+- First public release.
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/OptiVorbis/OptiVorbis/releases/tag/v0.1.0

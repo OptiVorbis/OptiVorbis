@@ -89,11 +89,12 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: '🔍 Static analysis: run Clippy'
-        uses: actions-rs/clippy-check@v1
+        uses: giraffate/clippy-action@v1
         if: matrix.target == 'x86_64-unknown-linux-musl'
         with:
-          args: --no-deps --all-targets --all-features -- -D warnings
-          token: ${{ secrets.GITHUB_TOKEN }}
+          clippy_flags: --no-deps --all-targets --all-features -- -D warnings
+          reporter: github-check
+          fail_on_error: true
 
       - name: '🔍 Static analysis: run rustfmt'
         if: matrix.target == 'x86_64-unknown-linux-musl'

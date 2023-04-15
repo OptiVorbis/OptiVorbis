@@ -1,7 +1,9 @@
 //! Container-agnostic data types for parsing and optimizing Vorbis streams.
 
-use std::error::Error;
-use std::fmt::{Display, Formatter};
+use std::{
+	error::Error,
+	fmt::{Display, Formatter}
+};
 
 use strum_macros::FromRepr;
 

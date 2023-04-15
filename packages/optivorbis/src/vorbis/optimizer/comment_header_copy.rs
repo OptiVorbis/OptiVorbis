@@ -4,10 +4,10 @@ use std::borrow::Cow;
 
 use log::trace;
 
-use super::comment_header_parse::VorbisCommentData;
-use super::setup_header_parse::VorbisSetupData;
-use super::setup_header_rewrite::SetupHeaderRewrite;
-use super::VorbisOptimizerError;
+use super::{
+	comment_header_parse::VorbisCommentData, setup_header_parse::VorbisSetupData,
+	setup_header_rewrite::SetupHeaderRewrite, VorbisOptimizerError
+};
 
 /// Copies the comment header according to the analyzed comment data, and then
 /// transitions to the codec setup header rewrite state.

@@ -1,5 +1,4 @@
-use std::env::current_dir;
-use std::error::Error;
+use std::{env::current_dir, error::Error};
 
 use git2::{DescribeFormatOptions, DescribeOptions, Repository};
 use time::OffsetDateTime;

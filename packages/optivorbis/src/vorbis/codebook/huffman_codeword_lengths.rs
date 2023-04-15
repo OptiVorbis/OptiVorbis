@@ -177,9 +177,8 @@ fn compute_huffman_codeword_lengths<T: IndexMut<usize, Output = u64>>(
 
 #[cfg(test)]
 mod test {
-	use crate::vorbis::codebook::VorbisCodebook;
-
 	use super::*;
+	use crate::vorbis::codebook::VorbisCodebook;
 
 	#[test]
 	fn compute_huffman_codeword_lengths_works() {

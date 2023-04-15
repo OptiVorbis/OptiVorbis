@@ -1,20 +1,16 @@
 //! Contains the supporting code for the [`SetupHeaderRewrite`] Vorbis optimizer state.
 
-use std::borrow::Cow;
-use std::io;
-use std::io::Write;
+use std::{borrow::Cow, io, io::Write};
 
 use log::trace;
 use slice_group_by::GroupBy;
-
 use vorbis_bitpack::{bitpacked_integer_width, BitpackWriter, BitpackedIntegerWidth};
 
+use super::{
+	audio_packet_rewrite::AudioPacketRewrite, ilog, setup_header_parse::VorbisSetupData,
+	VorbisOptimizerError
+};
 use crate::vorbis::VectorLookupType;
-
-use super::audio_packet_rewrite::AudioPacketRewrite;
-use super::ilog;
-use super::setup_header_parse::VorbisSetupData;
-use super::VorbisOptimizerError;
 
 /// The Vorbis optimizer state reached when rewriting an optimized setup header.
 /// A state transition is made to the audio packet optimizing state.

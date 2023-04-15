@@ -5,13 +5,11 @@ use std::borrow::Cow;
 use log::{info, trace, warn};
 use thiserror::Error;
 
-use crate::vorbis::PacketType;
-use crate::{OPTIVORBIS_SHORT_VERSION_TAG, OPTIVORBIS_VERSION_TAG};
-
 use super::{
 	common_header_validation, SetupHeaderParse, VorbisCommentFieldsAction, VorbisOptimizerError,
 	VorbisOptimizerSettings, VorbisVendorStringAction
 };
+use crate::{vorbis::PacketType, OPTIVORBIS_SHORT_VERSION_TAG, OPTIVORBIS_VERSION_TAG};
 
 /// The Vorbis optimizer state reached when decoding a comment header. After decoding
 /// the comment header, the next state is decoding the setup header.

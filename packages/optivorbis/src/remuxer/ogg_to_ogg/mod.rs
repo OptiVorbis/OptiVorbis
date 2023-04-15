@@ -1,25 +1,26 @@
 //! Contains the [`OggToOgg`] remuxer struct and helper data types.
 
-use std::cell::RefCell;
-use std::io::{self, Read, Seek, SeekFrom, Write};
-use std::time::UNIX_EPOCH;
+use std::{
+	cell::RefCell,
+	io::{self, Read, Seek, SeekFrom, Write},
+	time::UNIX_EPOCH
+};
 
 use getrandom::getrandom;
-use indexmap::map::Entry;
-use indexmap::IndexMap;
+use granulator::granule_position_for_packet;
+use indexmap::{map::Entry, IndexMap};
 use log::{info, warn};
 use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter};
-use rand_xoshiro::rand_core::{RngCore, SeedableRng};
-use rand_xoshiro::Xoshiro256PlusPlus;
-use thiserror::Error;
-
-use granulator::granule_position_for_packet;
 #[doc(inline)]
 pub use ogg_vorbis_stream_mangler::{OggVorbisStreamMangler, OggVorbisStreamPassthroughMangler};
-
-use crate::vorbis::optimizer::{VorbisOptimizer, VorbisOptimizerError, VorbisOptimizerSettings};
+use rand_xoshiro::{
+	rand_core::{RngCore, SeedableRng},
+	Xoshiro256PlusPlus
+};
+use thiserror::Error;
 
 use super::Remuxer;
+use crate::vorbis::optimizer::{VorbisOptimizer, VorbisOptimizerError, VorbisOptimizerSettings};
 
 mod granulator;
 mod ogg_vorbis_stream_mangler;

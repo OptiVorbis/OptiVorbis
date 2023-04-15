@@ -4,29 +4,27 @@
 //! [`Remuxers`](crate::remuxer) are the primary intended consumers of this
 //! low-level module.
 
-use std::borrow::Cow;
 use std::{
+	borrow::Cow,
 	io::{self, ErrorKind},
 	mem,
 	num::{NonZeroU32, NonZeroU8, TryFromIntError}
 };
 
-use log::{info, trace};
-use thiserror::Error;
-
 use audio_packet_analyze::AudioPacketAnalyze;
 use audio_packet_rewrite::AudioPacketRewrite;
 use comment_header_copy::CommentHeaderCopy;
-use comment_header_parse::CommentHeaderParse;
-use comment_header_parse::VorbisCommentData;
+use comment_header_parse::{CommentHeaderParse, VorbisCommentData};
 use identification_header_copy::IdentificationHeaderCopy;
-use setup_header_parse::SetupHeaderParse;
-use setup_header_parse::VorbisSetupData;
+use log::{info, trace};
+use setup_header_parse::{SetupHeaderParse, VorbisSetupData};
 use setup_header_rewrite::SetupHeaderRewrite;
+use thiserror::Error;
 
-use super::codebook::VorbisCodebookError;
-use super::PacketType;
-use super::{TryPacketTypeFromInt, TryResidueTypeFromInt, TryVectorLookupTypeFromInt};
+use super::{
+	codebook::VorbisCodebookError, PacketType, TryPacketTypeFromInt, TryResidueTypeFromInt,
+	TryVectorLookupTypeFromInt
+};
 
 /// Calls the specified `method` on a Vorbis bitpacker struct.
 ///

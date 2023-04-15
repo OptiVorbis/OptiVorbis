@@ -3,13 +3,14 @@ use std::io::Cursor;
 use log::LevelFilter;
 use oggvorbismeta::CommentHeader;
 
-use crate::remuxer::Remuxer;
-use crate::vorbis::optimizer::{
-	VorbisCommentFieldsAction, VorbisOptimizerSettings, VorbisVendorStringAction
-};
-use crate::OPTIVORBIS_VERSION_TAG;
-
 use super::*;
+use crate::{
+	remuxer::Remuxer,
+	vorbis::optimizer::{
+		VorbisCommentFieldsAction, VorbisOptimizerSettings, VorbisVendorStringAction
+	},
+	OPTIVORBIS_VERSION_TAG
+};
 
 fn init_logging() {
 	pretty_env_logger::formatted_timed_builder()

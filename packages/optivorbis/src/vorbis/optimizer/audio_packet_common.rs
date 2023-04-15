@@ -1,17 +1,11 @@
 //! Contains the helper [`process_audio_packet`] function to parse audio packets and
 //! execute callbacks when some interesting piece of data is read.
 
-use std::cmp;
-use std::io::Read;
+use std::{cmp, io::Read};
 
 use log::trace;
 use tinyvec::TinyVec;
-
 use vorbis_bitpack::BitpackReader;
-
-use crate::vorbis::codebook::VorbisCodebook;
-use crate::vorbis::optimizer::setup_header_parse::Mode;
-use crate::vorbis::{ResidueType, VectorLookupType};
 
 use super::{
 	ilog,
@@ -19,6 +13,9 @@ use super::{
 		CodebookConfiguration, Floor1Configuration, ResidueConfiguration, VorbisSetupData
 	},
 	VorbisIdentificationHeaderData, VorbisOptimizerError
+};
+use crate::vorbis::{
+	codebook::VorbisCodebook, optimizer::setup_header_parse::Mode, ResidueType, VectorLookupType
 };
 
 /// Parses the specified audio packet, whose source is already wrapped in a

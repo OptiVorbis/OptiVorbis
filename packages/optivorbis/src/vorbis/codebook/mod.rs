@@ -1,16 +1,17 @@
 //! Contains the Vorbis codebook abstraction and related entropy coding functions.
 
-use std::cell::Cell;
-use std::io;
-use std::io::{ErrorKind, Read};
-
-use log::trace;
-use thiserror::Error;
+use std::{
+	cell::Cell,
+	io,
+	io::{ErrorKind, Read}
+};
 
 use huffman_codeword_lengths::VorbisCodebookNumberFrequenciesDecorator;
 use huffman_tree::{
 	TryFromCodewordLengthsListError, VorbisHuffmanTree, VorbisHuffmanTreeWalkerError
 };
+use log::trace;
+use thiserror::Error;
 use vorbis_bitpack::BitpackReader;
 
 mod huffman_codeword_lengths;

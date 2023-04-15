@@ -1,20 +1,16 @@
 //! Contains the supporting code for the [`VorbisSetupData`] Vorbis optimizer state.
 
-use std::io::Read;
-use std::{cmp, mem};
+use std::{cmp, io::Read, mem};
 
 use indexmap::IndexSet;
 use log::{debug, info, trace};
-
 use vorbis_bitpack::BitpackReader;
-
-use crate::vorbis::codebook::VorbisCodebook;
-use crate::vorbis::{PacketType, ResidueType, VectorLookupType};
 
 use super::{
 	common_header_validation, ilog, AudioPacketAnalyze, VorbisCommentData,
 	VorbisIdentificationHeaderData, VorbisOptimizerError
 };
+use crate::vorbis::{codebook::VorbisCodebook, PacketType, ResidueType, VectorLookupType};
 
 /// A mutable reference to an immutable byte slice, used in [`parse_codebook_configurations`]
 /// to instantiate a bitpack reader without any cursor seek position tracking overhead.

@@ -1,22 +1,22 @@
-use std::borrow::Cow;
-use std::env;
-use std::fmt::Display;
-use std::fs::File;
-use std::io::{stdout, BufReader, BufWriter, Read, Seek, Write};
-use std::path::Path;
-use std::process::exit;
-use std::str::FromStr;
-use std::time::Instant;
+use std::{
+	borrow::Cow,
+	env,
+	fmt::Display,
+	fs::File,
+	io::{stdout, BufReader, BufWriter, Read, Seek, Write},
+	path::Path,
+	process::exit,
+	str::FromStr,
+	time::Instant
+};
 
 use getopts::{Matches, Options, ParsingStyle};
 use log::info;
-use stderrlog::ColorChoice;
-
-use optivorbis::remuxer::ogg_to_ogg;
 use optivorbis::{
-	OggToOgg, Remuxer, VorbisCommentFieldsAction, VorbisOptimizerSettings,
+	remuxer::ogg_to_ogg, OggToOgg, Remuxer, VorbisCommentFieldsAction, VorbisOptimizerSettings,
 	VorbisVendorStringAction, OPTIVORBIS_VERSION_TAG
 };
+use stderrlog::ColorChoice;
 
 fn main() {
 	exit(match run() {

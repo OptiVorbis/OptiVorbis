@@ -3,7 +3,6 @@
 use std::borrow::Cow;
 
 use log::trace;
-
 use vorbis_bitpack::{
 	bitpacked_integer_width, BitpackReader, BitpackWriter, BitpackedIntegerWidth
 };

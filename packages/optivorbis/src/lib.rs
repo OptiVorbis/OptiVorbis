@@ -206,8 +206,7 @@
 #![warn(clippy::used_underscore_binding)]
 #![warn(clippy::redundant_feature_names)]
 
-pub use remuxer::ogg_to_ogg::OggToOgg;
-pub use remuxer::Remuxer;
+pub use remuxer::{ogg_to_ogg::OggToOgg, Remuxer};
 #[doc(inline)]
 pub use vorbis::codebook::VorbisCodebookError;
 #[doc(inline)]

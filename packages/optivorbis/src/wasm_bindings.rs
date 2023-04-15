@@ -2,14 +2,15 @@
 // The wasm_bindgen macro generates these warnings
 #![allow(clippy::use_self)]
 
-use std::io::Cursor;
-use std::panic;
+use std::{io::Cursor, panic};
 
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
 
-use crate::remuxer::ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler};
-use crate::remuxer::Remuxer;
+use crate::remuxer::{
+	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler},
+	Remuxer
+};
 
 // Use a lightweight allocator for better code size
 #[global_allocator]

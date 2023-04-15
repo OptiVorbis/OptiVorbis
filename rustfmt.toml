@@ -1,2 +1,4 @@
 hard_tabs = true
 trailing_comma = "Never"
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"

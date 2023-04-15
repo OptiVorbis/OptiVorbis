@@ -1,14 +1,13 @@
 //! Contains the supporting code for the [`IdentificationHeaderCopy`] Vorbis optimizer state.
 
-use std::borrow::Cow;
-use std::ops::Range;
+use std::{borrow::Cow, ops::Range};
 
 use log::trace;
 
-use super::comment_header_copy::CommentHeaderCopy;
-use super::comment_header_parse::VorbisCommentData;
-use super::setup_header_parse::VorbisSetupData;
-use super::{VorbisIdentificationHeaderData, VorbisOptimizerError};
+use super::{
+	comment_header_copy::CommentHeaderCopy, comment_header_parse::VorbisCommentData,
+	setup_header_parse::VorbisSetupData, VorbisIdentificationHeaderData, VorbisOptimizerError
+};
 
 /// Copies the provided identification header, fixing or changing some fields as intended.
 /// The next state is rewriting the setup header.

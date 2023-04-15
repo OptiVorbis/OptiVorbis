@@ -1,15 +1,13 @@
 //! Contains the supporting code for the [`AudioPacketAnalyze`] Vorbis optimizer state.
 
 use log::trace;
-
 use vorbis_bitpack::BitpackReader;
-
-use crate::vorbis::PacketType;
 
 use super::{
 	audio_packet_common::process_audio_packet, VorbisCommentData, VorbisIdentificationHeaderData,
 	VorbisOptimizerError, VorbisSetupData
 };
+use crate::vorbis::PacketType;
 
 /// Analyzes the Huffman codeword frequencies of audio packets. This is the terminal
 /// state of the analyzing phase.

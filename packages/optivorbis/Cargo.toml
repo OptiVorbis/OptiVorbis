@@ -32,9 +32,7 @@ slice-group-by = "0.3.0"
 
 log.workspace = true
 
-# Pin wasm-bindgen as a temporary workaround for a critical regression:
-# https://github.com/rustwasm/wasm-bindgen/issues/3276
-wasm-bindgen = { version = "=0.2.83", default-features = false, optional = true }
+wasm-bindgen = { version = "0.2.84", default-features = false, optional = true }
 console_log = { version = "1.0.0", features = ["color"], optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 

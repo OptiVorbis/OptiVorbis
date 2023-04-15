@@ -35,7 +35,6 @@ log.workspace = true
 # Pin wasm-bindgen as a temporary workaround for a critical regression:
 # https://github.com/rustwasm/wasm-bindgen/issues/3276
 wasm-bindgen = { version = "=0.2.83", default-features = false, optional = true }
-wee_alloc = { version = "0.4.5", optional = true }
 console_log = { version = "1.0.0", features = ["color"], optional = true }
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
@@ -51,5 +50,5 @@ pretty_env_logger = "0.4.0"
 oggvorbismeta = "0.1.0"
 
 [features]
-wasm-bindings = ["wasm-bindgen", "wee_alloc"]
+wasm-bindings = ["wasm-bindgen"]
 wasm-web-bindings = ["wasm-bindings", "console_log", "console_error_panic_hook", "getrandom/js"]

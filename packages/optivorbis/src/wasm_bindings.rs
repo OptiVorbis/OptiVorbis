@@ -5,16 +5,11 @@
 use std::{io::Cursor, panic};
 
 use wasm_bindgen::prelude::*;
-use wee_alloc::WeeAlloc;
 
 use crate::remuxer::{
 	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler},
 	Remuxer
 };
-
-// Use a lightweight allocator for better code size
-#[global_allocator]
-static ALLOC: WeeAlloc = WeeAlloc::INIT;
 
 #[wasm_bindgen(start)]
 #[allow(dead_code)] // Used by the WASM module entrypoint

@@ -21,9 +21,9 @@ dependencies = [
 
 [[package]]
 name = "afl"
-version = "0.12.16"
+version = "0.12.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be262ebb64b7ed6fdb21f45f265615de14d6bf5d8c88fb5b15808097bf8db14a"
+checksum = "f6c32f2f36624ffe2a8f65f9d76c224846b3a3d7242485bb5927c1127ee6c715"
 dependencies = [
  "clap",
  "fs_extra",
@@ -445,9 +445,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.141"
+version = "0.2.142"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3304a64d199bb964be99741b7a14d26972741915b3649639149b2479bb46f4b5"
+checksum = "6a987beff54b60ffa6d51982e1aa1146bc42f19bd26be28b0586f252fccf5317"
 
 [[package]]
 name = "libgit2-sys"

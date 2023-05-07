@@ -7,7 +7,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- Bump MSRV to 1.65.
 
 ## [0.1.3] - 2023-04-03
 

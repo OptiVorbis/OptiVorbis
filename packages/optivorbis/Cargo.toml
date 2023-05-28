@@ -40,7 +40,7 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 crate-type = ["lib", "cdylib"]
 
 [build-dependencies]
-git2 = { version = "0.17.1", default-features = false }
+git2 = { version = "0.17.2", default-features = false }
 time = { version = "0.3.21", default-features = false, features = ["std"] }
 
 [dev-dependencies]

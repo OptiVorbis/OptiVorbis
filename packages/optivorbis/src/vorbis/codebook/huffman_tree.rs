@@ -1,10 +1,5 @@
 //! Contains the [`VorbisHuffmanTree`] definition and implementation.
 
-// clippy 0.1.62 (bed05e9 2022-05-02) triggers this warning on the self_referencing
-// macro expansion. This is third party code, so silence the warning while either
-// Clippy or ouroboros may decide to do something about it
-#![allow(clippy::drop_non_drop)]
-
 use std::fmt::{Debug, Formatter};
 
 use bumpalo::Bump;

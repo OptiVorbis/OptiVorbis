@@ -1,6 +1,7 @@
 [workspace]
 members = ["packages/*"]
 default-members = ["packages/optivorbis", "packages/optivorbis_cli"]
+resolver = "2"
 
 [workspace.package]
 authors = ["Alejandro González <me@alegon.dev>"]

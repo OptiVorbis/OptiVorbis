@@ -1,5 +1,8 @@
 //! Contains the [`VorbisHuffmanTree`] definition and implementation.
 
+// Workaround for Ouroboros issue: https://github.com/joshua-maros/ouroboros/issues/91
+#![allow(clippy::useless_transmute)]
+
 use std::fmt::{Debug, Formatter};
 
 use bumpalo::Bump;

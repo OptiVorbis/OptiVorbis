@@ -27,7 +27,7 @@ rand_xoshiro = "0.6.0"
 
 thiserror = "1.0.40"
 strum_macros = "0.24.3"
-ouroboros = "0.15.6"
+ouroboros = "0.16.0"
 slice-group-by = "0.3.1"
 
 log.workspace = true

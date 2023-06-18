@@ -83,14 +83,10 @@ private = { ignore = true }
 multiple-versions = "warn"
 highlight = "all"
 skip-tree = [
-	# afl pulls some older dependency versions, but that's not a
-	# concern for end-users
-	{ name = "afl", version = "=0.13.0" },
 	# oggvorbismeta pulls a different version of the ogg crate,
 	# but only for tests
 	{ name = "oggvorbismeta" },
 ]
-
 
 [sources]
 unknown-registry = "deny"

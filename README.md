@@ -40,6 +40,8 @@ OptiVorbis is officially distributed in three ways:
 
 If you are an end-user looking to optimize files, either the demo web page or the CLI application is all you need. On the other hand, if you are a developer, you should look into the CLI or the Rust library.
 
+In addition to these official distribution channels, OptiVorbis is kindly packaged for Arch Linux by [@Chocobo1](https://github.com/Chocobo1). Feel free to check out the [`optivorbis` package on AUR](https://aur.archlinux.org/packages/optivorbis) if you are using Arch Linux.
+
 ## Demo web page
 
 Just [visit the website](https://optivorbis.github.io/OptiVorbis): no installation required! Only a modern web browser that supports the required technologies is needed. Notably, Internet Explorer is not supported, but [you should no longer be using it](https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support).

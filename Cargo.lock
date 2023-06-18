@@ -511,7 +511,7 @@ checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
 name = "optivorbis"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "bumpalo",
  "console_error_panic_hook",
@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "optivorbis_cli"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "getopts",
  "log",

@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -7,13 +8,21 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.1.4] - 2023-06-18
+
 ### Changed
 
 - Bump MSRV to 1.65.
+- Fix [RUSTSEC-2023-0042](https://rustsec.org/advisories/RUSTSEC-2023-0042) by
+  updating `ouroboros`.
+- Several minor dependency updates.
 
 ## [0.1.3] - 2023-04-03
 
 ### Changed
+
 - Bump MSRV to 1.64.
 - Improve some documentation wording.
 - The author field of the Cargo packages in the repository now includes an
@@ -29,6 +38,7 @@ and this project adheres to
 ## [0.1.2] - 2022-08-14
 
 ### Changed
+
 - The Ogg to Ogg remuxer now errors out by default if no Vorbis audio streams
   are found, better matching user expectations, as this usually signals usage
   mistakes. The previous behavior of outputting an empty Ogg file can be
@@ -37,19 +47,25 @@ and this project adheres to
   depends on the `time` crate, which is more lightweight and better maintained.
 
 ## [0.1.1] - 2022-07-07
+
 ### Added
+
 - Document minimum supported Rust version (MSRV) in the `README.md` file.
 
 ### Fixed
+
 - Fix build of the `optivorbis` crate as published in crates.io, by updating a
   dependency that previously required patching its source to be compatible
   with the crate.
 
 ## [0.1.0] - 2022-07-06
+
 ### Added
+
 - First public release.
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.0...v0.1.1

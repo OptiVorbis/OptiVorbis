@@ -8,7 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes yet.
+### Removed
+
+- Remove the redundant `PacketType::from_repr` method to drop the dependency on
+  `strum_macros`. Please use the `TryFrom<u8>` trait implementation instead.
 
 ## [0.1.4] - 2023-06-18
 

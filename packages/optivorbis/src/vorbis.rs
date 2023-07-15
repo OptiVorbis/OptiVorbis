@@ -5,16 +5,14 @@ use std::{
 	fmt::{Display, Formatter}
 };
 
-use strum_macros::FromRepr;
-
 pub(crate) mod optimizer;
 
 pub(crate) mod codebook;
 
-/// Helper macro that implements the [`TryFrom`] trait for converting from an enum
-/// representation to a variant, with a custom error type.
+/// Helper macro that implements a custom error type for a failed [`TryFrom`] conversion
+/// from an enum representation to its variant.
 macro_rules! try_from_impl {
-	{ type Enum = $enum_type:ident($repr_type:ty); type Error = $error_type:ident } => {
+	{ type Enum = $enum_type:ident($repr_type:ty) { $( $variant:ident ),+ }; type Error = $error_type:ident } => {
 		#[doc = "The error type for fallible conversions from integers to a `"]
 		#[doc = stringify!($enum_type)]
 		#[doc = "`."]
@@ -34,7 +32,10 @@ macro_rules! try_from_impl {
 			type Error = $error_type;
 
 			fn try_from(value: $repr_type) -> Result<Self, Self::Error> {
-				$enum_type::from_repr(value).ok_or($error_type(value))
+				match value {
+					$( value if Self::$variant as $repr_type == value => Ok(Self::$variant) ),+,
+					_ => Err($error_type(value))
+				}
 			}
 		}
 
@@ -48,7 +49,7 @@ macro_rules! try_from_impl {
 }
 
 /// Represents a Vorbis packet type, defined in the Vorbis I specification, § 4.2.1.
-#[derive(Debug, Eq, PartialEq, Clone, Copy, FromRepr)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
 #[repr(u8)]
 pub enum PacketType {
 	/// An audio packet, which encodes an audio frame composed of samples.
@@ -64,6 +65,11 @@ pub enum PacketType {
 	SetupHeader = 5
 }
 
+try_from_impl! {
+	type Enum = PacketType(u8) { Audio, IdentificationHeader, CommentHeader, SetupHeader };
+	type Error = TryPacketTypeFromInt
+}
+
 impl Display for PacketType {
 	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
 		f.write_str(match self {
@@ -75,14 +81,9 @@ impl Display for PacketType {
 	}
 }
 
-try_from_impl! {
-	type Enum = PacketType(u8);
-	type Error = TryPacketTypeFromInt
-}
-
 /// Represents a codebook vector quantization lookup type, defined in the Vorbis I
 /// specification, § 3.2.1.
-#[derive(Debug, Eq, PartialEq, Clone, Copy, FromRepr)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
 #[repr(u8)]
 enum VectorLookupType {
 	NoLookup = 0,
@@ -91,12 +92,12 @@ enum VectorLookupType {
 }
 
 try_from_impl! {
-	type Enum = VectorLookupType(u8);
+	type Enum = VectorLookupType(u8) { NoLookup, ImplicitlyPopulated, ExplicitlyPopulated };
 	type Error = TryVectorLookupTypeFromInt
 }
 
 /// Represents a residue vector type, defined in the Vorbis I specification, § 8.
-#[derive(Debug, Eq, PartialEq, Clone, Copy, FromRepr)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
 #[repr(u16)]
 enum ResidueType {
 	Interleaved = 0,
@@ -105,6 +106,6 @@ enum ResidueType {
 }
 
 try_from_impl! {
-	type Enum = ResidueType(u16);
+	type Enum = ResidueType(u16) { Interleaved, Ordered, InterleavedVectors };
 	type Error = TryResidueTypeFromInt
 }

@@ -1,4 +1,4 @@
-//! Contains the [`VorbisOptimizer`] struct, which is reponsible for optimizing
+//! Contains the [`VorbisOptimizer`] struct, which is responsible for optimizing
 //! unencapsulated, raw Vorbis streams.
 //!
 //! [`Remuxers`](crate::remuxer) are the primary intended consumers of this

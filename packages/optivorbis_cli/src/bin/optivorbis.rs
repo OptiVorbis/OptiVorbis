@@ -124,7 +124,7 @@ fn run() -> Result<(), Cow<'static, str>> {
 				}
 
 				if matches.free.len() != 2 {
-					return Err(format!(
+					Err(format!(
 						"Too many or few file arguments specified. Run {} -h to see command line argument help",
 						env!("CARGO_BIN_NAME")
 					))?;

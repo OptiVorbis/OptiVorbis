@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Bump MSRV to 1.67.
+
 ### Removed
 
 - Remove the redundant `PacketType::from_repr` method to drop the dependency on

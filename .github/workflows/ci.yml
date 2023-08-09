@@ -21,7 +21,7 @@ jobs:
   msrv_check:
     name: MSRV check
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Exclude in-repo PRs from running this job
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
@@ -51,10 +51,10 @@ jobs:
           - x86_64-apple-darwin
         include:
           - target: x86_64-unknown-linux-musl
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             cli-executable: optivorbis
           - target: aarch64-unknown-linux-musl
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             cli-executable: optivorbis
           - target: x86_64-pc-windows-gnu
             runner: windows-2022
@@ -127,7 +127,7 @@ jobs:
     name: Web demo
 
     needs: ci
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Exclude in-repo PRs from running this job
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork

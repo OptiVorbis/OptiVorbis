@@ -180,14 +180,28 @@ impl<R: Read> BitpackReader<R> {
 			self.last_read_byte >>= width.get();
 		} else {
 			// We need to read up to 4 bytes to fulfill this read request, in case
-			// this read request wants to read 32 bits. integer_width > remaining_bits
-			// at this point
+			// this read request wants to read 32 bits. width > remaining_bits at
+			// this point
 			let mut read_buf = [0u8; 4];
 
-			// Now read the fewest amount of bytes needed to satisfy this request
+			// Now read the fewest amount of bytes needed to satisfy this request.
+			// Contrary to intuition, reading bytes one by one is faster for the buffered
+			// sources we should be using anyway, as that way we can leverage small-copy
+			// optimizations in Rust's standard library to avoid emitting a call to memcpy,
+			// which has notoriously detrimental performance effects, especially for musl
+			// targets (a perf report showed that roughly ~12.12% of execution time for
+			// a test file was spent calling memcpy for musl, but this also benefited
+			// glibc due to the lesser call overhead). Unbuffered byte sources where a
+			// read_exact call translates to a syscall will likely perform significantly
+			// worse, but most application code should not be using such sources anyway.
+			// Related read:
+			// https://github.com/rust-lang/rust/pull/37573
 			let bits_to_read = width.get() - remaining_bits;
 			let bytes_to_read = (1 + (bits_to_read - 1) / 8) as usize;
-			self.source.read_exact(&mut read_buf[..bytes_to_read])?;
+			for byte_to_read in &mut read_buf[..bytes_to_read] {
+				self.source
+					.read_exact(core::slice::from_mut(byte_to_read))?;
+			}
 
 			// Put the remaining bits in the least significant positions of the result integer.
 			// Due to the rotate_right call below we can't guarantee that upper bits are always
@@ -327,9 +341,13 @@ impl<W: Write> BitpackWriter<W> {
 		// Consume the bits that were written to the pending byte
 		integer >>= bits_to_write_in_byte_to_be_written;
 
-		// Write the remaining whole bytes directly to the stream
-		self.sink
-			.write_all(&integer.to_le_bytes()[..bytes_to_write as usize])?;
+		// Write the remaining whole bytes directly to the stream.
+		// We write bytes one by one because that generates significantly more efficient
+		// machine code for the buffered sinks we should be using. Read the similar comment
+		// at BitpackReader::read_unsigned_integer for more details
+		for byte_to_write in &integer.to_le_bytes()[..bytes_to_write as usize] {
+			self.sink.write_all(&[*byte_to_write])?;
+		}
 
 		// Consume the bytes we've just written to the stream. We always write
 		// at most 3 bytes, so the shift never overflows

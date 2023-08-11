@@ -10,6 +10,18 @@ and this project adheres to
 
 ### Changed
 
+- Make `BitpackReader` and `BitpackWriter` read and write one instead of several
+  bytes a time, which causes the Rust compiler to not issue costly `memcpy`
+  calls for most bitpacked data operations on buffered I/O sources and sinks.
+  ([#32](https://github.com/OptiVorbis/OptiVorbis/issues/32#issuecomment-1674076883))
+  - This results in a ~15% execution time improvement for the official,
+  statically linked OptiVorbis Linux binaries, due to `musl`'s less optimized
+  `memcpy` implementation, but it also slightly improves performance for `glibc`
+  binaries by ~1%.
+  - Unbuffered I/O sources and sinks that make one system call per read or write
+    operation will have worse performance, but since the bitpacking code
+    documentation already discouraged them due to their fundamentally bad
+    performance, this should not be an issue for most applications.
 - Bump MSRV to 1.67.
 
 ### Removed

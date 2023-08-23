@@ -21,7 +21,7 @@ log = "0.4.20"
 [patch.crates-io]
 # Temporarily use our fork of the ogg crate with a page checksum retrieval
 # feature we need. Related PR:
-#
+# https://github.com/RustAudio/ogg/pull/38
 ogg = { git = "https://github.com/OptiVorbis/ogg" }
 
 [profile.release]

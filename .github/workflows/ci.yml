@@ -15,7 +15,7 @@ on:
       - published
 
 env:
-  MSRV: 1.64
+  MSRV: '1.70'
 
 jobs:
   msrv_check:

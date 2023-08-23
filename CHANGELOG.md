@@ -41,8 +41,7 @@ and this project adheres to
   depends on the `chrono` crate, which addressed its maintenance and bloat
   issues over the last year, and is better aligned with the MSRV policy of this
   project.
-- Downgrade MSRV to 1.64, as `time` does no longer determine the lowest MSRV of
-  our codebase.
+- Bump MSRV to 1.70.
 
 ### Removed
 

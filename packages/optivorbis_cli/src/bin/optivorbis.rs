@@ -83,8 +83,9 @@ fn run() -> Result<(), Cow<'static, str>> {
 			-----------------------\n\
 			- randomize_stream_serials=BOOLEAN\n\
 			If set to true, the stream serials will be randomized, following the intent of the Ogg \
-			specification. Set to false to disable this behavior and have more control over the serials. The \
-			default value is true.\n\
+			specification, and the presence of the SOURCE_DATE_EPOCH environment variable will \
+			determine whether a reproducible randomization algorithm will be used. Set to false to \
+			disable this behavior and have more control over the serials. The default value is true.\n\
 			- first_stream_serial_offset=INTEGER\n\
 			A zero or positive integer that sets the offset that will be added to the serial of the first \
 			stream. When not randomizing stream serials, the offset matches the serial that will be used \

@@ -2,14 +2,19 @@
 
 use std::{
 	cell::RefCell,
+	collections::hash_map::DefaultHasher,
+	env,
+	hash::Hasher,
 	io::{self, Read, Seek, SeekFrom, Write},
+	num::ParseIntError,
+	sync::{Mutex, OnceLock},
 	time::UNIX_EPOCH
 };
 
 use getrandom::getrandom;
 use granulator::granule_position_for_packet;
 use indexmap::{map::Entry, IndexMap};
-use log::{info, warn};
+use log::info;
 use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter};
 #[doc(inline)]
 pub use ogg_vorbis_stream_mangler::{OggVorbisStreamMangler, OggVorbisStreamPassthroughMangler};
@@ -30,6 +35,12 @@ mod test;
 /// A [`Remuxer`] that processes Vorbis streams in unmultiplexed Ogg containers, generating
 /// another Ogg Vorbis file. Non-Vorbis streams will be ignored. Chained Vorbis streams are
 /// supported.
+///
+/// This remuxer supports the [`SOURCE_DATE_EPOCH` specification]: it reads the
+/// `SOURCE_DATE_EPOCH` environment variable and uses it to set a reproducible PRNG state
+/// for Ogg stream serial randomization.
+///
+/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch/
 pub struct OggToOgg<M: OggVorbisStreamMangler> {
 	remuxer_settings: RefCell<Settings<M>>,
 	optimizer_settings: VorbisOptimizerSettings
@@ -54,7 +65,13 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	/// or manually taking care of the randomization by varying
 	/// [`first_stream_serial_offset`](Self::first_stream_serial_offset).
 	///
+	/// If this option is set to `true` and the [`SOURCE_DATE_EPOCH` environment variable]
+	/// is set, OptiVorbis will use a reproducible randomization algorithm. The increased
+	/// reproducibility may come at the cost of increased serial number collisions, however.
+	///
 	/// **Default value**: `true`
+	///
+	/// [`SOURCE_DATE_EPOCH` environment variable]: https://reproducible-builds.org/specs/source-date-epoch/
 	pub randomize_stream_serials: bool,
 	/// Sets the offset that will be added to the serial of the first stream, in turn
 	/// influencing the sequence of serials that will be assigned to further streams.
@@ -134,7 +151,8 @@ struct VorbisStreamState<'settings> {
 	last_written_packet_sample_block_size: Option<u16>,
 	start_granule_position_offset: Option<i64>,
 	analyzed_packet_count: usize,
-	optimized_packet_count: usize
+	optimized_packet_count: usize,
+	checksum: u32
 }
 
 /// Represents an error that may happen while remuxing with the [`OggToOgg`] remuxer.
@@ -155,6 +173,12 @@ pub enum RemuxError {
 	/// data was found in the Ogg container.
 	#[error("No Vorbis bitstream found. Is this Ogg Vorbis data?")]
 	NoVorbisStreamFound,
+	/// The value of the `SOURCE_DATE_EPOCH` environment variable does not conform to
+	/// the [`SOURCE_DATE_EPOCH` specification].
+	///
+	/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch/
+	#[error("The SOURCE_DATE_EPOCH environment variable is set, but its value is invalid")]
+	InvalidSourceDateEpoch,
 	/// An I/O error outside of any of the previously mentioned error contexts happened.
 	#[error("I/O error: {0}")]
 	IoError(#[from] io::Error)
@@ -180,21 +204,27 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 		let initial_source_pos = source.stream_position()?;
 		let remuxer_settings = &mut *self.remuxer_settings.borrow_mut();
 
-		// Get the serial for the first stream, and the increment to add for the next streams.
-		// It's important to randomize the serials per remux operation, if applicable; otherwise,
-		// any physical bitstreams remuxed in this session would share serials
-		let (first_stream_serial, stream_serial_increment) =
-			if remuxer_settings.randomize_stream_serials {
-				random_stream_serial_and_increment(remuxer_settings.first_stream_serial_offset)
-			} else {
-				(remuxer_settings.first_stream_serial_offset, 1)
-			};
-
 		// First pass: validate and gather stream data for optimization
 		info!("Starting first Ogg to Ogg remux pass");
 		let mut vorbis_streams =
 			first_pass(&mut source, &self.optimizer_settings, remuxer_settings)?;
 		info!("First Ogg to Ogg remux pass completed");
+
+		// Get the serial for the first stream, and the increment to add for the next streams.
+		// It's important to randomize the serials per remux operation, if applicable; otherwise,
+		// any physical bitstreams remuxed in this session would share serials
+		let (first_stream_serial, stream_serial_increment) =
+			if remuxer_settings.randomize_stream_serials {
+				random_stream_serial_and_increment(
+					remuxer_settings.first_stream_serial_offset,
+					// Calculate a PRNG seed tweak by XORing the checksums of every stream
+					vorbis_streams
+						.values()
+						.fold(0, |checksum, state| checksum ^ state.checksum)
+				)?
+			} else {
+				(remuxer_settings.first_stream_serial_offset, 1)
+			};
 
 		// Rewind for the second pass
 		source.seek(SeekFrom::Start(initial_source_pos))?;
@@ -229,6 +259,7 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 
 	while let Some(packet) = packet_reader.read_packet()? {
 		let stream_serial = packet.stream_serial();
+		let page_checksum = packet.checksum_page();
 
 		if packet.first_in_stream() {
 			match VorbisOptimizer::new(optimizer_settings, packet.data) {
@@ -276,7 +307,8 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 							last_written_packet_sample_block_size: None,
 							start_granule_position_offset: None,
 							analyzed_packet_count: 1, // Just processed the identification header packet
-							optimized_packet_count: 0
+							optimized_packet_count: 0,
+							checksum: page_checksum
 						}
 					);
 					reading_vorbis_stream = true;
@@ -334,6 +366,8 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 
 				stream_state.analyzed_packet_count =
 					stream_state.analyzed_packet_count.saturating_add(1);
+
+				stream_state.checksum ^= page_checksum;
 			}
 		}
 	}
@@ -469,32 +503,70 @@ fn second_pass<R: Read + Seek, W: Write, M: OggVorbisStreamMangler>(
 /// bitstream, and the increment to add to that serial with wrapping arithmetic to
 /// cheaply generate fairly unique serials for other bitstreams. This should be done
 /// at least once per Ogg physical bitstream.
-fn random_stream_serial_and_increment(first_stream_serial_offset: u32) -> (u32, u32) {
-	let mut random_data = [0; 5];
+fn random_stream_serial_and_increment(
+	first_stream_serial_offset: u32,
+	stream_serial_prng_seed_tweak: u32
+) -> Result<(u32, u32), RemuxError> {
+	let source_date_epoch = env::var_os("SOURCE_DATE_EPOCH");
+	let mut random_bytes = [0; 5];
 
-	// Try to use OS-provided cryptographically-secure random data if possible, to
-	// avoid the possibility of brute-forcing state data from the serial under
-	// certain assumptions
-	if getrandom(&mut random_data[..]).is_err() {
-		warn!(
-			"Could not get a cryptographically-secure random stream serial. \
-			Falling back to a timestamp-based random serial"
-		);
+	/// The PRNG to use when reproducible results are requested via environment variables,
+	/// or the system CSPRNG fails.
+	static STREAM_SERIAL_PRNG: OnceLock<Result<Mutex<Xoshiro256PlusPlus>, ParseIntError>> =
+		OnceLock::new();
 
-		let mut prng = Xoshiro256PlusPlus::seed_from_u64(
-			UNIX_EPOCH
-				.elapsed()
-				.map_or_else(|err| err.duration(), |duration| duration)
-				.as_nanos() as u64
-		);
-		random_data.copy_from_slice(&prng.next_u64().to_ne_bytes()[..5]);
+	// When a source date epoch is not provided, try to use OS-provided
+	// cryptographically-secure random data if possible, to avoid the possibility of
+	// brute-forcing state data from the serial under certain assumptions. If a source
+	// date epoch is provided, use a known PRNG with a fixed seed to guarantee
+	// reproducibility
+	if source_date_epoch.is_some() || getrandom(&mut random_bytes[..]).is_err() {
+		let stream_serial_prng = STREAM_SERIAL_PRNG
+			.get_or_init(|| {
+				source_date_epoch
+					.map_or_else(
+						|| {
+							Ok(UNIX_EPOCH
+								.elapsed()
+								.map_or_else(|err| err.duration(), |duration| duration)
+								.as_nanos() as u64)
+						},
+						|timestamp| {
+							timestamp
+								.to_str()
+								.unwrap_or_default()
+								// SOURCE_DATE_EPOCH spec: "the value MUST be an ASCII representation
+								// of an integer with no fractional component, identical to the output
+								// format of date +%s."
+								// GNU "date +%s" can output negative numbers (try e.g. faketime
+								// '1960-01-01 00:00:00' /bin/date +%s), so accept signed integers here
+								.parse::<i128>()
+								.map(|timestamp| timestamp as u64)
+						}
+					)
+					.map(|seed| {
+						// Expand the 32-bit tweak to 64-bit
+						let tweak = {
+							let mut hasher = DefaultHasher::new();
+							hasher.write_u32(stream_serial_prng_seed_tweak);
+							hasher.finish()
+						};
+						Mutex::new(Xoshiro256PlusPlus::seed_from_u64(seed ^ tweak))
+					})
+			})
+			.as_ref()
+			.map_err(|_| RemuxError::InvalidSourceDateEpoch)?;
+
+		random_bytes = stream_serial_prng.lock().unwrap().next_u64().to_ne_bytes()[..5]
+			.try_into()
+			.unwrap();
 	}
 
-	(
-		u32::from_ne_bytes(random_data[..4].try_into().unwrap())
+	Ok((
+		u32::from_ne_bytes(random_bytes[..4].try_into().unwrap())
 			.wrapping_add(first_stream_serial_offset),
 		// Random odd number, to guarantee that the every possible stream serial will be used
 		// when wrapping around on modular arithmetic
-		1 + 2 * random_data[4] as u32 % 32
-	)
+		1 + 2 * random_bytes[4] as u32 % 32
+	))
 }

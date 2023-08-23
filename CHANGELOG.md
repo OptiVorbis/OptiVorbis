@@ -8,6 +8,21 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- OptiVorbis now conforms to the [`SOURCE_DATE_EPOCH` specification defined by
+  the Reproducible Builds
+  project](https://reproducible-builds.org/specs/source-date-epoch/), allowing
+  it to generate the same output files for the same set of operations with a
+  given set of input files. (Related issue:
+  [#41](https://github.com/OptiVorbis/OptiVorbis/issues/41))
+  - When the `SOURCE_DATE_EPOCH` environment variable is set, identical files
+    processed in different OptiVorbis runs will have identical stream serials,
+    which may cause minor interoperability problems. Therefore, it is
+    recommended to use this reproducible output mode only when the benefits of
+    achieving reproducible output outweigh the costs of non-compliance with the
+    Ogg specification.
+
 ### Changed
 
 - Make `BitpackReader` and `BitpackWriter` read and write one instead of several

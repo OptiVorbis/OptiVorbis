@@ -499,7 +499,7 @@ dependencies = [
 [[package]]
 name = "ogg"
 version = "0.9.0"
-source = "git+https://github.com/OptiVorbis/ogg#0c20de838bec0516e27f422089245a0e60c8115b"
+source = "git+https://github.com/RustAudio/ogg?rev=f22b096#f22b096a80e6cbac8363a137321ea5668c203c34"
 dependencies = [
  "byteorder",
 ]

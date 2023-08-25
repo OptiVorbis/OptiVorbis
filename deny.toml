@@ -92,5 +92,5 @@ skip-tree = [
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-git = [
-	"https://github.com/OptiVorbis/ogg"
+	"https://github.com/RustAudio/ogg"
 ]

@@ -37,16 +37,15 @@ and this project adheres to
     operation will have worse performance, but since the bitpacking code
     documentation already discouraged them due to their fundamentally bad
     performance, this should not be an issue for most applications.
-- The build dependency on the `time` crate was removed. The build script now
-  depends on the `chrono` crate, which addressed its maintenance and bloat
-  issues over the last year, and is better aligned with the MSRV policy of this
-  project.
 - Bump MSRV to 1.70.
 
 ### Removed
 
 - Remove the redundant `PacketType::from_repr` method to drop the dependency on
   `strum_macros`. Please use the `TryFrom<u8>` trait implementation instead.
+- Remove build dependencies on `git2` and `time` in favor of gathering build
+  date and version metadata during CI workflows, which greatly reduces build
+  times (~42% on a developer workstation).
 
 ## [0.1.4] - 2023-06-18
 

@@ -88,6 +88,12 @@ jobs:
       - name: 💨 Cache Rust artifacts
         uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4 # v2
 
+      - name: 📅 Gather build date and version metadata
+        shell: bash
+        run: |
+          echo "OPTIVORBIS_VERSION=$(git describe --tags --dirty=-custom --always)" >> "$GITHUB_ENV"
+          echo "OPTIVORBIS_BUILD_DATE=$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
+
       - name: '🔍 Static analysis: run Clippy'
         uses: giraffate/clippy-action@13b9d32482f25d29ead141b79e7e04e7900281e0 # v1
         if: matrix.target == 'x86_64-unknown-linux-musl' && github.event_name != 'release'
@@ -157,6 +163,12 @@ jobs:
 
       - name: 💨 Cache Rust artifacts
         uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4 # v2
+
+      - name: 📅 Gather build date and version metadata
+        shell: bash
+        run: |
+          echo "OPTIVORBIS_VERSION=$(git describe --tags --dirty=-custom --always)" >> "$GITHUB_ENV"
+          echo "OPTIVORBIS_BUILD_DATE=$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
 
       - name: 🔨 Build web demo
         run: npm ci

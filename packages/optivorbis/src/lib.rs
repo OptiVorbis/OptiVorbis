@@ -219,13 +219,11 @@ pub use vorbis::{
 	PacketType, TryPacketTypeFromInt, TryResidueTypeFromInt, TryVectorLookupTypeFromInt
 };
 
-/// A text tag that precisely identifies this OptiVorbis build.
+/// A text tag that identifies this OptiVorbis build.
 pub static OPTIVORBIS_VERSION_TAG: &str = concat!(
 	"OptiVorbis ",
 	env!("OPTIVORBIS_VERSION"),
-	" (",
-	env!("OPTIVORBIS_BUILD_DATE"),
-	")"
+	env!("OPTIVORBIS_BUILD_DATE_VERSION_SUFFIX"),
 );
 /// A shorter text tag that identifies this OptiVorbis build.
 pub static OPTIVORBIS_SHORT_VERSION_TAG: &str = concat!("OV ", env!("OPTIVORBIS_VERSION"));

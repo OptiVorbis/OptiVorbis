@@ -21,7 +21,7 @@
     "autoprefixer": "10.4.16",
     "css-loader": "6.8.1",
     "cssnano": "6.0.1",
-    "eslint": "8.49.0",
+    "eslint": "8.50.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.28.1",

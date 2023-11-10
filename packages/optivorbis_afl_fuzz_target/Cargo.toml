@@ -7,4 +7,4 @@ publish = false
 
 [dependencies]
 optivorbis.workspace = true
-afl = "0.14.3"
+afl = "0.14.4"

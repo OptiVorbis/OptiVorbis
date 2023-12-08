@@ -2,6 +2,6 @@
 # Reference: https://doc.rust-lang.org/cargo/reference/config.html
 # This file is primarily useful for specifying custom rustflags
 
-[target.aarch64-unknown-linux-musl]
+[target.'cfg(all(target_os = "linux", target_arch = "aarch64"))']
 linker = 'aarch64-linux-gnu-gcc'
 runner = 'qemu-aarch64'

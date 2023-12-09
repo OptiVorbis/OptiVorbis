@@ -87,7 +87,7 @@ jobs:
 
       - name: 🧰 Install ARM64 cross-compilation toolchain
         if: startsWith(matrix.target, 'aarch64-unknown-linux')
-        run:
+        run: |
           sudo apt update
           sudo apt install -yq gcc-aarch64-linux-gnu libc6-arm64-cross qemu-user
 

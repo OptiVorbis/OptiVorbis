@@ -59,7 +59,7 @@ jobs:
           # triggers https://github.com/rust-lang/rust/issues/89626 since at
           # least December 2, 2023, documentation tests are built in a way
           # that does not honor the sanctioned linker configuration changes,
-          # and we still want to get some testing coverage for AArch64.
+          # and we still want to get some testing coverage for AArch64
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-22.04
           - target: x86_64-pc-windows-gnu
@@ -117,6 +117,10 @@ jobs:
         uses: EmbarkStudios/cargo-deny-action@1e59595bed8fc55c969333d08d7817b36888f0c5 # v1
 
       - name: ✔️ Run tests
+        env:
+          # Handle AArch64 dynamic libraries installed by libc6-arm64-cross
+          # being in a path that the dynamic linker does not check by default
+          LD_LIBRARY_PATH: /usr/aarch64-linux-gnu/lib
         run: cargo test --release --target ${{ matrix.target }}
           -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 

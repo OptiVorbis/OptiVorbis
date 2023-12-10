@@ -7,7 +7,7 @@ use std::{
 	hash::Hasher,
 	io::{self, Read, Seek, SeekFrom, Write},
 	num::ParseIntError,
-	sync::{Mutex, OnceLock},
+	sync::Mutex,
 	time::UNIX_EPOCH
 };
 
@@ -36,11 +36,11 @@ mod test;
 /// another Ogg Vorbis file. Non-Vorbis streams will be ignored. Chained Vorbis streams are
 /// supported.
 ///
-/// This remuxer supports the [`SOURCE_DATE_EPOCH` specification]: it reads the
-/// `SOURCE_DATE_EPOCH` environment variable and uses it to set a reproducible PRNG state
-/// for Ogg stream serial randomization.
+/// If the `source-date-epoch` feature is enabled, this remuxer honors the
+/// [`SOURCE_DATE_EPOCH` specification]: it reads the `SOURCE_DATE_EPOCH` environment variable
+/// and uses it to set a reproducible PRNG state for Ogg stream serial randomization.
 ///
-/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch/
+/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch
 pub struct OggToOgg<M: OggVorbisStreamMangler> {
 	remuxer_settings: RefCell<Settings<M>>,
 	optimizer_settings: VorbisOptimizerSettings
@@ -65,9 +65,10 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	/// or manually taking care of the randomization by varying
 	/// [`first_stream_serial_offset`](Self::first_stream_serial_offset).
 	///
-	/// If this option is set to `true` and the [`SOURCE_DATE_EPOCH` environment variable]
-	/// is set, OptiVorbis will use a reproducible randomization algorithm. The increased
-	/// reproducibility may come at the cost of increased serial number collisions, however.
+	/// If this option is set to `true`, the [`SOURCE_DATE_EPOCH` environment variable]
+	/// is set, and the `source-date-epoch` feature is enabled, OptiVorbis will use a
+	/// reproducible randomization algorithm. The increased reproducibility may come at the
+	/// cost of increased serial number collisions, however.
 	///
 	/// **Default value**: `true`
 	///
@@ -176,8 +177,9 @@ pub enum RemuxError {
 	/// The value of the `SOURCE_DATE_EPOCH` environment variable does not conform to
 	/// the [`SOURCE_DATE_EPOCH` specification].
 	///
-	/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch/
+	/// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch
 	#[error("The SOURCE_DATE_EPOCH environment variable is set, but its value is invalid")]
+	#[cfg(any(doc, feature = "source-date-epoch"))]
 	InvalidSourceDateEpoch,
 	/// An I/O error outside of any of the previously mentioned error contexts happened.
 	#[error("I/O error: {0}")]
@@ -507,22 +509,25 @@ fn random_stream_serial_and_increment(
 	first_stream_serial_offset: u32,
 	stream_serial_prng_seed_tweak: u32
 ) -> Result<(u32, u32), RemuxError> {
-	let source_date_epoch = env::var_os("SOURCE_DATE_EPOCH");
 	let mut random_bytes = [0; 5];
+	let source_date_epoch = cfg!(feature = "source-date-epoch")
+		.then(|| env::var_os("SOURCE_DATE_EPOCH"))
+		.flatten();
 
-	/// The PRNG to use when reproducible results are requested via environment variables,
-	/// or the system CSPRNG fails.
-	static STREAM_SERIAL_PRNG: OnceLock<Result<Mutex<Xoshiro256PlusPlus>, ParseIntError>> =
-		OnceLock::new();
-
-	// When a source date epoch is not provided, try to use OS-provided
-	// cryptographically-secure random data if possible, to avoid the possibility of
+	// When a source date epoch is not provided or ignored, try to use OS-provided
+	// cryptographically-secure random data for the serial, to avoid the possibility of
 	// brute-forcing state data from the serial under certain assumptions. If a source
-	// date epoch is provided, use a known PRNG with a fixed seed to guarantee
+	// date epoch is available, use a known PRNG with a fixed seed to guarantee
 	// reproducibility
 	if source_date_epoch.is_some() || getrandom(&mut random_bytes[..]).is_err() {
-		let stream_serial_prng = STREAM_SERIAL_PRNG
-			.get_or_init(|| {
+		/// The PRNG to use when reproducible results are requested via environment variables,
+		/// or the system CSPRNG fails.
+		static STREAM_SERIAL_PRNG: Mutex<Option<Result<Xoshiro256PlusPlus, ParseIntError>>> =
+			Mutex::new(None);
+
+		let mut stream_serial_prng = STREAM_SERIAL_PRNG.lock().unwrap();
+		let stream_serial_prng = stream_serial_prng
+			.get_or_insert_with(|| {
 				source_date_epoch
 					.map_or_else(
 						|| {
@@ -551,15 +556,18 @@ fn random_stream_serial_and_increment(
 							hasher.write_u32(stream_serial_prng_seed_tweak);
 							hasher.finish()
 						};
-						Mutex::new(Xoshiro256PlusPlus::seed_from_u64(seed ^ tweak))
+						Xoshiro256PlusPlus::seed_from_u64(seed ^ tweak)
 					})
 			})
-			.as_ref()
-			.map_err(|_| RemuxError::InvalidSourceDateEpoch)?;
+			.as_mut();
 
-		random_bytes = stream_serial_prng.lock().unwrap().next_u64().to_ne_bytes()[..5]
-			.try_into()
-			.unwrap();
+		#[cfg(feature = "source-date-epoch")]
+		let stream_serial_prng = stream_serial_prng.map_err(|_| RemuxError::InvalidSourceDateEpoch)?;
+		#[cfg(not(feature = "source-date-epoch"))]
+		// Seeding a PRNG can't fail when not parsing env vars
+		let stream_serial_prng = stream_serial_prng.unwrap();
+
+		stream_serial_prng.fill_bytes(&mut random_bytes);
 	}
 
 	Ok((

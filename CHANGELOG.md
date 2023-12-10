@@ -22,6 +22,9 @@ and this project adheres to
     recommended to use this reproducible output mode only when the benefits of
     achieving reproducible output outweigh the costs of non-compliance with the
     Ogg specification.
+  - It is possible to switch off support for this specification at compile time
+    by disabling the new `source-date-epoch` feature, which is enabled by
+    default.
 
 ### Changed
 
@@ -37,7 +40,6 @@ and this project adheres to
     operation will have worse performance, but since the bitpacking code
     documentation already discouraged them due to their fundamentally bad
     performance, this should not be an issue for most applications.
-- Bump MSRV to 1.70.
 - Added `documentation` metadata to the project workspace packages to make the
   documentation slightly more discoverable on `crates.io`.
 

@@ -138,6 +138,12 @@
 //! verbosity of this logging, and even compile it out, [as explained in the `log`
 //! crate documentation](https://docs.rs/log/0.4.16/log).
 //!
+//! # Features
+//!
+//! - `source-date-epoch` (enabled by default): enables compatibility with the
+//!   [`SOURCE_DATE_EPOCH` specification] in supporting remuxers, which assists in
+//!   generating reproducible artifacts.
+//!
 //! # Examples
 //!
 //! The following example shows how to optimize and perform basic repairs on an Ogg
@@ -180,6 +186,7 @@
 //! [`rehuff`]: https://wiki.xiph.org/Rehuff
 //! [`revorb`]: https://github.com/jonboydell/revorb-nix
 //! [`liboggz`]: https://gitlab.xiph.org/xiph/liboggz
+//! [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch
 
 #![doc(
 	html_logo_url = "https://github.com/OptiVorbis/OptiVorbis/raw/master/web/src/static/optivorbis_logo.png"
@@ -205,6 +212,7 @@
 #![warn(clippy::use_self)]
 #![warn(clippy::used_underscore_binding)]
 #![warn(clippy::redundant_feature_names)]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 pub use remuxer::{ogg_to_ogg::OggToOgg, Remuxer};
 #[doc(inline)]

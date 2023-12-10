@@ -38,6 +38,8 @@ and this project adheres to
     documentation already discouraged them due to their fundamentally bad
     performance, this should not be an issue for most applications.
 - Bump MSRV to 1.70.
+- Added `documentation` metadata to the project workspace packages to make the
+  documentation slightly more discoverable on `crates.io`.
 
 ### Removed
 

@@ -42,6 +42,7 @@ and this project adheres to
     performance, this should not be an issue for most applications.
 - Added `documentation` metadata to the project workspace packages to make the
   documentation slightly more discoverable on `crates.io`.
+- Minor dependency updates.
 
 ### Removed
 

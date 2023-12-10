@@ -2,7 +2,7 @@
 name = "optivorbis_afl_fuzz_target"
 description = "Fuzzing target for OptiVorbis and afl.rs"
 version = "0.0.1"
-edition = "2021"
+edition.workspace = true
 publish = false
 
 [dependencies]

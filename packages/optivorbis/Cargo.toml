@@ -16,7 +16,7 @@ rust-version.workspace = true
 include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
 
 [dependencies]
-ogg = "0.9.0"
+ogg = "0.9.1"
 vorbis_bitpack.workspace = true
 
 indexmap = "2.1.0"

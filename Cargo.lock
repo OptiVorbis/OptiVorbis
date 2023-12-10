@@ -312,8 +312,9 @@ dependencies = [
 
 [[package]]
 name = "ogg"
-version = "0.9.0"
-source = "git+https://github.com/RustAudio/ogg?rev=f22b096a#f22b096a80e6cbac8363a137321ea5668c203c34"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5477016638150530ba21dec7caac835b29ef69b20865751d2973fce6be386cf1"
 dependencies = [
  "byteorder",
 ]
@@ -345,7 +346,7 @@ dependencies = [
  "getrandom",
  "indexmap",
  "log",
- "ogg 0.9.0",
+ "ogg 0.9.1",
  "oggvorbismeta",
  "ouroboros",
  "pretty_env_logger",

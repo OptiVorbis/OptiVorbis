@@ -18,12 +18,6 @@ optivorbis = { version = "0.1.4", path = "packages/optivorbis" }
 vorbis_bitpack = { version = "0.1.1", path = "packages/vorbis_bitpack" }
 log = "0.4.20"
 
-[patch.crates-io]
-# Temporarily use a newer ogg crate commit with a page checksum retrieval
-# feature we need. Related PR:
-# https://github.com/RustAudio/ogg/pull/38
-ogg = { git = "https://github.com/RustAudio/ogg", rev = "f22b096a" }
-
 [profile.release]
 lto = "fat"
 codegen-units = 1

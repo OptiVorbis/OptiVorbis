@@ -21,7 +21,7 @@ vorbis_bitpack.workspace = true
 
 indexmap = "2.1.0"
 bumpalo = "3.14.0"
-tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_55"] }
+tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_57"] }
 
 getrandom = "0.2.11"
 rand_xoshiro = "0.6.0"

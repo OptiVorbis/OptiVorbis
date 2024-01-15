@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: OptiVorbis
+message: >-
+  Library and application for lossless, format-preserving,
+  two-pass optimization and repair of Vorbis data, reducing
+  its size without altering any audio information.
+type: software
+authors:
+  - email: me@alegon.dev
+    given-names: Alejandro
+    family-names: González García
+    orcid: 'https://orcid.org/0000-0001-9513-1625'
+    affiliation: Universidade de Vigo
+repository-code: 'https://github.com/OptiVorbis/OptiVorbis'
+url: 'https://optivorbis.github.io/OptiVorbis'
+abstract: >-
+  Library and application for lossless, format-preserving,
+  two-pass optimization and repair of Vorbis data, reducing
+  its size without altering any audio information.
+license: AGPL-3.0-or-later OR BSD-3-Clause
+commit: 58cac0aa1e66214efeebe3c4bdf1862568688e05
+version: 0.2.0
+date-released: '2023-12-11'

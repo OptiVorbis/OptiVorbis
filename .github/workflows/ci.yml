@@ -114,7 +114,7 @@ jobs:
 
       - name: '🔍 Static analysis: run cargo deny'
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: EmbarkStudios/cargo-deny-action@2b35f42b9672a9fb5ab76dee24ee6f3477f49099 # v1
+        uses: EmbarkStudios/cargo-deny-action@748857f070c53667b2b8de8bdf468ac75a6b757c # v1
 
       - name: ✔️ Run tests
         env:

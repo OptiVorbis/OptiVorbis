@@ -17,7 +17,7 @@ optivorbis.workspace = true
 
 getopts = "0.2.21"
 log.workspace = true
-stderrlog = { version = "0.5.4", default-features = false }
+stderrlog = { version = "0.6.0", default-features = false }
 
 [[bin]]
 name = "optivorbis"

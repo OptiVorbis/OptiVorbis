@@ -533,7 +533,7 @@ fn random_stream_serial_and_increment(
 						|| {
 							Ok(UNIX_EPOCH
 								.elapsed()
-								.map_or_else(|err| err.duration(), |duration| duration)
+								.unwrap_or_else(|err| err.duration())
 								.as_nanos() as u64)
 						},
 						|timestamp| {

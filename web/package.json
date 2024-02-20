@@ -15,8 +15,8 @@
     "../target/webpkg"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "7.0.1",
-    "@typescript-eslint/parser": "7.0.1",
+    "@typescript-eslint/eslint-plugin": "7.0.2",
+    "@typescript-eslint/parser": "7.0.2",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.17",
     "css-loader": "6.10.0",
@@ -34,7 +34,7 @@
     "tailwindcss": "3.4.1",
     "ts-loader": "9.5.1",
     "typescript": "5.3.3",
-    "webpack": "5.90.2",
+    "webpack": "5.90.3",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "5.0.2"
   },

@@ -5,10 +5,7 @@ use oggvorbismeta::CommentHeader;
 
 use super::*;
 use crate::{
-	remuxer::Remuxer,
-	vorbis::optimizer::{
-		VorbisCommentFieldsAction, VorbisOptimizerSettings, VorbisVendorStringAction
-	},
+	vorbis::optimizer::{VorbisCommentFieldsAction, VorbisVendorStringAction},
 	OPTIVORBIS_VERSION_TAG
 };
 

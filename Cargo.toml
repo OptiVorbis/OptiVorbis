@@ -11,7 +11,7 @@ repository = "https://github.com/OptiVorbis/OptiVorbis"
 keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
 categories = ["compression", "multimedia::audio"]
 edition = "2021"
-rust-version = "1.65.0"
+rust-version = "1.73.0"
 
 [workspace.dependencies]
 optivorbis = { version = "0.2.0", path = "packages/optivorbis" }

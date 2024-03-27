@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Binaries for AArch64 (Apple Silicon) macOS devices are now built, tested
+  automatically, and distributed, thanks to the [M1 CI runners recently
+  introduced by
+  GitHub](https://github.blog/changelog/2024-01-30-github-actions-introducing-the-new-m1-macos-runner-available-to-open-source/).
+
 ### Changed
 
 - Bump MSRV to 1.73.

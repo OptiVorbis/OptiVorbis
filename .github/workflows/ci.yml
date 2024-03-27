@@ -55,17 +55,10 @@ jobs:
             runner: ubuntu-22.04
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-22.04
-          # We build with glibc for AArch64 because using -Zdoctest-xcompile
-          # triggers https://github.com/rust-lang/rust/issues/89626 since at
-          # least December 2, 2023, documentation tests are built in a way
-          # that does not honor the sanctioned linker configuration changes,
-          # and we still want to get some testing coverage for AArch64
-          - target: aarch64-unknown-linux-gnu
-            runner: ubuntu-22.04
           - target: x86_64-pc-windows-gnu
             runner: windows-2022
           - target: x86_64-apple-darwin
-            runner: macos-11
+            runner: macos-12
 
     name: CI (${{ matrix.target }})
     runs-on: ${{ matrix.runner }}

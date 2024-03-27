@@ -113,7 +113,7 @@ jobs:
         uses: EmbarkStudios/cargo-deny-action@68cd9c5e3e16328a430a37c743167572e3243e7e # v1
 
       - name: ✔️ Run tests
-        run: cargo test --release --target ${{ matrix.target }}
+        run: cargo test --release --target ${{ matrix.target }} -Zdoctest-xcompile
           -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
       - name: 📚 Build documentation

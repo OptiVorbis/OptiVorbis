@@ -31,6 +31,5 @@ overflow-checks = true
 
 [profile.bench]
 inherits = "release"
-panic = "unwind"
 debug = true
 strip = "none"

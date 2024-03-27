@@ -220,7 +220,7 @@ impl<'tree, V> VorbisHuffmanTreeNode<'tree, V> {
 		&'this mut self,
 		depth: u8,
 		arena: &'tree Bump
-	) -> Option<(&'this mut VorbisHuffmanTreeNode<'tree, V>, u32)> {
+	) -> Option<(&'this mut Self, u32)> {
 		self.leftmost_free_leaf_at_depth_internal(depth, 0, arena)
 			.map(|(leaf, codeword)| {
 				// The codeword returned by this method is meant to be interpreted in
@@ -242,7 +242,7 @@ impl<'tree, V> VorbisHuffmanTreeNode<'tree, V> {
 		depth: u8,
 		codeword_so_far: u32,
 		arena: &'tree Bump
-	) -> Option<(&'this mut VorbisHuffmanTreeNode<'tree, V>, u32)> {
+	) -> Option<(&'this mut Self, u32)> {
 		// Base case 1: occupied nodes are not free and can't have free nodes beneath them
 		if self.entry.is_some() {
 			return None;

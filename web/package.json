@@ -15,12 +15,12 @@
     "../target/webpkg"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "7.1.0",
-    "@typescript-eslint/parser": "7.1.0",
+    "@typescript-eslint/eslint-plugin": "7.4.0",
+    "@typescript-eslint/parser": "7.4.0",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
-    "autoprefixer": "10.4.18",
+    "autoprefixer": "10.4.19",
     "css-loader": "6.10.0",
-    "cssnano": "6.0.5",
+    "cssnano": "6.1.2",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-import-resolver-typescript": "3.6.1",
@@ -28,18 +28,18 @@
     "favicons-webpack-plugin": "6.0.1",
     "html-webpack-plugin": "5.6.0",
     "mini-css-extract-plugin": "2.8.1",
-    "postcss": "8.4.35",
+    "postcss": "8.4.38",
     "postcss-loader": "8.1.1",
     "svg-inline-loader": "0.8.2",
-    "tailwindcss": "3.4.1",
+    "tailwindcss": "3.4.3",
     "ts-loader": "9.5.1",
-    "typescript": "5.3.3",
-    "webpack": "5.90.3",
+    "typescript": "5.4.3",
+    "webpack": "5.91.0",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "5.0.2"
+    "webpack-dev-server": "5.0.4"
   },
   "dependencies": {
-    "core-js": "3.36.0",
+    "core-js": "3.36.1",
     "optivorbis": "*"
   }
 }

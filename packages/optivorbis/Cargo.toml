@@ -23,7 +23,7 @@ indexmap = "2.2.6"
 bumpalo = "3.15.4"
 tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_57"] }
 
-getrandom = "0.2.13"
+getrandom = "0.2.14"
 rand_xoshiro = "0.6.0"
 
 thiserror = "1.0.58"

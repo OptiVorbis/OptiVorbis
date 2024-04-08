@@ -20,7 +20,7 @@ ogg = "0.9.1"
 vorbis_bitpack.workspace = true
 
 indexmap = "2.2.6"
-bumpalo = "3.15.4"
+bumpalo = "3.16.0"
 tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_57"] }
 
 getrandom = "0.2.14"

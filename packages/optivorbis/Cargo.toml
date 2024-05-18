@@ -21,12 +21,15 @@ vorbis_bitpack.workspace = true
 
 indexmap = "2.2.6"
 bumpalo = "3.16.0"
-tinyvec = { version = "1.6.0", default-features = false, features = ["alloc", "rustc_1_57"] }
+tinyvec = { version = "1.6.0", default-features = false, features = [
+  "alloc",
+  "rustc_1_57",
+] }
 
-getrandom = "0.2.14"
+getrandom = "0.2.15"
 rand_xoshiro = "0.6.0"
 
-thiserror = "1.0.59"
+thiserror = "1.0.61"
 ouroboros = "0.18.3"
 slice-group-by = "0.3.1"
 
@@ -49,7 +52,12 @@ default = ["source-date-epoch"]
 source-date-epoch = []
 
 wasm-bindings = ["wasm-bindgen"]
-wasm-web-bindings = ["wasm-bindings", "console_log", "console_error_panic_hook", "getrandom/js"]
+wasm-web-bindings = [
+  "wasm-bindings",
+  "console_log",
+  "console_error_panic_hook",
+  "getrandom/js",
+]
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--cfg", "docsrs"]

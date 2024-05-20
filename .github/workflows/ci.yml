@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout source
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
 
       - name: 🧰 Install MSRV toolchain
         uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8 # v1
@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout source
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
         with:
           fetch-depth: 0 # Keep the commit history for proper version information
 
@@ -148,7 +148,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout source
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
         with:
           fetch-depth: 0 # Keep the commit history for proper version information
 

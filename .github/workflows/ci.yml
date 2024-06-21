@@ -17,6 +17,10 @@ on:
 env:
   MSRV: '1.73.0'
 
+  # Set up sccache with GitHub Actions cache
+  RUSTC_WRAPPER: sccache
+  SCCACHE_GHA_ENABLED: true
+
 jobs:
   msrv_check:
     name: MSRV check
@@ -35,8 +39,8 @@ jobs:
         with:
           toolchain: ${{ env.MSRV }}
 
-      - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2
+      - name: 💨 Set up sccache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: ⚙️ Run tests
         run: cargo test -p optivorbis -p optivorbis_cli -p vorbis_bitpack
@@ -87,8 +91,8 @@ jobs:
           sudo apt update
           sudo apt install -yq gcc-aarch64-linux-gnu libc6-arm64-cross qemu-user
 
-      - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2
+      - name: 💨 Set up sccache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: 📅 Gather build date and version metadata
         shell: bash
@@ -165,8 +169,8 @@ jobs:
       - name: 🧰 Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: 💨 Cache Rust artifacts
-        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2
+      - name: 💨 Set up sccache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: 📅 Gather build date and version metadata
         shell: bash

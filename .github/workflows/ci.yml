@@ -40,7 +40,7 @@ jobs:
           toolchain: ${{ env.MSRV }}
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@v0.0.5
+        uses: mozilla-actions/sccache-action@89e9040de88b577a072e3760aaf59f585da083af # v0.0.5
 
       - name: ⚙️ Run tests
         run: cargo test -p optivorbis -p optivorbis_cli -p vorbis_bitpack
@@ -92,7 +92,7 @@ jobs:
           sudo apt install -yq gcc-aarch64-linux-gnu libc6-arm64-cross qemu-user
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@v0.0.5
+        uses: mozilla-actions/sccache-action@89e9040de88b577a072e3760aaf59f585da083af # v0.0.5
 
       - name: 📅 Gather build date and version metadata
         shell: bash
@@ -173,7 +173,7 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@v0.0.5
+        uses: mozilla-actions/sccache-action@89e9040de88b577a072e3760aaf59f585da083af # v0.0.5
 
       - name: 📅 Gather build date and version metadata
         shell: bash

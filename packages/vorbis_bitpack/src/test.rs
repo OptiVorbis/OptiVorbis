@@ -102,7 +102,6 @@ fn writing_spec_bitpacking_example_works() {
 
 	macro_rules! write_value {
 		($method:ident, $integer:expr, $width:expr) => {
-			#[cfg(feature = "std")]
 			eprintln!(
 				"Bitpacker state before calling {}: {:?}",
 				stringify!($method),
@@ -113,7 +112,6 @@ fn writing_spec_bitpacking_example_works() {
 				.$method($integer, BitpackedIntegerWidth::new($width).unwrap())
 				.expect("No I/O error expected");
 
-			#[cfg(feature = "std")]
 			eprintln!(
 				"Bitpacker state after calling {}: {:?}",
 				stringify!($method),

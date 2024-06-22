@@ -30,7 +30,7 @@ getrandom = "0.2.15"
 rand_xoshiro = "0.6.0"
 
 thiserror = "1.0.61"
-ouroboros = "0.18.3"
+ouroboros = "0.18.4"
 slice-group-by = "0.3.1"
 
 log.workspace = true

@@ -13,11 +13,7 @@ targets = [
 [advisories]
 version = 2
 yanked = "deny"
-ignore = [
-  # Not so relevant advisory pulled by an old windows crate version
-  # acid_io depends on
-  "RUSTSEC-2022-0008",
-]
+ignore = []
 
 [licenses]
 version = 2

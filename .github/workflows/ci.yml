@@ -91,6 +91,12 @@ jobs:
           sudo apt update
           sudo apt install -yq gcc-aarch64-linux-gnu libc6-arm64-cross qemu-user
 
+      - name: 🧰 Install cargo-deny
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        uses: taiki-e/install-action@4f13fb62448d53782828736cd5b0fd395b5f0c06 # v2
+        with:
+          tool: cargo-deny
+
       - name: 💨 Set up sccache
         uses: mozilla-actions/sccache-action@89e9040de88b577a072e3760aaf59f585da083af # v0.0.5
 
@@ -114,10 +120,7 @@ jobs:
 
       - name: '🔍 Static analysis: run cargo deny'
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: EmbarkStudios/cargo-deny-action@8371184bd11e21dcf8ac82ebf8c9c9f74ebf7268 # v2
-        env:
-          # This action runs on a container without sccache
-          RUSTC_WRAPPER: ''
+        run: cargo deny check
 
       - name: ✔️ Run tests
         run: cargo test --release --target ${{ matrix.target }} -Zdoctest-xcompile

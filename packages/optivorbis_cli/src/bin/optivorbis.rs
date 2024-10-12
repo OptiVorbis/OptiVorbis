@@ -98,7 +98,14 @@ fn run() -> Result<(), Cow<'static, str>> {
 			- error_on_no_vorbis_streams=BOOLEAN\n\
 			Sets whether not finding any Vorbis stream within the Ogg container will be considered an error \
 			condition. The default value is true, which means that not finding any Vorbis stream will be \
-			considered an error. This usually is the most desirable behavior.",
+			considered an error. This usually is the most desirable behavior.\n\
+			- verify_ogg_page_checksums=BOOLEAN\n\
+			Sets whether the CRC checksum value embedded in Ogg pages will be verified to match their \
+			data. This is usually a good thing to do, as most of the time a CRC mismatch signals an Ogg \
+			Vorbis stream that was corrupted in transit or improperly modified and is thus likely to be \
+			broken beyond repair. However, for repairing Ogg Vorbis streams that are otherwise mostly \
+			okay, fuzzing, or for advanced data recovery use cases, it can be a good idea to let OptiVorbis \
+			ignore such errors and recompute such checksums. The default value is true.",
 			"OPTION=VALUE"
 		)
 		.parsing_style(ParsingStyle::StopAtFirstFree);
@@ -238,6 +245,7 @@ fn remux<F: Read + Seek>(
 			set_remuxer_option_value!(remuxer_settings, first_stream_serial_offset);
 			set_remuxer_option_value!(remuxer_settings, ignore_start_sample_offset);
 			set_remuxer_option_value!(remuxer_settings, error_on_no_vorbis_streams);
+			set_remuxer_option_value!(remuxer_settings, verify_ogg_page_checksums);
 
 			info!(
 				"Processing {} and saving to {} with Ogg Vorbis remuxer...",

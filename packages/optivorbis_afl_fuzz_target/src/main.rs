@@ -9,6 +9,8 @@ fn main() {
 			Settings {
 				// Do not randomize serials to increase stability
 				randomize_stream_serials: false,
+				// Disable checksum verification to not discard interesting data mutations too early
+				verify_ogg_page_checksums: false,
 				..Default::default()
 			},
 			Default::default()

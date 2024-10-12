@@ -87,6 +87,8 @@ skip-tree = [
   # oggvorbismeta pulls a different version of the ogg crate,
   # but only for tests
   { name = "oggvorbismeta" },
+  # Pulls a different windows-sys crate version
+  { name = "winapi-util" },
 ]
 
 [sources]

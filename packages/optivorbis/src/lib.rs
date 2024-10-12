@@ -42,8 +42,12 @@
 //! recomputed, correcting any erroneous information that may be present in the original
 //! stream. Non-zero initial timestamps, chiefly used in live recordings and for
 //! lossless sample truncation, are supported. Stream serials can be randomized,
-//! making it easier to concatenate (chain) multiple generated files. This encapsulation
-//! is the most common means of storing and distributing Vorbis audio streams.
+//! making it easier to concatenate (chain) multiple generated files. Ogg page CRC
+//! checksum errors may be ignored, allowing the remuxer to fix more kinds of container
+//! metadata corruption.
+//!
+//! This encapsulation is the most common means of storing and distributing Vorbis audio
+//! streams.
 //!
 //! # Implemented optimizations
 //!

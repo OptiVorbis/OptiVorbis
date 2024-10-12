@@ -8,7 +8,7 @@ import registerOutputFileSectionEventHandlers from './output_file_section';
 import registerFileInputEventHandlers from './input_file_handler';
 
 declare global {
-  // eslint-disable-next-line no-var,vars-on-top,no-unused-vars
+  // eslint-disable-next-line no-var
   var outputFileName: string;
 }
 globalThis.outputFileName = 'optimized_file.ogg';

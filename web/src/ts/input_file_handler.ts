@@ -2,9 +2,9 @@ import showFileErrorModal from './file_error_modal';
 
 const optivorbisLogo = document.getElementById('optivorbis-logo')!;
 const inputFileSection = document.getElementById('file-input-section')!;
-const fileInput = <HTMLInputElement>document.getElementById('file-input');
+const fileInput = document.getElementById('file-input') as HTMLInputElement;
 const fileProcessText = document.getElementById('file-process-text')!;
-const outputFilePreviewPlayer = <HTMLAudioElement>document.getElementById('output-file-preview');
+const outputFilePreviewPlayer = document.getElementById('output-file-preview') as HTMLAudioElement;
 const outputFileSection = document.getElementById('output-file-section')!;
 
 function showProgressElements() {

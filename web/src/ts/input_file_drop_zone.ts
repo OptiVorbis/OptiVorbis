@@ -1,9 +1,9 @@
 const dropHighlightElementClasses = ['bg-sky-300', 'dark:bg-sky-600'];
 const dropEffect = 'copy';
 
-const fileInput = <HTMLInputElement>document.getElementById('file-input');
-const fileInputButton = <HTMLButtonElement>document.getElementById('file-input-button');
-const fileInputLabel = <HTMLLabelElement>document.getElementById('file-input-label');
+const fileInput = document.getElementById('file-input') as HTMLInputElement;
+const fileInputButton = document.getElementById('file-input-button') as HTMLButtonElement;
+const fileInputLabel = document.getElementById('file-input-label') as HTMLLabelElement;
 
 function getDraggedAudioFile(dataTransfer: DataTransfer | null): File | boolean {
   let audioFile: File | boolean = false;
@@ -59,13 +59,11 @@ function handleAudioFileDrop(event: DragEvent) {
 }
 
 export default function registerFileInputDropEventHandlers() {
-  const elements = [fileInputLabel, fileInputButton];
-  for (let i = 0; i < elements.length; i += 1) {
-    const element = <HTMLElement>elements[i];
-    element.addEventListener('dragenter', handleAudioFileDragBegin);
-    element.addEventListener('dragover', handleAudioFileDragBegin);
-    element.addEventListener('dragleave', handleAudioFileDragStop);
-    element.addEventListener('drop', handleAudioFileDrop);
+  for (const element of [fileInputLabel, fileInputButton]) {
+    (element as HTMLElement).addEventListener('dragenter', handleAudioFileDragBegin);
+    (element as HTMLElement).addEventListener('dragover', handleAudioFileDragBegin);
+    (element as HTMLElement).addEventListener('dragleave', handleAudioFileDragStop);
+    (element as HTMLElement).addEventListener('drop', handleAudioFileDrop);
   }
   fileInputButton.addEventListener('click', () => fileInput.click());
 }

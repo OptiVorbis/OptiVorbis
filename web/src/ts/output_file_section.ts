@@ -1,8 +1,8 @@
 const inputFileSection = document.getElementById('file-input-section')!;
 const outputFileSection = document.getElementById('output-file-section')!;
-const outputFilePreviewPlayer = <HTMLAudioElement>document.getElementById('output-file-preview');
-const outputFileSectionBackButton = <HTMLButtonElement>document.getElementById('output-file-back');
-const outputFileSectionDownloadButton = <HTMLButtonElement>document.getElementById('output-file-download');
+const outputFilePreviewPlayer = document.getElementById('output-file-preview') as HTMLAudioElement;
+const outputFileSectionBackButton = document.getElementById('output-file-back') as HTMLButtonElement;
+const outputFileSectionDownloadButton = document.getElementById('output-file-download') as HTMLButtonElement;
 
 export default function registerOutputFileSectionEventHandlers() {
   outputFileSectionBackButton.addEventListener('click', () => {

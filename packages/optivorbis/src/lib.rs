@@ -131,6 +131,19 @@
 //! applications dealing with untrusted files should be aware of this and resort
 //! to using OS features to bound resource consumption when applicable.
 //!
+//! Some embedded applications ship with Vorbis decoders that deviate from
+//! the Vorbis specification in a critical way: instead of parsing codebooks
+//! from the Vorbis stream, they hardcode the codebooks that a supported
+//! encoder would use for the specific audio signal type. As a result, since
+//! OptiVorbis optimizes codebooks, the affected decoders are unable to play
+//! optimized files reliably. The OptiVorbis authors have identified problematic
+//! decoders in a few but significant game middleware solutions, including
+//! [Wwise](https://www.audiokinetic.com/en/library/edge/?source=Help&id=vorbis_encoder_parameters)
+//! and custom Square Enix game engines, such as the one used in Final Fantasy
+//! XIV. Luckily, most users are unlikely to be affected by troublesome
+//! decoders, as many other games and applications have fully compliant Vorbis
+//! support.
+//!
 //! # Logging
 //!
 //! This crate uses the [`log`](https://crates.io/crates/log) crate for logging status

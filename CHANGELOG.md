@@ -10,6 +10,12 @@ and this project adheres to
 
 ### Added
 
+- The Ogg to Ogg remuxer now has a `verify_ogg_page_checksums` option, which
+  lets users toggle the enforcement of valid Ogg page CRC checksums on Ogg
+  Vorbis streams. When this verification is disabled, OptiVorbis can still
+  optimize files with invalid checksums, enhancing its ability to repair them.
+  However, this leniency also increases the risk of generating corrupt output
+  files.
 - Binaries for AArch64 (Apple Silicon) macOS devices are now built, tested
   automatically, and distributed, thanks to the [M1 CI runners recently
   introduced by

@@ -33,3 +33,7 @@ overflow-checks = true
 inherits = "release"
 debug = true
 strip = "none"
+
+[patch.crates-io]
+# TODO wait until upstream publishes a release with these changes to drop this patch and publish ours
+ogg = { git = "https://github.com/AlexTMjugador/ogg.git", branch = "feat/parse-opts" }

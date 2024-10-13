@@ -251,7 +251,7 @@ dependencies = [
 [[package]]
 name = "ogg"
 version = "0.9.1"
-source = "git+https://github.com/AlexTMjugador/ogg.git?branch=feat/parse-opts#230d8db74f440d2ed19ccd567559d25d7953135d"
+source = "git+https://github.com/RustAudio/ogg.git#90f45e27396e36a5cfdb2be8e5b97ad441e05db5"
 dependencies = [
  "byteorder",
 ]

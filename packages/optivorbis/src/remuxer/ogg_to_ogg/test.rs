@@ -106,6 +106,7 @@ fn remuxing_and_mangling_works() {
 			first_stream_serial_offset: 0,
 			ignore_start_sample_offset: true,
 			error_on_no_vorbis_streams: true,
+			verify_ogg_page_checksums: true,
 			vorbis_stream_mangler: {
 				struct Mangler;
 
@@ -162,4 +163,31 @@ fn non_vorbis_data_returns_error() {
 		|_| ()
 	)
 	.expect_err("Expected remuxing error");
+}
+
+#[test]
+fn ogg_page_crc_verification_works() {
+	init_logging();
+
+	remux_with_settings(
+		include_bytes!("../../../resources/test/crc_mismatch_8khz_500ms_mono_400hz_sine_wave.ogg"),
+		|| Settings {
+			verify_ogg_page_checksums: true,
+			..Default::default()
+		},
+		Default::default,
+		|_| ()
+	)
+	.expect_err("Expected remuxing error");
+
+	remux_with_settings(
+		include_bytes!("../../../resources/test/crc_mismatch_8khz_500ms_mono_400hz_sine_wave.ogg"),
+		|| Settings {
+			verify_ogg_page_checksums: false,
+			..Default::default()
+		},
+		Default::default,
+		|_| ()
+	)
+	.expect("Unexpected remuxing error");
 }

@@ -29,7 +29,7 @@ tinyvec = { version = "1.6.0", default-features = false, features = [
 getrandom = "0.2.15"
 rand_xoshiro = "0.6.0"
 
-thiserror = "1.0.61"
+thiserror = "2.0.0"
 ouroboros = "0.18.4"
 slice-group-by = "0.3.1"
 

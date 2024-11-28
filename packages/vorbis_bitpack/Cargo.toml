@@ -17,4 +17,4 @@ acid_io = { version = "0.1.0", optional = true }
 libm = { version = "0.2.8", optional = true }
 
 [features]
-no-std = ["acid_io", "libm"]
+no-std = ["dep:acid_io", "dep:libm"]

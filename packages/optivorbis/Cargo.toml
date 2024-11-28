@@ -51,11 +51,11 @@ default = ["source-date-epoch"]
 
 source-date-epoch = []
 
-wasm-bindings = ["wasm-bindgen"]
+wasm-bindings = ["dep:wasm-bindgen"]
 wasm-web-bindings = [
   "wasm-bindings",
-  "console_log",
-  "console_error_panic_hook",
+  "dep:console_log",
+  "dep:console_error_panic_hook",
   "getrandom/js",
 ]
 

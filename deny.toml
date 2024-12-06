@@ -67,10 +67,12 @@ allow = [
   # of the ISC license, which is compatible. Its text is also extremely
   # simple and allows using the code for any purpose
   "0BSD",
-  # Permissive license used by the Unicode consortium, similar in spirit
+  # Permissive licenses used by the Unicode consortium, similar in spirit
   # to other permissive licenses:
   # https://spdx.org/licenses/Unicode-DFS-2016.html
+  # https://spdx.org/licenses/Unicode-3.0.html
   "Unicode-DFS-2016",
+  "Unicode-3.0",
 ]
 unused-allowed-license = "allow"
 private = { ignore = true }

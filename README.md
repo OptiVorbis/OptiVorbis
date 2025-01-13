@@ -121,6 +121,18 @@ Options:
                         The default value is true, which means that not
                         finding any Vorbis stream will be considered an error.
                         This usually is the most desirable behavior.
+                        - verify_ogg_page_checksums=BOOLEAN
+                        Sets whether the CRC checksum value embedded in Ogg
+                        pages will be verified to match their data. This is
+                        usually a good thing to do, as most of the time a CRC
+                        mismatch signals an Ogg Vorbis stream that was
+                        corrupted in transit or improperly modified and is
+                        thus likely to be broken beyond repair. However, for
+                        repairing Ogg Vorbis streams that are otherwise mostly
+                        okay, fuzzing, or for advanced data recovery use
+                        cases, it can be a good idea to let OptiVorbis ignore
+                        such errors and recompute such checksums. The default
+                        value is true.
 ```
 
 # 📊 Testing and results

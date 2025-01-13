@@ -7,7 +7,7 @@ use std::{
 	hash::Hasher,
 	io::{self, Read, Seek, SeekFrom, Write},
 	num::ParseIntError,
-	sync::Mutex,
+	sync::{Arc, Mutex},
 	time::UNIX_EPOCH
 };
 
@@ -15,7 +15,7 @@ use getrandom::getrandom;
 use granulator::granule_position_for_packet;
 use indexmap::{map::Entry, IndexMap};
 use log::info;
-use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter};
+use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter, PageParsingOptions};
 #[doc(inline)]
 pub use ogg_vorbis_stream_mangler::{OggVorbisStreamMangler, OggVorbisStreamPassthroughMangler};
 use rand_xoshiro::{
@@ -43,7 +43,8 @@ mod test;
 /// [`SOURCE_DATE_EPOCH` specification]: https://reproducible-builds.org/specs/source-date-epoch
 pub struct OggToOgg<M: OggVorbisStreamMangler> {
 	remuxer_settings: RefCell<Settings<M>>,
-	optimizer_settings: VorbisOptimizerSettings
+	optimizer_settings: VorbisOptimizerSettings,
+	ogg_page_parsing_options: Arc<PageParsingOptions>
 }
 
 /// Settings that influence how the remuxing from an Ogg file to another Ogg file is done.
@@ -97,7 +98,7 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	/// purposes. However, it is legal for the first sample to have an induced granule position
 	/// lower than zero (if decoding the first packets yields more samples than the granule
 	/// position of the first audio page indicates) or greater than zero (in the opposite case
-	/// of decoding less samples than the granule position suggests).
+	/// of decoding fewer samples than the granule position suggests).
 	///
 	/// Lower than zero granule positions are used for lossless sample truncation in the
 	/// beginning of Vorbis streams. Conversely, higher than zero positions are characteristic of
@@ -106,7 +107,7 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	/// When ignoring the start sample offset, OptiVorbis will behave as if the initial granule
 	/// position was zero: no samples were truncated, and no other audio has been encoded so far.
 	///
-	/// OptiVorbis needs to recalculate granule positions, so it usually is a good idea to let
+	/// OptiVorbis needs to recalculate granule positions, so it is usually a good idea to let
 	/// it take into account these non-zero initial granule positions, in order to carry over
 	/// the original timestamping information, by leaving this option set to `false`. Good reasons
 	/// for setting it to `true` include repairing Ogg Vorbis files with bad granule position data
@@ -125,6 +126,15 @@ pub struct Settings<M: OggVorbisStreamMangler> {
 	///
 	/// **Default value**: `true`
 	pub error_on_no_vorbis_streams: bool,
+	/// Sets whether the CRC checksum value embedded in Ogg pages will be verified to match their
+	/// data. This is usually a good thing to do, as most of the time a CRC mismatch signals an Ogg
+	/// Vorbis stream that was corrupted in transit or improperly modified and is thus likely to be
+	/// broken beyond repair. However, for repairing Ogg Vorbis streams that are otherwise mostly
+	/// okay, fuzzing, or for advanced data recovery use cases, it can be a good idea to let
+	/// OptiVorbis ignore such errors and recompute such checksums.
+	///
+	/// **Default value**: `true`
+	pub verify_ogg_page_checksums: bool,
 	/// Sets the [mangler](OggVorbisStreamMangler) that will have a final say on some values
 	/// generated for the Ogg page and packet encapsulations. OptiVorbis almost always does the
 	/// right thing by itself, so **using manglers others than the
@@ -139,6 +149,7 @@ impl Default for Settings<OggVorbisStreamPassthroughMangler> {
 			first_stream_serial_offset: 0,
 			ignore_start_sample_offset: false,
 			error_on_no_vorbis_streams: true,
+			verify_ogg_page_checksums: true,
 			vorbis_stream_mangler: OggVorbisStreamPassthroughMangler
 		}
 	}
@@ -181,7 +192,7 @@ pub enum RemuxError {
 	#[error("The SOURCE_DATE_EPOCH environment variable is set, but its value is invalid")]
 	#[cfg(any(doc, feature = "source-date-epoch"))]
 	InvalidSourceDateEpoch,
-	/// An I/O error outside of any of the previously mentioned error contexts happened.
+	/// An I/O error outside any of the previously mentioned error contexts happened.
 	#[error("I/O error: {0}")]
 	IoError(#[from] io::Error)
 }
@@ -191,9 +202,13 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 	type RemuxerSettings = Settings<M>;
 
 	fn new(remuxer_settings: Settings<M>, optimizer_settings: VorbisOptimizerSettings) -> Self {
+		let mut ogg_page_parsing_options = PageParsingOptions::default();
+		ogg_page_parsing_options.verify_checksum = remuxer_settings.verify_ogg_page_checksums;
+
 		Self {
 			remuxer_settings: RefCell::new(remuxer_settings),
-			optimizer_settings
+			optimizer_settings,
+			ogg_page_parsing_options: Arc::new(ogg_page_parsing_options)
 		}
 	}
 
@@ -208,8 +223,12 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 
 		// First pass: validate and gather stream data for optimization
 		info!("Starting first Ogg to Ogg remux pass");
-		let mut vorbis_streams =
-			first_pass(&mut source, &self.optimizer_settings, remuxer_settings)?;
+		let mut vorbis_streams = first_pass(
+			&mut source,
+			&self.optimizer_settings,
+			remuxer_settings,
+			&self.ogg_page_parsing_options
+		)?;
 		info!("First Ogg to Ogg remux pass completed");
 
 		// Get the serial for the first stream, and the increment to add for the next streams.
@@ -238,6 +257,7 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 			&mut sink,
 			&mut vorbis_streams,
 			remuxer_settings,
+			&self.ogg_page_parsing_options,
 			first_stream_serial,
 			stream_serial_increment
 		)?;
@@ -252,9 +272,11 @@ impl<M: OggVorbisStreamMangler> Remuxer for OggToOgg<M> {
 fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 	source: R,
 	optimizer_settings: &'settings VorbisOptimizerSettings,
-	remuxer_settings: &mut Settings<M>
+	remuxer_settings: &mut Settings<M>,
+	ogg_page_parsing_options: &Arc<PageParsingOptions>
 ) -> Result<IndexMap<u32, VorbisStreamState<'settings>>, RemuxError> {
-	let mut packet_reader = PacketReader::new(source);
+	let mut packet_reader =
+		PacketReader::new_with_page_parse_opts(source, Arc::clone(ogg_page_parsing_options));
 
 	let mut vorbis_streams = IndexMap::with_capacity(1);
 	let mut reading_vorbis_stream = false;
@@ -389,10 +411,12 @@ fn second_pass<R: Read + Seek, W: Write, M: OggVorbisStreamMangler>(
 	sink: W,
 	vorbis_streams: &mut IndexMap<u32, VorbisStreamState<'_>>,
 	remuxer_settings: &mut Settings<M>,
+	ogg_page_parsing_options: &Arc<PageParsingOptions>,
 	first_stream_serial: u32,
 	stream_serial_increment: u32
 ) -> Result<(), RemuxError> {
-	let mut packet_reader = PacketReader::new(source);
+	let mut packet_reader =
+		PacketReader::new_with_page_parse_opts(source, Arc::clone(ogg_page_parsing_options));
 	let mut packet_writer = PacketWriter::new(sink);
 
 	let mut last_seen_vorbis_stream_serial = None;

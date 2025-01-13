@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.3.0] - 2025-01-13
+
 ### Added
 
 - The Ogg to Ogg remuxer now has a `verify_ogg_page_checksums` option, which
@@ -24,6 +28,11 @@ and this project adheres to
 ### Changed
 
 - Bump MSRV to 1.73.
+
+### Removed
+
+- Cleaned up feature flags originally intended for internal dependency
+  compilation control use, ensuring they are not improperly set by users.
 
 ## [0.2.0] - 2023-12-11
 
@@ -125,7 +134,8 @@ and this project adheres to
 
 - First public release.
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.4...v0.2.0
 [0.1.4]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.2...v0.1.3

@@ -262,7 +262,7 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 
 [[package]]
 name = "optivorbis"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "bumpalo",
  "console_error_panic_hook",
@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "optivorbis_cli"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "getopts",
  "log",
@@ -548,7 +548,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vorbis_bitpack"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "acid_io",
  "libm",

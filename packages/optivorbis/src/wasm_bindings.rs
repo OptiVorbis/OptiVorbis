@@ -1,6 +1,5 @@
+// The wasm_bindgen macro generates warnings here
 #![allow(unreachable_pub)]
-// The wasm_bindgen macro generates these warnings
-#![allow(clippy::use_self)]
 
 use std::{io::Cursor, panic};
 
@@ -12,7 +11,6 @@ use crate::remuxer::{
 };
 
 #[wasm_bindgen(start)]
-#[allow(dead_code)] // Used by the WASM module entrypoint
 pub fn main() {
 	// Make logging and error handling use the console on web browsers
 	#[cfg(feature = "wasm-web-bindings")]

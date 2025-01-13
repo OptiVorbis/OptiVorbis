@@ -22,22 +22,22 @@ mod huffman_tree;
 #[allow(variant_size_differences)] // io::Error is 14 bytes larger than other variants
 pub enum VorbisCodebookError {
 	/// An attempt to build a codebook with invalid codewords was made.
-	#[error("Codebook {codebook_number} is invalid: {__error}")]
+	#[error("Codebook {codebook_number} is invalid: {error}")]
 	InvalidCodebookCodewords {
 		/// The number of the involved codebook.
 		codebook_number: u16,
 		/// The internal error information. Any change to this field is considered non-breaking.
 		#[doc(hidden)]
-		__error: TryFromCodewordLengthsListError
+		error: TryFromCodewordLengthsListError
 	},
 	/// The tree could not be walked while decoding an entry number.
-	#[error("Codebook {codebook_number} entry decode error: {__error}")]
+	#[error("Codebook {codebook_number} entry decode error: {error}")]
 	CodebookTreeWalkError {
 		/// The number of the involved codebook.
 		codebook_number: u16,
 		/// The internal error information. Any change to this field is considered non-breaking.
 		#[doc(hidden)]
-		__error: VorbisHuffmanTreeWalkerError
+		error: VorbisHuffmanTreeWalkerError
 	},
 	/// EOF was reached while decoding an entry number.
 	#[error("Codebook {codebook_number} entry decode error: end of packet while decoding entry")]
@@ -90,7 +90,7 @@ impl VorbisCodebook {
 			huffman_tree: VorbisHuffmanTree::try_from_codeword_lengths(codeword_lengths).map_err(
 				|error| VorbisCodebookError::InvalidCodebookCodewords {
 					codebook_number,
-					__error: error
+					error
 				}
 			)?,
 			recording_decode_frequencies: true
@@ -135,7 +135,7 @@ impl VorbisCodebook {
 					)
 					.map_err(|error| VorbisCodebookError::CodebookTreeWalkError {
 						codebook_number: self.codebook_number,
-						__error: error
+						error
 					})? {
 					if self.recording_decode_frequencies {
 						let mut entry_decode_frequencies =

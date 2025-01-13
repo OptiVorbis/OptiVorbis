@@ -1,8 +1,5 @@
 //! Contains the [`VorbisHuffmanTree`] definition and implementation.
 
-// Workaround for Ouroboros issue: https://github.com/joshua-maros/ouroboros/issues/91
-#![allow(clippy::useless_transmute)]
-
 use std::fmt::{Debug, Formatter};
 
 use bumpalo::Bump;
@@ -267,7 +264,7 @@ impl<'tree, V> VorbisHuffmanTreeNode<'tree, V> {
 					.get_or_insert_with(|| arena.alloc(Default::default()))
 					.leftmost_free_leaf_at_depth_internal(
 						depth - 1,
-						codeword_so_far | 1 << (depth - 1),
+						codeword_so_far | (1 << (depth - 1)),
 						arena
 					)
 			})
@@ -319,7 +316,7 @@ mod test {
 				let mut read_entry = None;
 
 				for i in (0..codeword_length).rev() {
-					let bit = codeword >> i & 1;
+					let bit = (codeword >> i) & 1;
 					read_entry = walker
 						.walk(bit != 0)
 						.expect("The Huffman tree was assumed to not be underspecified");

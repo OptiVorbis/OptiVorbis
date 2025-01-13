@@ -9,7 +9,6 @@ use super::*;
 ///   so the mantissa is multiplied by one.
 const VORBIS_FLOAT_WORD: u32 = 0b1_1100010100_100000000000000000001;
 /// The value of [`VORBIS_FLOAT_WORD`], as a native double-precision float.
-#[allow(clippy::unnecessary_cast)] // There are no binary f64 literals
 const VORBIS_FLOAT_VALUE: f64 = -0b100000000000000000001 as f64;
 
 /// These values were extracted from an audio file encoded with

@@ -641,7 +641,6 @@ fn parse_residue_configurations<R: Read>(
 		);
 
 		// Check that the referenced codebook exists, and has enough entries
-		#[allow(clippy::blocks_in_conditions)]
 		if codebook_configurations
 			.get(residue_classbook as usize)
 			.filter(|classbook_configuration| {

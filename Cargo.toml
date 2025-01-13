@@ -33,7 +33,3 @@ overflow-checks = true
 inherits = "release"
 debug = true
 strip = "none"
-
-[patch.crates-io]
-# TODO wait until upstream publishes a release to drop this patch and publish ours
-ogg = { git = "https://github.com/RustAudio/ogg.git" }

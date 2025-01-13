@@ -236,8 +236,9 @@ dependencies = [
 
 [[package]]
 name = "ogg"
-version = "0.9.1"
-source = "git+https://github.com/RustAudio/ogg.git#90f45e27396e36a5cfdb2be8e5b97ad441e05db5"
+version = "0.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fdab8dcd8d4052eaacaf8fb07a3ccd9a6e26efadb42878a413c68fc4af1dee2b"
 dependencies = [
  "byteorder",
 ]

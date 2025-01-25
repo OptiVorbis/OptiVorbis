@@ -9,7 +9,7 @@
 		  content="A web demo application for OptiVorbis, a library for lossless optimization and repair of Ogg Vorbis files.">
 	<meta property="og:image" content="https://github.com/OptiVorbis/OptiVorbis/raw/master/web/src/static/optivorbis_logo.png">
 </head>
-<body class="bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-700 dark:to-sky-800 min-h-screen bg-no-repeat">
+<body class="bg-linear-to-br from-sky-100 to-sky-200 dark:from-sky-700 dark:to-sky-800 min-h-screen bg-no-repeat">
 
 <a href="https://github.com/OptiVorbis/OptiVorbis" class="github-corner" aria-label="View source on GitHub"
    title="View source on GitHub">
@@ -27,7 +27,7 @@
 		<img id="optivorbis-logo" src="<%= require('./static/optivorbis_logo.png') %>" alt="OptiVorbis logo"
 			 class="mt-[80px] sm:mt-10 w-2/3 sm:w-1/2 max-h-[30vh] min-h-[130px] object-scale-down">
 		<h1 class="text-3xl font-bold mt-2">OptiVorbis</h1>
-		<p class="mt-5 p-2.5 w-5/6 sm:w-3/4 sm:text-lg rounded-xl bg-gradient-to-l from-amber-400 to-amber-500 dark:from-amber-600 dark:to-amber-700 shadow-md">
+		<p class="mt-5 p-2.5 w-5/6 sm:w-3/4 sm:text-lg rounded-xl bg-linear-to-l from-amber-400 to-amber-500 dark:from-amber-600 dark:to-amber-700 shadow-md">
 			Easily <strong>optimize</strong> and <strong>repair Ogg Vorbis files</strong> within your web browser!</p>
 	</header>
 
@@ -35,7 +35,7 @@
 	<div id="file-input-section" class="flex flex-col items-center text-center">
 		<label class="mt-5 w-5/6 sm:w-3/4 rounded-xl border-dashed border-red-500 dark:border-red-800 border-4 block select-none cursor-pointer transition-colors"
 			   id="file-input-label">
-			<button class="text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm"
+			<button class="text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-xs"
 					id="file-input-button">
 				Choose a file
 			</button>
@@ -55,14 +55,14 @@
 			   class="mt-3 w-5/6 sm:w-3/4 rounded-md h-8"></audio>
 		<div class="text-[0]"> <!-- 0-size text to avoid text between inline button elements -->
 			<button id="output-file-back"
-					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm">
+					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-xs">
 				<svg viewBox="0 0 48 48" class="inline w-[1.5rem] h-[1.5rem]">
 					<path d="M24 40 8 24 24 8 26.1 10.1 13.7 22.5H40V25.5H13.7L26.1 37.9Z" fill="currentColor"/>
 				</svg>
 				Back
 			</button>
 			<button id="output-file-download"
-					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-sm">
+					class="text-base text-stone-50 font-semibold p-3 m-3 bg-red-900 hover:bg-red-700 transition-colors rounded-full shadow-xs">
 				<svg viewBox="0 0 48 48" class="inline w-[1.5rem] h-[1.5rem]">
 					<path d="M24 32.35 14.35 22.7 16.5 20.55 22.5 26.55V8H25.5V26.55L31.5 20.55L33.65 22.7ZM11 40Q9.8 40 8.9 39.1Q8 38.2 8 37V29.85H11V37Q11 37 11 37Q11 37 11 37H37Q37 37 37 37Q37 37 37 37V29.85H40V37Q40 38.2 39.1 39.1Q38.2 40 37 40Z"
 						  fill="currentColor"/>
@@ -76,7 +76,7 @@
 	<section class="flex flex-col items-center mt-10">
 		<div class="flex flex-row items-center w-5/6 sm:w-3/4">
 			<div class="w-full sm:w-1/2">
-				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					Lossless Ogg Vorbis file size reduction in your browser</h2>
 				<p class="leading-relaxed sm:text-lg">OptiVorbis reduces the size of Ogg Vorbis files while keeping the
 					encoded audio sample data intact, ensuring that they <strong class="font-semibold">will sound the
@@ -95,7 +95,7 @@
 		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
 			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">🛠️</div>
 			<div class="w-full sm:w-1/2">
-				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					Automatic repairs</h2>
 				<p class="leading-relaxed sm:text-lg">Another OptiVorbis perk is that it can <strong
 						class="font-semibold">automatically repair some kinds of Ogg Vorbis file corruption</strong>. A
@@ -109,7 +109,7 @@
 
 		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
 			<div class="w-full sm:w-1/2">
-				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					State of the art techniques</h2>
 				<p class="leading-relaxed sm:text-lg">In a nutshell, <strong class="font-semibold">OptiVorbis corrects
 					non-optimalities of the current Ogg Vorbis encoder implementations</strong>, replacing codec header
@@ -124,7 +124,7 @@
 		<div class="flex flex-row items-center w-5/6 sm:w-3/4 mt-4">
 			<div class="hidden sm:block w-0 sm:w-1/2 text-9xl text-center select-none">🧑‍💻</div>
 			<div class="w-full sm:w-1/2">
-				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					Developer and power-user friendly</h2>
 				<p class="leading-relaxed sm:text-lg">OptiVorbis is an <strong class="font-semibold">open-source
 					software library</strong> written in <i>Rust</i>, a modern language that emphasizes performance and
@@ -145,7 +145,7 @@
 	<section class="sm:flex sm:flex-col sm:items-center mt-10">
 		<div class="sm:flex sm:flex-row sm:justify-around sm:w-3/4">
 			<div class="flex flex-col items-center text-center">
-				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					Get the CLI and contribute</h2>
 				<a href="https://github.com/OptiVorbis/OptiVorbis" rel="noopener">
 					<svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@
 				</a>
 			</div>
 			<div class="flex flex-col items-center text-center">
-				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
+				<h2 class="text-xl sm:text-2xl font-semibold bg-clip-text text-transparent bg-linear-to-r from-amber-800 to-gray-800 dark:from-amber-100 dark:to-gray-100">
 					Begin building a better app</h2>
 				<a href="https://crates.io/crates/optivorbis" rel="noopener">
 					<div class="mt-4 w-24 transition hover:scale-105"><%= require('./static/Cargo logo.svg') %></div>
@@ -193,7 +193,7 @@
 			<div class="relative bg-white dark:bg-slate-400 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
 				<div class="bg-slate-100 dark:bg-slate-300 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
 					<div class="sm:flex sm:items-start">
-						<div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+						<div class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
 							<svg class="h-6 w-6 text-red-600" fill="none"
 								 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
 								<path stroke-linecap="round" stroke-linejoin="round"
@@ -216,7 +216,7 @@
 				<div class="bg-slate-200 dark:bg-slate-200 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
 					<button type="button"
 							id="file-error-modal-close"
-							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-xs px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
 						OK
 					</button>
 				</div>

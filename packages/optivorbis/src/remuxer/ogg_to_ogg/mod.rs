@@ -11,7 +11,6 @@ use std::{
 	time::UNIX_EPOCH
 };
 
-use getrandom::getrandom;
 use granulator::granule_position_for_packet;
 use indexmap::{map::Entry, IndexMap};
 use log::info;
@@ -543,7 +542,7 @@ fn random_stream_serial_and_increment(
 	// brute-forcing state data from the serial under certain assumptions. If a source
 	// date epoch is available, use a known PRNG with a fixed seed to guarantee
 	// reproducibility
-	if source_date_epoch.is_some() || getrandom(&mut random_bytes[..]).is_err() {
+	if source_date_epoch.is_some() || getrandom::fill(&mut random_bytes[..]).is_err() {
 		/// The PRNG to use when reproducible results are requested via environment variables,
 		/// or the system CSPRNG fails.
 		static STREAM_SERIAL_PRNG: Mutex<Option<Result<Xoshiro256PlusPlus, ParseIntError>>> =

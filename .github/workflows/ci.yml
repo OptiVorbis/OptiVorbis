@@ -93,7 +93,7 @@ jobs:
 
       - name: 🧰 Install cargo-deny
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: taiki-e/install-action@5bc300ae6202155e070ca83afb334e8aac18c49c # v2
+        uses: taiki-e/install-action@82c3ccf997338625b2600b840b51cd18a38568fd # v2
         with:
           tool: cargo-deny
 

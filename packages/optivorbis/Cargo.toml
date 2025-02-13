@@ -19,14 +19,14 @@ include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
 ogg = "0.9.2"
 vorbis_bitpack.workspace = true
 
-indexmap = "2.7.0"
-bumpalo = "3.16.0"
+indexmap = "2.7.1"
+bumpalo = "3.17.0"
 tinyvec = { version = "1.8.1", default-features = false, features = [
   "alloc",
   "rustc_1_57",
 ] }
 
-getrandom = "0.3.0"
+getrandom = "0.3.1"
 rand_xoshiro = "0.7.0"
 
 thiserror = "2.0.11"

@@ -252,13 +252,14 @@ dependencies = [
 
 [[package]]
 name = "oggvorbismeta"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a96cf4d043ab82015fc72deba4e36845c95b21433abdd47257f061a8fd744d66"
+checksum = "704f59246960c22a7be873a032441a37e3d831564096d212c8aba1c541f3cafa"
 dependencies = [
  "byteorder",
  "lewton",
  "ogg 0.7.1",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -283,7 +284,7 @@ dependencies = [
  "pretty_env_logger",
  "rand_xoshiro",
  "slice-group-by",
- "thiserror",
+ "thiserror 2.0.11",
  "tinyvec",
  "vorbis_bitpack",
  "wasm-bindgen",
@@ -495,11 +496,31 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
+version = "1.0.69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6aaf5339b578ea85b50e080feb250a3e8ae8cfcdff9a461c9ec2904bc923f52"
+dependencies = [
+ "thiserror-impl 1.0.69",
+]
+
+[[package]]
+name = "thiserror"
 version = "2.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d452f284b73e6d76dd36758a0c8684b1d5be31f92b89d07fd5822175732206fc"
 dependencies = [
- "thiserror-impl",
+ "thiserror-impl 2.0.11",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.69"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

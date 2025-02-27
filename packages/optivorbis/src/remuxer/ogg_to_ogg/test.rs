@@ -28,9 +28,9 @@ fn remux_with_settings<B: AsRef<[u8]>, M: OggVorbisStreamMangler>(
 	OggToOgg::new(settings_supplier(), optimizer_settings_supplier())
 		.remux(Cursor::new(ogg_vorbis_data.as_ref()), &mut byte_destination)?;
 
-	comment_header_predicate(oggvorbismeta::read_comment_header(Cursor::new(
-		&byte_destination
-	)));
+	comment_header_predicate(
+		oggvorbismeta::read_comment_header(Cursor::new(&byte_destination)).unwrap()
+	);
 
 	// Dogfooding asserts the invariant that the result of optimizing an Ogg Vorbis
 	// file is another Ogg Vorbis file we can parse

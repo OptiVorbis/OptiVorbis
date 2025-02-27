@@ -16,7 +16,7 @@ rust-version = "1.73.0"
 [workspace.dependencies]
 optivorbis = { version = "0.3.0", path = "packages/optivorbis" }
 vorbis_bitpack = { version = "0.2.0", path = "packages/vorbis_bitpack" }
-log = "0.4.25"
+log = "0.4.26"
 
 [profile.release]
 lto = "fat"

@@ -526,15 +526,10 @@ fn parse_floor1_configurations<R: Read>(
 					bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?
 						.checked_sub(1);
 
-				// If we succeed finding an invalid codebook number return error
-				if let Some(codebook_number) = codebook_number
-					.iter()
-					.filter(|n| **n as usize >= codebook_count)
-					.last()
+				if let Some(codebook_number) =
+					codebook_number.filter(|n| *n as usize >= codebook_count)
 				{
-					return Err(VorbisOptimizerError::InvalidCodebookNumber(
-						*codebook_number
-					));
+					return Err(VorbisOptimizerError::InvalidCodebookNumber(codebook_number));
 				}
 
 				debug!(

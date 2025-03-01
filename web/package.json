@@ -42,7 +42,7 @@
     "webpack-dev-server": "5.2.0"
   },
   "dependencies": {
-    "core-js": "3.40.0",
+    "core-js": "3.41.0",
     "optivorbis": "*"
   }
 }

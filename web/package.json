@@ -17,8 +17,7 @@
   "devDependencies": {
     "@eslint/js": "9.22.0",
     "@tailwindcss/postcss": "4.0.12",
-    "@types/eslint__js": "8.42.3",
-    "@typescript-eslint/parser": "8.26.0",
+    "@typescript-eslint/parser": "8.26.1",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.21",
     "css-loader": "7.1.2",
@@ -27,7 +26,7 @@
     "eslint-import-resolver-typescript": "3.8.4",
     "eslint-plugin-import": "2.31.0",
     "favicons-webpack-plugin": "6.0.1",
-    "globals": "15.15.0",
+    "globals": "16.0.0",
     "html-webpack-plugin": "5.6.3",
     "mini-css-extract-plugin": "2.9.2",
     "postcss": "8.5.3",
@@ -36,7 +35,7 @@
     "tailwindcss": "4.0.12",
     "ts-loader": "9.5.2",
     "typescript": "5.8.2",
-    "typescript-eslint": "8.26.0",
+    "typescript-eslint": "8.26.1",
     "webpack": "5.98.0",
     "webpack-cli": "6.0.1",
     "webpack-dev-server": "5.2.0"

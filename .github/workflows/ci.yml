@@ -40,7 +40,7 @@ jobs:
           toolchain: ${{ env.MSRV }}
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@65101d47ea8028ed0c98a1cdea8dd9182e9b5133 # v0.0.8
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
 
       - name: ⚙️ Run tests
         run: cargo test -p optivorbis -p optivorbis_cli -p vorbis_bitpack
@@ -98,7 +98,7 @@ jobs:
           tool: cargo-deny
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@65101d47ea8028ed0c98a1cdea8dd9182e9b5133 # v0.0.8
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
 
       - name: 📅 Gather build date and version metadata
         shell: bash
@@ -176,7 +176,7 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@65101d47ea8028ed0c98a1cdea8dd9182e9b5133 # v0.0.8
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
 
       - name: 📅 Gather build date and version metadata
         shell: bash

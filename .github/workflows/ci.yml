@@ -106,7 +106,7 @@ jobs:
           echo "OPTIVORBIS_VERSION=$(git describe --tags --dirty=-custom --always)" >> "$GITHUB_ENV"
           echo "OPTIVORBIS_BUILD_DATE=$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
 
-      - name: '🔍 Static analysis: run Clippy'
+      - name: "🔍 Static analysis: run Clippy"
         uses: giraffate/clippy-action@13b9d32482f25d29ead141b79e7e04e7900281e0 # v1
         if: matrix.target == 'x86_64-unknown-linux-musl' && github.event_name != 'release'
         with:
@@ -114,16 +114,17 @@ jobs:
           reporter: github-check
           fail_on_error: true
 
-      - name: '🔍 Static analysis: run rustfmt'
+      - name: "🔍 Static analysis: run rustfmt"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: cargo fmt --check --all
 
-      - name: '🔍 Static analysis: run cargo deny'
+      - name: "🔍 Static analysis: run cargo deny"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: cargo deny check
 
       - name: ✔️ Run tests
-        run: cargo test --release --target ${{ matrix.target }} -Zdoctest-xcompile
+        run:
+          cargo test --release --target ${{ matrix.target }} -Zdoctest-xcompile
           -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
       - name: 📚 Build documentation
@@ -132,8 +133,8 @@ jobs:
 
       - name: 🔨 Build CLI executable
         run: cargo build --target ${{ matrix.target }} --release
-            -Z build-std=panic_abort,core,std,alloc,proc_macro
-            -Z build-std-features=panic_immediate_abort
+          -Z build-std=panic_abort,core,std,alloc,proc_macro
+          -Z build-std-features=panic_immediate_abort
 
       - name: 📤 Upload CLI executable artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -187,7 +188,7 @@ jobs:
       - name: 🔨 Build web demo
         run: npm ci
 
-      - name: '🔍 Static analysis: ESLint'
+      - name: "🔍 Static analysis: ESLint"
         run: npm run lint
 
       - name: 📤 Deploy to GitHub Pages

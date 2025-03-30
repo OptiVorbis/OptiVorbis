@@ -150,8 +150,7 @@ impl VorbisCodebook {
 
 					trace!(
 						"Reading entry {} using codebook {}",
-						entry.number,
-						self.codebook_number
+						entry.number, self.codebook_number
 					);
 
 					return Ok(entry.number);

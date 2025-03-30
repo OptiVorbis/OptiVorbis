@@ -13,7 +13,7 @@ fn main() {
 	}
 	match option_env!("OPTIVORBIS_BUILD_DATE") {
 		Some(build_date) => {
-			println!("cargo:rustc-env=OPTIVORBIS_BUILD_DATE_VERSION_SUFFIX= ({build_date})")
+			println!("cargo:rustc-env=OPTIVORBIS_BUILD_DATE_VERSION_SUFFIX= ({build_date})");
 		}
 		None => println!("cargo:rustc-env=OPTIVORBIS_BUILD_DATE_VERSION_SUFFIX=")
 	}

@@ -33,7 +33,7 @@ The following code recreates the Vorbis I specification bitpacking example.
 use std::io::Cursor;
 use vorbis_bitpack::{bitpacked_integer_width, BitpackReader, BitpackWriter};
 
-let mut buf = Vec::new();
+let mut buf = vec![];
 
 // Write bitpacked integers
 let mut bitpacker = BitpackWriter::new(&mut buf);

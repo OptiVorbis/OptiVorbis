@@ -5,8 +5,8 @@ use std::{borrow::Cow, ops::Range};
 use log::trace;
 
 use super::{
-	comment_header_copy::CommentHeaderCopy, comment_header_parse::VorbisCommentData,
-	setup_header_parse::VorbisSetupData, VorbisIdentificationHeaderData, VorbisOptimizerError
+	VorbisIdentificationHeaderData, VorbisOptimizerError, comment_header_copy::CommentHeaderCopy,
+	comment_header_parse::VorbisCommentData, setup_header_parse::VorbisSetupData
 };
 
 /// Copies the provided identification header, fixing or changing some fields as intended.
@@ -29,14 +29,14 @@ impl IdentificationHeaderCopy {
 		),
 		VorbisOptimizerError
 	> {
-		trace!("Optimizing identification header Vorbis packet");
-
 		const SAMPLING_FREQUENCY_BYTE_RANGE: Range<usize> = 7 + 5..7 + 9;
 		const MAXIMUM_BITRATE_BYTE_RANGE: Range<usize> = 7 + 9..7 + 13;
 		const NOMINAL_BITRATE_BYTE_RANGE: Range<usize> = 7 + 13..7 + 17;
 		const MINIMUM_BITRATE_BYTE_RANGE: Range<usize> = 7 + 17..7 + 21;
 		const FRAMING_BYTE_OFFSET: usize = 7 + 22;
 		const EXPECTED_PACKET_LENGTH: usize = 7 + 23;
+
+		trace!("Optimizing identification header Vorbis packet");
 
 		// Due to the previous analysis states in the optimizer, we can assume that the input
 		// packet is well-formed, and contains the data we expect

@@ -45,7 +45,7 @@
 //! use std::io::Cursor;
 //! use vorbis_bitpack::{bitpacked_integer_width, BitpackReader, BitpackWriter};
 //!
-//! let mut buf = Vec::new();
+//! let mut buf = vec![];
 //!
 //! // Write bitpacked integers
 //! let mut bitpacker = BitpackWriter::new(&mut buf);
@@ -96,11 +96,7 @@ impl BitpackedIntegerWidth {
 	/// Wraps `width` in this newtype, returning `None` if `width` exceeds the
 	/// maximum value of 32.
 	pub const fn new(width: u8) -> Option<Self> {
-		if width <= 32 {
-			Some(Self(width))
-		} else {
-			None
-		}
+		if width <= 32 { Some(Self(width)) } else { None }
 	}
 
 	/// Unwraps the integer width contained by this newtype.
@@ -467,8 +463,8 @@ fn float32_unpack(word: u32) -> f64 {
 	// A f64 is returned to preserve the numerical value of a float for higher
 	// exponents and significands, as the maximum Vorbis float value is higher
 	// than a f32 value
-	let mantissa = f32::from_bits(((word & 0x1FFFFF) as f32).to_bits() | word & 0x80000000);
-	let exponent = ((word & 0x7FE00000) >> 21) as f64 - 788.0;
+	let mantissa = f32::from_bits(((word & 0x1F_FFFF) as f32).to_bits() | word & 0x8000_0000);
+	let exponent = ((word & 0x7FE0_0000) >> 21) as f64 - 788.0;
 	#[cfg(not(feature = "no-std"))]
 	{
 		mantissa as f64 * exponent.exp2()

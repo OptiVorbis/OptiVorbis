@@ -8,7 +8,7 @@ use std::{
 	borrow::Cow,
 	io::{self, ErrorKind},
 	mem,
-	num::{NonZeroU32, NonZeroU8, TryFromIntError}
+	num::{NonZeroU8, NonZeroU32, TryFromIntError}
 };
 
 use audio_packet_analyze::AudioPacketAnalyze;
@@ -22,8 +22,8 @@ use setup_header_rewrite::SetupHeaderRewrite;
 use thiserror::Error;
 
 use super::{
-	codebook::VorbisCodebookError, PacketType, TryPacketTypeFromInt, TryResidueTypeFromInt,
-	TryVectorLookupTypeFromInt
+	PacketType, TryPacketTypeFromInt, TryResidueTypeFromInt, TryVectorLookupTypeFromInt,
+	codebook::VorbisCodebookError
 };
 
 /// Calls the specified `method` on a Vorbis bitpacker struct.
@@ -471,6 +471,8 @@ impl<'settings> VorbisOptimizer<'settings> {
 		settings: &'settings VorbisOptimizerSettings,
 		identification_header: B
 	) -> Result<Self, VorbisOptimizerError> {
+		const IDENTIFICATION_HEADER_LENGTH: usize = 23 + 7;
+
 		trace!("Decoding identification header Vorbis packet");
 
 		let identification_header = common_header_validation(
@@ -479,7 +481,6 @@ impl<'settings> VorbisOptimizer<'settings> {
 		)?;
 
 		// Validate the specific identification header fields, which always take 23 bytes
-		const IDENTIFICATION_HEADER_LENGTH: usize = 23 + 7;
 		let header_length = identification_header.len() + 7;
 		if header_length < IDENTIFICATION_HEADER_LENGTH {
 			return Err(VorbisOptimizerError::UnexpectedHeaderPacketLength {
@@ -545,15 +546,11 @@ impl<'settings> VorbisOptimizer<'settings> {
 		// detection and correction. This is useful to "repair" streams too
 
 		info!(
-			"Vorbis identification header: {} channel(s), {} Hz sampling frequency, \
-			minimum, nominal and maximum bitrates: {}, {} and {}, blocksizes {} and {}",
-			channels,
-			sampling_frequency,
-			minimum_bitrate,
-			nominal_bitrate,
-			maximum_bitrate,
-			blocksizes.0,
-			blocksizes.1
+			"Vorbis identification header: {channels} channel(s), \
+			{sampling_frequency} Hz sampling frequency, \
+			minimum, nominal and maximum bitrates: {minimum_bitrate}, {nominal_bitrate} and {maximum_bitrate}, \
+			blocksizes {} and {}",
+			blocksizes.0, blocksizes.1
 		);
 
 		Ok(VorbisOptimizer {
@@ -652,7 +649,7 @@ impl<'settings> VorbisOptimizer<'settings> {
 				.into();
 			}
 			_ => ()
-		};
+		}
 
 		let packet = packet.into();
 

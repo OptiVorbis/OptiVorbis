@@ -4,11 +4,11 @@ use std::{borrow::Cow, io, io::Write};
 
 use log::trace;
 use slice_group_by::GroupBy;
-use vorbis_bitpack::{bitpacked_integer_width, BitpackWriter, BitpackedIntegerWidth};
+use vorbis_bitpack::{BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_width};
 
 use super::{
-	audio_packet_rewrite::AudioPacketRewrite, ilog, setup_header_parse::VorbisSetupData,
-	VorbisOptimizerError
+	VorbisOptimizerError, audio_packet_rewrite::AudioPacketRewrite, ilog,
+	setup_header_parse::VorbisSetupData
 };
 use crate::vorbis::VectorLookupType;
 
@@ -114,8 +114,7 @@ fn optimize_and_write_codebooks<W: Write>(
 		// replacing any references to the old codebook numbers
 		let mut has_unused_entries = optimal_codeword_lengths
 			.first()
-			.map(|first_entry_frequency| *first_entry_frequency == 0)
-			.unwrap_or(false);
+			.is_some_and(|first_entry_frequency| *first_entry_frequency == 0);
 
 		let codeword_lengths_are_sorted = optimal_codeword_lengths.windows(2).fold(
 			true,

@@ -7,10 +7,10 @@ use log::{debug, info, trace};
 use vorbis_bitpack::BitpackReader;
 
 use super::{
-	common_header_validation, ilog, AudioPacketAnalyze, VorbisCommentData,
-	VorbisIdentificationHeaderData, VorbisOptimizerError
+	AudioPacketAnalyze, VorbisCommentData, VorbisIdentificationHeaderData, VorbisOptimizerError,
+	common_header_validation, ilog
 };
-use crate::vorbis::{codebook::VorbisCodebook, PacketType, ResidueType, VectorLookupType};
+use crate::vorbis::{PacketType, ResidueType, VectorLookupType, codebook::VorbisCodebook};
 
 /// A mutable reference to an immutable byte slice, used in [`parse_codebook_configurations`]
 /// to instantiate a bitpack reader without any cursor seek position tracking overhead.
@@ -147,10 +147,7 @@ impl SetupHeaderParse {
 		// The specification mandates that they are zero, but we can mostly ignore that
 		let time_domain_transform_count =
 			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 6, u8)? + 1;
-		info!(
-			"Time domain transforms (unused): {}",
-			time_domain_transform_count
-		);
+		info!("Time domain transforms (unused): {time_domain_transform_count}");
 
 		for _ in 0..time_domain_transform_count {
 			let transform = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 16, u16)?;
@@ -188,9 +185,9 @@ impl SetupHeaderParse {
 			Some(AudioPacketAnalyze {
 				comment_data: mem::take(&mut self.comment_data),
 				codec_setup: VorbisSetupData {
-					residue_configurations,
 					codebook_configurations,
 					floor_configurations,
+					residue_configurations,
 					mapping_configurations,
 					modes
 				}
@@ -239,7 +236,7 @@ fn parse_codebook_configurations<'pref, 'packet>(
 			*codebook_count as u16 + 1
 		})
 		.unwrap();
-	info!("Codebook count: {}", codebook_count);
+	info!("Codebook count: {codebook_count}");
 
 	// From now on reads must be done via the Vorbis bitpack format.
 	// Skip the consumed codebook count
@@ -266,8 +263,7 @@ fn parse_codebook_configurations<'pref, 'packet>(
 		let ordered = bitpack_packet_read!(bitpacker, read_flag, header_length)?;
 
 		debug!(
-			"Codebook {}: {} dimensions, {} entries, ordered: {}",
-			i, codebook_dimensions, codebook_entries, ordered
+			"Codebook {i}: {codebook_dimensions} dimensions, {codebook_entries} entries, ordered: {ordered}",
 		);
 
 		let mut codeword_lengths = vec![0; codebook_entries_usize];
@@ -329,9 +325,9 @@ fn parse_codebook_configurations<'pref, 'packet>(
 			// Sparse codebooks may have unused entries. Unused entries are ignored in the
 			// codeword assignment process and do not appear in the stream
 			let sparse = bitpack_packet_read!(bitpacker, read_flag, header_length)?;
-			trace!("Codebook {} is sparse: {}", i, sparse);
+			trace!("Codebook {i} is sparse: {sparse}");
 
-			for codeword_length in codeword_lengths.iter_mut() {
+			for codeword_length in &mut codeword_lengths {
 				// Non-sparse codebooks always read the codeword length from the stream.
 				// For sparse codebooks, we read the "used" flag for this entry, which
 				// is either unset (0) or set (1). Unused entries are marked by having
@@ -353,70 +349,64 @@ fn parse_codebook_configurations<'pref, 'packet>(
 		let codebook_vector_sequence_flag;
 		let mut codebook_vector_multiplicands;
 
-		match lookup_type {
-			VectorLookupType::NoLookup => {
-				// This codebook is not used for vector lookup. Skip
-				debug!("Codebook {} is not used for vector decoding", i);
-				codebook_vector_minimum_value = 0.0;
-				codebook_vector_delta_value = 0.0;
-				codebook_vector_value_bits = 0;
-				codebook_vector_sequence_flag = false;
-				codebook_vector_multiplicands = Vec::new();
-			}
-			_ => {
-				// A zero-dimension codebook would not make sense for VQ and vector
-				// lookup in residue decode later, but don't error out yet to
-				// ignore that if the codebook is not used for that purpose by any
-				// audio packet
+		if lookup_type == VectorLookupType::NoLookup {
+			// This codebook is not used for vector lookup. Skip
+			debug!("Codebook {i} is not used for vector decoding");
+			codebook_vector_minimum_value = 0.0;
+			codebook_vector_delta_value = 0.0;
+			codebook_vector_value_bits = 0;
+			codebook_vector_sequence_flag = false;
+			codebook_vector_multiplicands = vec![];
+		} else {
+			// A zero-dimension codebook would not make sense for VQ and vector
+			// lookup in residue decode later, but don't error out yet to
+			// ignore that if the codebook is not used for that purpose by any
+			// audio packet
 
-				codebook_vector_minimum_value =
-					bitpack_packet_read!(bitpacker, read_float32, header_length)?;
-				codebook_vector_delta_value =
-					bitpack_packet_read!(bitpacker, read_float32, header_length)?;
-				codebook_vector_value_bits = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 4, u8)?
-					+ 1;
-				codebook_vector_sequence_flag =
-					bitpack_packet_read!(bitpacker, read_flag, header_length)?;
+			codebook_vector_minimum_value =
+				bitpack_packet_read!(bitpacker, read_float32, header_length)?;
+			codebook_vector_delta_value =
+				bitpack_packet_read!(bitpacker, read_float32, header_length)?;
+			codebook_vector_value_bits = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 4, u8)?
+				+ 1;
+			codebook_vector_sequence_flag =
+				bitpack_packet_read!(bitpacker, read_flag, header_length)?;
 
-				let codebook_lookup_value_count =
-					if lookup_type == VectorLookupType::ImplicitlyPopulated {
-						lookup1_values(codebook_entries, codebook_dimensions) as u64
-					} else {
-						// A 24-bit number multiplied by a 16-bit number is guaranteed
-						// to fit in a 40-bit number, so make sure we use 64-bit integers
-						codebook_entries as u64 * codebook_dimensions as u64
-					};
+			let codebook_lookup_value_count =
+				if lookup_type == VectorLookupType::ImplicitlyPopulated {
+					lookup1_values(codebook_entries, codebook_dimensions) as u64
+				} else {
+					// A 24-bit number multiplied by a 16-bit number is guaranteed
+					// to fit in a 40-bit number, so make sure we use 64-bit integers
+					codebook_entries as u64 * codebook_dimensions as u64
+				};
 
-				debug!(
-					"Codebook {} vector lookup: type {} ({:?}), minimum value {}, delta value {}, \
-						value bits {}, value count {}",
-					i,
-					lookup_type as u8,
-					lookup_type,
-					codebook_vector_minimum_value,
-					codebook_vector_delta_value,
-					codebook_vector_value_bits,
-					codebook_lookup_value_count
-				);
+			debug!(
+				"Codebook {i} vector lookup: type {} ({lookup_type:?}), \
+				minimum value {codebook_vector_minimum_value}, \
+				delta value {codebook_vector_delta_value}, \
+				value bits {codebook_vector_value_bits}, \
+				value count {codebook_lookup_value_count}",
+				lookup_type as u8,
+			);
 
-				// We don't need to actually do vector quantization, so any VQ-related data we
-				// are reading here is useless for us. But we should store it for copying it later.
-				// Fuzzing revealed that it is relatively easy for a crafted small file to make us
-				// allocate too much memory here. 4096 entries of 16 dimensions yields 65536 values
-				// here, and those high counts are not seen in valid Ogg Vorbis files in the wild.
-				// So just allocate space for 65535 multiplicands and let the vector grow if it
-				// really needs to
-				codebook_vector_multiplicands =
-					Vec::with_capacity(cmp::min(codebook_lookup_value_count.try_into()?, 65535));
-				for _ in 0..codebook_lookup_value_count {
-					codebook_vector_multiplicands.push(bitpack_packet_read!(
-						bitpacker,
-						read_unsigned_integer,
-						header_length,
-						mut codebook_vector_value_bits,
-						u16
-					)?);
-				}
+			// We don't need to actually do vector quantization, so any VQ-related data we
+			// are reading here is useless for us. But we should store it for copying it later.
+			// Fuzzing revealed that it is relatively easy for a crafted small file to make us
+			// allocate too much memory here. 4096 entries of 16 dimensions yields 65536 values
+			// here, and those high counts are not seen in valid Ogg Vorbis files in the wild.
+			// So just allocate space for 65535 multiplicands and let the vector grow if it
+			// really needs to
+			codebook_vector_multiplicands =
+				Vec::with_capacity(cmp::min(codebook_lookup_value_count.try_into()?, 65535));
+			for _ in 0..codebook_lookup_value_count {
+				codebook_vector_multiplicands.push(bitpack_packet_read!(
+					bitpacker,
+					read_unsigned_integer,
+					header_length,
+					mut codebook_vector_value_bits,
+					u16
+				)?);
 			}
 		}
 
@@ -445,7 +435,7 @@ fn parse_floor1_configurations<R: Read>(
 ) -> Result<Vec<Floor1Configuration>, VorbisOptimizerError> {
 	let floor_count =
 		bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 6, u8)? + 1;
-	info!("Floor configurations count: {}", floor_count);
+	info!("Floor configurations count: {floor_count}");
 
 	let mut floor_configurations = Vec::with_capacity(floor_count as usize);
 	for i in 0..floor_count {
@@ -503,16 +493,13 @@ fn parse_floor1_configurations<R: Read>(
 					return Err(VorbisOptimizerError::InvalidCodebookNumber(codebook_number));
 				}
 
-				debug!(
-					"Floor {}, subclass {} codebook: {}",
-					i, current_subclass, codebook_number
-				);
+				debug!("Floor {i}, subclass {current_subclass} codebook: {codebook_number}");
 
 				class_masterbooks.push(Some(codebook_number));
 			} else {
 				// This subclass does not have a codebook. It'd be an error to decode a packet
 				// with this subclass' codebook later
-				debug!("Floor {}, subclass {} has no codebook", i, current_subclass);
+				debug!("Floor {i}, subclass {current_subclass} has no codebook");
 
 				class_masterbooks.push(None);
 			}
@@ -532,10 +519,7 @@ fn parse_floor1_configurations<R: Read>(
 					return Err(VorbisOptimizerError::InvalidCodebookNumber(codebook_number));
 				}
 
-				debug!(
-					"Floor {} vector partition codebook: {:?}",
-					i, codebook_number
-				);
+				debug!("Floor {i} vector partition codebook: {codebook_number:?}");
 
 				current_subclass_books.push(codebook_number);
 			}
@@ -597,7 +581,7 @@ fn parse_residue_configurations<R: Read>(
 ) -> Result<Vec<ResidueConfiguration>, VorbisOptimizerError> {
 	let residue_count =
 		bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 6, u8)? + 1;
-	info!("Residue count: {}", residue_count);
+	info!("Residue count: {residue_count}");
 
 	let mut residue_configurations = Vec::with_capacity(residue_count as usize);
 	for i in 0..residue_count {
@@ -624,15 +608,14 @@ fn parse_residue_configurations<R: Read>(
 			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?;
 
 		debug!(
-			"Residue {}: type {} ({:?}), begin {}, end {}, partition size {}, classifications {}, classbook {}",
-			i,
+			"Residue {i}: \
+			type {} ({residue_type:?}), \
+			begin {residue_begin}, \
+			end {residue_end}, \
+			partition size {residue_partition_size}, \
+			classifications {residue_classifications}, \
+			classbook {residue_classbook}",
 			residue_type as u8,
-			residue_type,
-			residue_begin,
-			residue_end,
-			residue_partition_size,
-			residue_classifications,
-			residue_classbook
 		);
 
 		// Check that the referenced codebook exists, and has enough entries
@@ -681,11 +664,7 @@ fn parse_residue_configurations<R: Read>(
 						return Err(VorbisOptimizerError::InvalidCodebookNumber(residue_book));
 					}
 
-					trace!(
-						"Read residue book {} for classification {}",
-						residue_book,
-						i
-					);
+					trace!("Read residue book {residue_book} for classification {i}");
 
 					residue_books[i][j] = Some(residue_book);
 				} else {
@@ -719,7 +698,7 @@ fn parse_mapping_configurations<R: Read>(
 ) -> Result<Vec<MappingConfiguration>, VorbisOptimizerError> {
 	let mapping_count =
 		bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 6, u8)? + 1;
-	info!("Mapping count: {}", mapping_count);
+	info!("Mapping count: {mapping_count}");
 
 	let mut mapping_configurations = Vec::with_capacity(mapping_count as usize);
 	for i in 0..mapping_count {
@@ -740,10 +719,7 @@ fn parse_mapping_configurations<R: Read>(
 			1
 		};
 
-		debug!(
-			"Mapping {} floor and residue submap count: {}",
-			i, mapping_submap_count
-		);
+		debug!("Mapping {i} floor and residue submap count: {mapping_submap_count}");
 
 		// Read square polar channel mappings, if they are used
 		let mut channel_mappings;
@@ -782,12 +758,8 @@ fn parse_mapping_configurations<R: Read>(
 				}
 
 				trace!(
-					"Mapping {}, channel mapping {}: \
-						magnitude channel {}, angle channel {}",
-					i,
-					j,
-					magnitude_channel,
-					angle_channel
+					"Mapping {i}, channel mapping {j}: \
+					magnitude channel {magnitude_channel}, angle channel {angle_channel}"
 				);
 
 				channel_mappings.push(ChannelMapping {
@@ -796,7 +768,7 @@ fn parse_mapping_configurations<R: Read>(
 				});
 			}
 		} else {
-			trace!("Not using channel mappings for mapping {}", i);
+			trace!("Not using channel mappings for mapping {i}");
 
 			channel_mappings = vec![];
 		}
@@ -835,11 +807,7 @@ fn parse_mapping_configurations<R: Read>(
 			mapping_mux = vec![0; audio_channels as usize];
 		}
 
-		trace!(
-			"Read mapping {} channel floor and residue submapping settings: {:?}",
-			i,
-			mapping_mux
-		);
+		trace!("Read mapping {i} channel floor and residue submapping settings: {mapping_mux:?}");
 
 		// Read the floor and residue used to decode submaps
 		let mut floor_and_residue_mappings = Vec::with_capacity(mapping_submap_count as usize);
@@ -860,10 +828,7 @@ fn parse_mapping_configurations<R: Read>(
 				return Err(VorbisOptimizerError::InvalidResidueNumber(residue_number));
 			}
 
-			info!(
-				"Mapping {}, submap {}: floor {}, residue {}",
-				i, j, floor_number, residue_number
-			);
+			info!("Mapping {i}, submap {j}: floor {floor_number}, residue {residue_number}");
 
 			floor_and_residue_mappings.push(FloorAndResidueMapping {
 				floor_number,
@@ -890,7 +855,7 @@ fn parse_modes<R: Read>(
 ) -> Result<Vec<Mode>, VorbisOptimizerError> {
 	let mode_count =
 		bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 6, u8)? + 1;
-	info!("Mode count: {}", mode_count);
+	info!("Mode count: {mode_count}");
 
 	let mut modes = Vec::with_capacity(mode_count as usize);
 	for i in 0..mode_count {
@@ -918,10 +883,7 @@ fn parse_modes<R: Read>(
 			return Err(VorbisOptimizerError::InvalidMappingNumber(mapping_number));
 		}
 
-		debug!(
-			"Mode {}: uses big block size: {}, mapping number {}",
-			i, big_block, mapping_number
-		);
+		debug!("Mode {i}: uses big block size: {big_block}, mapping number {mapping_number}");
 
 		modes.push(Mode {
 			big_block,

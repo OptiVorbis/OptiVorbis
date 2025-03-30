@@ -231,7 +231,7 @@
 #![warn(clippy::redundant_feature_names)]
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
-pub use remuxer::{ogg_to_ogg::OggToOgg, Remuxer};
+pub use remuxer::{Remuxer, ogg_to_ogg::OggToOgg};
 #[doc(inline)]
 pub use vorbis::codebook::VorbisCodebookError;
 #[doc(inline)]

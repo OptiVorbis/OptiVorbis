@@ -12,14 +12,14 @@ use std::{
 };
 
 use granulator::granule_position_for_packet;
-use indexmap::{map::Entry, IndexMap};
+use indexmap::{IndexMap, map::Entry};
 use log::info;
 use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter, PageParsingOptions};
 #[doc(inline)]
 pub use ogg_vorbis_stream_mangler::{OggVorbisStreamMangler, OggVorbisStreamPassthroughMangler};
 use rand_xoshiro::{
-	rand_core::{RngCore, SeedableRng},
-	Xoshiro256PlusPlus
+	Xoshiro256PlusPlus,
+	rand_core::{RngCore, SeedableRng}
 };
 use thiserror::Error;
 
@@ -297,10 +297,7 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 						return Err(RemuxError::UnsupportedStreamMultiplexing);
 					}
 
-					info!(
-						"Analyzing Ogg Vorbis bitstream with serial {}",
-						stream_serial
-					);
+					info!("Analyzing Ogg Vorbis bitstream with serial {stream_serial}");
 
 					// Mangle the sampling frequency and bitrates read from the header packet.
 					// We can do this anytime, as we don't use them for anything
@@ -344,10 +341,7 @@ fn first_pass<'settings, R: Read + Seek, M: OggVorbisStreamMangler>(
 				) => {
 					// These errors signal that the basic Vorbis header packet validation did
 					// not pass. This signals non-Vorbis data
-					info!(
-						"Ignoring non-Vorbis logical bitstream with serial {}",
-						stream_serial
-					);
+					info!("Ignoring non-Vorbis logical bitstream with serial {stream_serial}");
 				}
 				Err(error) => {
 					// The stream has an identification header that looks like Vorbis, but is corrupt
@@ -426,10 +420,7 @@ fn second_pass<R: Read + Seek, W: Write, M: OggVorbisStreamMangler>(
 		// Ignore non-Vorbis streams we skipped in the first pass
 		if let Entry::Occupied(mut entry) = vorbis_streams.entry(stream_serial) {
 			if last_seen_vorbis_stream_serial != Some(stream_serial) {
-				info!(
-					"Optimizing Ogg Vorbis bitstream with serial {}",
-					stream_serial
-				);
+				info!("Optimizing Ogg Vorbis bitstream with serial {stream_serial}");
 			}
 			last_seen_vorbis_stream_serial = Some(stream_serial);
 
@@ -438,11 +429,9 @@ fn second_pass<R: Read + Seek, W: Write, M: OggVorbisStreamMangler>(
 
 			// Optimize the packet
 			let packet_page_granule_position = packet.absgp_page();
-			let (optimized_packet, packet_sample_block_size) = if let Some(optimized_packet_data) =
+			let Some((optimized_packet, packet_sample_block_size)) =
 				stream_state.optimizer.optimize_packet(packet.data)?
-			{
-				optimized_packet_data
-			} else {
+			else {
 				// Discard the packet. Pretend it never existed by not writing it and
 				// not incrementing the optimized packet count
 				continue;

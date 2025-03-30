@@ -8,14 +8,13 @@ use tinyvec::TinyVec;
 use vorbis_bitpack::BitpackReader;
 
 use super::{
-	ilog,
+	VorbisIdentificationHeaderData, VorbisOptimizerError, ilog,
 	setup_header_parse::{
 		CodebookConfiguration, Floor1Configuration, ResidueConfiguration, VorbisSetupData
-	},
-	VorbisIdentificationHeaderData, VorbisOptimizerError
+	}
 };
 use crate::vorbis::{
-	codebook::VorbisCodebook, optimizer::setup_header_parse::Mode, ResidueType, VectorLookupType
+	ResidueType, VectorLookupType, codebook::VorbisCodebook, optimizer::setup_header_parse::Mode
 };
 
 /// Parses the specified audio packet, whose source is already wrapped in a
@@ -81,7 +80,7 @@ pub(super) fn process_audio_packet<
 			codebook_entry_decode_callback,
 			shared_callback_data
 		)
-		.map(|_| (true, Some(decode_blocksize))),
+		.map(|()| (true, Some(decode_blocksize))),
 		Ok((true, Some(decode_blocksize)))
 	)
 }
@@ -117,7 +116,7 @@ fn process_audio_packet_first_part<
 		.get(mode as usize)
 		.ok_or(VorbisOptimizerError::InvalidModeNumber(mode))?;
 
-	trace!("Audio packet mode {}", mode);
+	trace!("Audio packet mode {mode}");
 	bitpack_read_callback(mode as u32, mode_bits, shared_callback_data)?;
 
 	let decode_blocksize = if mode_configuration.big_block {
@@ -176,7 +175,7 @@ fn process_audio_packet_second_part<
 			mapping_configuration.floor_and_residue_mappings[submap_number as usize].floor_number;
 		let floor_configuration = &codec_setup.floor_configurations[floor_number as usize];
 
-		trace!("Processing floor vector, submap {}", submap_number);
+		trace!("Processing floor vector, submap {submap_number}");
 
 		// The specification mandates at § 4.3.2 that end-of-packet while decoding floor data
 		// means that the packet should be directly synthesized, with null channel audio data.
@@ -233,7 +232,7 @@ fn process_audio_packet_second_part<
 			continue;
 		}
 
-		trace!("Processing residue vectors, submap {}", i);
+		trace!("Processing residue vectors, submap {i}");
 
 		process_residue(
 			bitpacker,
@@ -267,7 +266,7 @@ fn process_floor1<
 	// Floor type is always 1 because we reject type 0 on setup decode,
 	// so there's no need to check type
 	let has_audio_energy = bitpack_packet_read!(bitpacker, read_flag, packet_length)?;
-	trace!("Audio energy this frame: {}", has_audio_energy);
+	trace!("Audio energy this frame: {has_audio_energy}");
 	bitpack_read_callback(has_audio_energy as u32, 1, shared_callback_data)?;
 
 	if has_audio_energy {
@@ -360,7 +359,7 @@ fn process_residue<R: Read, T, F: FnMut(u16, u32, &mut T) -> Result<(), VorbisOp
 	} else {
 		residue_vectors_masks = original_residue_vectors_masks;
 		vector_size = current_blocksize as u32 / 2;
-	};
+	}
 
 	let residue_vector_count = residue_vectors_masks.len();
 

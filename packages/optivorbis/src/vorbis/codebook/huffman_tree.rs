@@ -257,11 +257,11 @@ impl<'tree, V> VorbisHuffmanTreeNode<'tree, V> {
 		// Recursive cases: expand and try finding a free leaf in the left child.
 		// If that does not yield a leaf, try the right child
 		self.left_child
-			.get_or_insert_with(|| arena.alloc(Default::default()))
+			.get_or_insert_with(|| arena.alloc(Self::default()))
 			.leftmost_free_leaf_at_depth_internal(depth - 1, codeword_so_far, arena)
 			.or_else(|| {
 				self.right_child
-					.get_or_insert_with(|| arena.alloc(Default::default()))
+					.get_or_insert_with(|| arena.alloc(Self::default()))
 					.leftmost_free_leaf_at_depth_internal(
 						depth - 1,
 						codeword_so_far | (1 << (depth - 1)),
@@ -404,7 +404,7 @@ mod test {
 		// from converting a codeword length list with a single zero
 		let tree = VorbisHuffmanTreeBuilder {
 			arena: Bump::new(),
-			root_builder: |_| Default::default()
+			root_builder: |_| VorbisHuffmanTreeNode::default()
 		}
 		.build();
 
@@ -419,17 +419,21 @@ mod test {
 	#[ignore = "Takes a long time to run"]
 	fn monstrous_codeword_lengths_list_has_reasonable_resource_consumption() {
 		const MONSTROUS_CODEWORD_LENGTH: u8 = 16;
-		let tree = VorbisHuffmanTree::try_from_codeword_lengths(
-			[MONSTROUS_CODEWORD_LENGTH; 2_usize.pow(MONSTROUS_CODEWORD_LENGTH as u32)]
-		)
+		let tree = VorbisHuffmanTree::try_from_codeword_lengths(vec![
+			MONSTROUS_CODEWORD_LENGTH;
+			2_usize.pow(
+				MONSTROUS_CODEWORD_LENGTH as u32
+			)
+		])
 		.expect("The Huffman tree was assumed to not be overspecified");
 
 		let allocated_bytes = tree.borrow_arena().allocated_bytes();
 		eprintln!("Tree nodes arena allocated bytes: {allocated_bytes}");
 
-		if allocated_bytes > 8 * 1024 * 1024 {
-			panic!("More than 8 MiB of RAM were allocated for the Huffman tree");
-		}
+		assert!(
+			allocated_bytes <= 8 * 1024 * 1024,
+			"More than 8 MiB of RAM were allocated for the Huffman tree"
+		);
 	}
 
 	#[test]

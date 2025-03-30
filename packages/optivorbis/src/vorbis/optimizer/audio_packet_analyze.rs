@@ -4,8 +4,8 @@ use log::trace;
 use vorbis_bitpack::BitpackReader;
 
 use super::{
-	audio_packet_common::process_audio_packet, VorbisCommentData, VorbisIdentificationHeaderData,
-	VorbisOptimizerError, VorbisSetupData
+	VorbisCommentData, VorbisIdentificationHeaderData, VorbisOptimizerError, VorbisSetupData,
+	audio_packet_common::process_audio_packet
 };
 use crate::vorbis::PacketType;
 
@@ -47,8 +47,8 @@ impl AudioPacketAnalyze {
 			packet_length,
 			&mut bitpacker,
 			// We just let the codebook collect frequencies for now, so do nothing in the callbacks
-			|_, _, _| Ok(()),
-			|_, _, _| Ok(()),
+			|_, _, ()| Ok(()),
+			|_, _, ()| Ok(()),
 			()
 		)?;
 

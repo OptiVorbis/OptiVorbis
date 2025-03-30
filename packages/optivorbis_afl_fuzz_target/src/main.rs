@@ -1,6 +1,6 @@
 use std::{io, io::Cursor};
 
-use optivorbis::{remuxer::ogg_to_ogg::Settings, OggToOgg, Remuxer};
+use optivorbis::{OggToOgg, Remuxer, remuxer::ogg_to_ogg::Settings};
 
 fn main() {
 	afl::fuzz!(|data: &[u8]| {

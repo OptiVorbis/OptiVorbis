@@ -138,7 +138,7 @@ fn writing_spec_bitpacking_example_works() {
 #[test]
 #[cfg(not(feature = "no-std"))]
 fn writing_zero_width_integers_does_nothing() {
-	let mut dummy = Vec::new();
+	let mut dummy = vec![];
 	let mut bitpacker = BitpackWriter::new(&mut dummy);
 
 	bitpacker

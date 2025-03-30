@@ -3,7 +3,7 @@ use std::{
 	env,
 	fmt::Display,
 	fs::File,
-	io::{stdout, BufReader, BufWriter, Read, Seek, Write},
+	io::{BufReader, BufWriter, Read, Seek, Write, stdout},
 	path::Path,
 	process::exit,
 	str::FromStr,
@@ -13,14 +13,14 @@ use std::{
 use getopts::{Matches, Options, ParsingStyle};
 use log::info;
 use optivorbis::{
-	remuxer::ogg_to_ogg, OggToOgg, Remuxer, VorbisCommentFieldsAction, VorbisOptimizerSettings,
-	VorbisVendorStringAction, OPTIVORBIS_VERSION_TAG
+	OPTIVORBIS_VERSION_TAG, OggToOgg, Remuxer, VorbisCommentFieldsAction, VorbisOptimizerSettings,
+	VorbisVendorStringAction, remuxer::ogg_to_ogg
 };
 use stderrlog::ColorChoice;
 
 fn main() {
 	exit(match run() {
-		Ok(_) => 0,
+		Ok(()) => 0,
 		Err(err) => {
 			eprintln!("{err}");
 			1
@@ -171,10 +171,9 @@ fn run() -> Result<(), Cow<'static, str>> {
 						}
 					};
 
-				let chosen_remuxer = matches
-					.opt_get("remuxer")?
-					.or(guessed_remuxer)
-					.ok_or("No remuxer was specified, and no remuxer could be guessed from the file extension")?;
+				let chosen_remuxer = matches.opt_get("remuxer")?.or(guessed_remuxer).ok_or(
+					"No remuxer was specified, and no remuxer could be guessed from the file extension"
+				)?;
 
 				init_logging(&matches, quiet_mode);
 
@@ -248,8 +247,7 @@ fn remux<F: Read + Seek>(
 			set_remuxer_option_value!(remuxer_settings, verify_ogg_page_checksums);
 
 			info!(
-				"Processing {} and saving to {} with Ogg Vorbis remuxer...",
-				input_file_name, output_file_name
+				"Processing {input_file_name} and saving to {output_file_name} with Ogg Vorbis remuxer..."
 			);
 
 			let remux_begin = Instant::now();

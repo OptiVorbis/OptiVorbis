@@ -1,6 +1,6 @@
 //! Contains code for calculating valid, sensible granule positions for Ogg Vorbis packets.
 
-use super::{ogg_vorbis_stream_mangler::OggVorbisStreamMangler, Settings, VorbisStreamState};
+use super::{Settings, VorbisStreamState, ogg_vorbis_stream_mangler::OggVorbisStreamMangler};
 
 /// Calculates a valid granule position for an Ogg Vorbis packet, assuming that:
 ///

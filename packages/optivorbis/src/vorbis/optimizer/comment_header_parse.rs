@@ -6,10 +6,10 @@ use log::{info, trace, warn};
 use thiserror::Error;
 
 use super::{
-	common_header_validation, SetupHeaderParse, VorbisCommentFieldsAction, VorbisOptimizerError,
-	VorbisOptimizerSettings, VorbisVendorStringAction
+	SetupHeaderParse, VorbisCommentFieldsAction, VorbisOptimizerError, VorbisOptimizerSettings,
+	VorbisVendorStringAction, common_header_validation
 };
-use crate::{vorbis::PacketType, OPTIVORBIS_SHORT_VERSION_TAG, OPTIVORBIS_VERSION_TAG};
+use crate::{OPTIVORBIS_SHORT_VERSION_TAG, OPTIVORBIS_VERSION_TAG, vorbis::PacketType};
 
 /// The Vorbis optimizer state reached when decoding a comment header. After decoding
 /// the comment header, the next state is decoding the setup header.
@@ -88,7 +88,7 @@ impl CommentHeaderParse {
 				warn!(
 					"End of Vorbis packet while decoding the comment header. \
 					The comment header is likely corrupt, but optimization can continue"
-				)
+				);
 			}
 			_ => ()
 		}
@@ -168,7 +168,7 @@ fn parse(
 			.unwrap()
 	);
 
-	info!("User comment count: {}", user_comment_count);
+	info!("User comment count: {user_comment_count}");
 
 	// Now read the user comment fields if they should be copied
 	if settings.comment_fields_action == VorbisCommentFieldsAction::Copy {

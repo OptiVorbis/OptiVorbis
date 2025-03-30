@@ -6,8 +6,8 @@ use std::{io::Cursor, panic};
 use wasm_bindgen::prelude::*;
 
 use crate::remuxer::{
-	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler},
-	Remuxer
+	Remuxer,
+	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler}
 };
 
 #[wasm_bindgen(start)]

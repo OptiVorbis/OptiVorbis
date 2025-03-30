@@ -5,8 +5,8 @@ use oggvorbismeta::CommentHeader;
 
 use super::*;
 use crate::{
-	vorbis::optimizer::{VorbisCommentFieldsAction, VorbisVendorStringAction},
-	OPTIVORBIS_VERSION_TAG
+	OPTIVORBIS_VERSION_TAG,
+	vorbis::optimizer::{VorbisCommentFieldsAction, VorbisVendorStringAction}
 };
 
 fn init_logging() {
@@ -23,7 +23,7 @@ fn remux_with_settings<B: AsRef<[u8]>, M: OggVorbisStreamMangler>(
 	mut optimizer_settings_supplier: impl FnMut() -> VorbisOptimizerSettings,
 	comment_header_predicate: impl FnOnce(CommentHeader)
 ) -> Result<(), RemuxError> {
-	let mut byte_destination = Vec::new();
+	let mut byte_destination = vec![];
 
 	OggToOgg::new(settings_supplier(), optimizer_settings_supplier())
 		.remux(Cursor::new(ogg_vorbis_data.as_ref()), &mut byte_destination)?;
@@ -55,10 +55,10 @@ fn remuxing_works() {
 			assert!(
 				comment_header.vendor.contains(OPTIVORBIS_VERSION_TAG),
 				"The vendor string did not contain the version tag"
-			)
+			);
 		}
 	)
-	.expect("Unexpected remuxing error")
+	.expect("Unexpected remuxing error");
 }
 
 #[test]
@@ -71,7 +71,7 @@ fn remuxing_with_chaining_works() {
 		Default::default,
 		|_| ()
 	)
-	.expect("Unexpected remuxing error")
+	.expect("Unexpected remuxing error");
 }
 
 #[test]
@@ -89,10 +89,10 @@ fn remuxing_with_comment_header_changes_works() {
 			assert!(
 				comment_header.vendor.is_empty() && comment_header.comment_list.is_empty(),
 				"Non-empty vendor and/or comment list"
-			)
+			);
 		}
 	)
-	.expect("Unexpected remuxing error")
+	.expect("Unexpected remuxing error");
 }
 
 #[test]
@@ -119,11 +119,7 @@ fn remuxing_and_mangling_works() {
 					) -> u32 {
 						// Change the stream serial for the setup header.
 						// This should render the generated file undecodeable
-						if packet_number == 2 {
-							1
-						} else {
-							stream_serial
-						}
+						if packet_number == 2 { 1 } else { stream_serial }
 					}
 				}
 
@@ -146,7 +142,7 @@ fn empty_last_audio_packet_works() {
 		Default::default,
 		|_| ()
 	)
-	.expect("Unexpected remuxing error")
+	.expect("Unexpected remuxing error");
 }
 
 #[test]

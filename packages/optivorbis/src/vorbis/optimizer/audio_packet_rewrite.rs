@@ -4,12 +4,12 @@ use std::borrow::Cow;
 
 use log::trace;
 use vorbis_bitpack::{
-	bitpacked_integer_width, BitpackReader, BitpackWriter, BitpackedIntegerWidth
+	BitpackReader, BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_width
 };
 
 use super::{
-	audio_packet_common::process_audio_packet, setup_header_parse::VorbisSetupData,
-	VorbisIdentificationHeaderData, VorbisOptimizerError
+	VorbisIdentificationHeaderData, VorbisOptimizerError,
+	audio_packet_common::process_audio_packet, setup_header_parse::VorbisSetupData
 };
 
 /// Rewrites Huffman codewords contained in audio packets with their optimal ones.

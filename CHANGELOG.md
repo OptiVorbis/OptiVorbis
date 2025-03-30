@@ -8,7 +8,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- Bump MSRV to 1.85 due to usage of the Rust 2024 edition.
 
 ## [0.3.0] - 2025-01-13
 

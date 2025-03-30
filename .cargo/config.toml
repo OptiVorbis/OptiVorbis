@@ -6,12 +6,5 @@
 linker = 'aarch64-linux-gnu-gcc'
 runner = 'qemu-aarch64'
 
-[target.aarch64-unknown-linux-musl]
-# Needed to get an implementation of missing intrinsic symbols when linking
-# if -Z build-std is used:
-# - https://github.com/rust-lang/rust/issues/46651#issuecomment-641172562
-# - https://github.com/rust-lang/rust/issues/46651#issuecomment-1847872105
-rustflags = ["-Clink-args=-lgcc"]
-
 [target.wasm32-unknown-unknown]
 rustflags = ["--cfg", 'getrandom_backend="wasm_js"']

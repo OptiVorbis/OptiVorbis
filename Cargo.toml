@@ -1,7 +1,7 @@
 [workspace]
 members = ["packages/*"]
 default-members = ["packages/optivorbis", "packages/optivorbis_cli"]
-resolver = "2"
+resolver = "3"
 
 [workspace.package]
 authors = ["Alejandro González <me@alegon.dev>"]
@@ -10,8 +10,8 @@ homepage = "https://optivorbis.github.io/OptiVorbis"
 repository = "https://github.com/OptiVorbis/OptiVorbis"
 keywords = ["audio", "ogg", "vorbis", "optimization", "compression"]
 categories = ["compression", "multimedia::audio"]
-edition = "2021"
-rust-version = "1.73.0"
+edition = "2024"
+rust-version = "1.85.0"
 
 [workspace.dependencies]
 optivorbis = { version = "0.3.0", path = "packages/optivorbis" }

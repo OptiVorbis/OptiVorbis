@@ -14,13 +14,7 @@ targets = [
 [advisories]
 version = 2
 yanked = "deny"
-ignore = [
-  # Ignore unmaintained humantime dependency advisory, as it's pulled by
-  # a transitive dependency of a direct dev dependency for which there already
-  # is a PR:
-  # https://github.com/seanmonstar/pretty-env-logger/pull/60
-  "RUSTSEC-2025-0014"
-]
+ignore = []
 
 [licenses]
 version = 2

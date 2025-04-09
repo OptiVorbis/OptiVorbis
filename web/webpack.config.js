@@ -61,7 +61,7 @@ module.exports = {
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, '..', 'packages', 'optivorbis'),
       outDir: '../../target/webpkg',
-      extraArgs: '-- --features=wasm-web-bindings -Z build-std=panic_abort,core,std,alloc,proc_macro -Z build-std-features=panic_immediate_abort',
+      extraArgs: '-- --features=wasm-web-bindings -Z build-std=panic_abort,core,std,alloc,proc_macro -Z build-std-features=panic_immediate_abort,optimize_for_size',
       forceMode: 'production',
     }),
   ],

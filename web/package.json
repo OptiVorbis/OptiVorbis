@@ -15,14 +15,14 @@
     "../target/webpkg"
   ],
   "devDependencies": {
-    "@eslint/js": "9.26.0",
+    "@eslint/js": "9.27.0",
     "@tailwindcss/postcss": "4.1.7",
     "@typescript-eslint/parser": "8.32.1",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.21",
     "css-loader": "7.1.2",
     "cssnano": "7.0.7",
-    "eslint": "9.26.0",
+    "eslint": "9.27.0",
     "eslint-import-resolver-typescript": "4.3.4",
     "eslint-plugin-import": "2.31.0",
     "favicons-webpack-plugin": "6.0.1",

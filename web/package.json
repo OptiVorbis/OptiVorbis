@@ -26,7 +26,7 @@
     "eslint-import-resolver-typescript": "4.4.0",
     "eslint-plugin-import": "2.31.0",
     "favicons-webpack-plugin": "6.0.1",
-    "globals": "16.1.0",
+    "globals": "16.2.0",
     "html-webpack-plugin": "5.6.3",
     "mini-css-extract-plugin": "2.9.2",
     "postcss": "8.5.3",

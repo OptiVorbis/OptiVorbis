@@ -1,6 +1,5 @@
 use std::io::Cursor;
 
-use log::LevelFilter;
 use oggvorbismeta::CommentHeader;
 
 use super::*;
@@ -8,14 +7,6 @@ use crate::{
 	OPTIVORBIS_VERSION_TAG,
 	vorbis::optimizer::{VorbisCommentFieldsAction, VorbisVendorStringAction}
 };
-
-fn init_logging() {
-	pretty_env_logger::formatted_timed_builder()
-		.is_test(true)
-		.filter_level(LevelFilter::Info)
-		.try_init()
-		.ok();
-}
 
 fn remux_with_settings<B: AsRef<[u8]>, M: OggVorbisStreamMangler>(
 	ogg_vorbis_data: B,
@@ -40,10 +31,8 @@ fn remux_with_settings<B: AsRef<[u8]>, M: OggVorbisStreamMangler>(
 	Ok(())
 }
 
-#[test]
+#[test_log::test]
 fn remuxing_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/44100hz_500ms_stereo_400hz_sine_wave_skeleton.ogg"),
 		Default::default,
@@ -61,10 +50,8 @@ fn remuxing_works() {
 	.expect("Unexpected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn remuxing_with_chaining_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/8khz_2x500ms_mono_400hz_sine_wave_chained.ogg"),
 		Default::default,
@@ -74,10 +61,8 @@ fn remuxing_with_chaining_works() {
 	.expect("Unexpected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn remuxing_with_comment_header_changes_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/8khz_500ms_mono_400hz_sine_wave_comments.ogg"),
 		Default::default,
@@ -95,10 +80,8 @@ fn remuxing_with_comment_header_changes_works() {
 	.expect("Unexpected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn remuxing_and_mangling_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/8khz_500ms_mono_400hz_sine_wave.ogg"),
 		|| Settings {
@@ -132,10 +115,8 @@ fn remuxing_and_mangling_works() {
 	.expect_err("Expected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn empty_last_audio_packet_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/zero_bytes_last_audio_packet.ogg"),
 		Default::default,
@@ -145,10 +126,8 @@ fn empty_last_audio_packet_works() {
 	.expect("Unexpected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn non_vorbis_data_returns_error() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/44100hz_500ms_mono_440hz_sine_wave_ogg_opus.ogg"),
 		|| Settings {
@@ -161,10 +140,8 @@ fn non_vorbis_data_returns_error() {
 	.expect_err("Expected remuxing error");
 }
 
-#[test]
+#[test_log::test]
 fn ogg_page_crc_verification_works() {
-	init_logging();
-
 	remux_with_settings(
 		include_bytes!("../../../resources/test/crc_mismatch_8khz_500ms_mono_400hz_sine_wave.ogg"),
 		|| Settings {

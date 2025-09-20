@@ -1,12 +1,13 @@
 import eslint from "@eslint/js";
-import tseslint, { configs as tseslintconfigs } from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
 import globals from "globals";
 import importPlugin from "eslint-plugin-import";
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
-  ...tseslintconfigs.strict,
-  ...tseslintconfigs.stylistic,
+  tseslint.configs.strict,
+  tseslint.configs.stylistic,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
   {
@@ -19,6 +20,7 @@ export default tseslint.config(
       globals: {
         ...globals.browser,
         ...globals.commonjs,
+        ...globals.es2021,
       },
 
       ecmaVersion: "latest",

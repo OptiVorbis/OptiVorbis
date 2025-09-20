@@ -653,7 +653,8 @@ fn parse_residue_configurations<R: Read>(
 		for (i, residue_cascade) in residue_cascade.iter().copied().enumerate() {
 			residue_books.push([None; 8]);
 
-			for j in 0..8 {
+			for (j, class_residue_book) in residue_books.last_mut().unwrap().iter_mut().enumerate()
+			{
 				if residue_cascade & (1 << j) != 0 {
 					let residue_book = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?;
 
@@ -666,7 +667,7 @@ fn parse_residue_configurations<R: Read>(
 
 					trace!("Read residue book {residue_book} for classification {i}");
 
-					residue_books[i][j] = Some(residue_book);
+					*class_residue_book = Some(residue_book);
 				} else {
 					// Unused. It's an error to try to decode this classification
 				}

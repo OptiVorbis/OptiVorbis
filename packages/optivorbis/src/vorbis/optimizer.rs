@@ -262,6 +262,7 @@ pub enum VorbisOptimizerError {
 /// in the Vorbis comment header.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 #[non_exhaustive]
+#[derive(Default)]
 pub enum VorbisVendorStringAction {
 	/// The vendor string contained in the comment header will be preserved
 	/// as-is.
@@ -278,6 +279,7 @@ pub enum VorbisVendorStringAction {
 	/// takes little space and can be useful for traceability and
 	/// troubleshooting purposes, so this is the recommended action in most
 	/// cases.
+	#[default]
 	AppendTag,
 	/// Like [`AppendTag`](Self::AppendTag), but appends a shorter identifying
 	/// string.
@@ -291,30 +293,20 @@ pub enum VorbisVendorStringAction {
 	Empty
 }
 
-impl Default for VorbisVendorStringAction {
-	fn default() -> Self {
-		Self::AppendTag
-	}
-}
-
 /// Identifies which strategy to use to optimize the Vorbis user comment
 /// string pairs in the Vorbis comment header.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 #[non_exhaustive]
+#[derive(Default)]
 pub enum VorbisCommentFieldsAction {
 	/// The comment pairs will be copied as-is to the optimized stream.
+	#[default]
 	Copy,
 	/// Every comment will be removed, to save space on the optimized stream.
 	///
 	/// This may delete comment strings which contain invalid UTF-8 characters
 	/// and are against the specification, improving interoperability.
 	Delete
-}
-
-impl Default for VorbisCommentFieldsAction {
-	fn default() -> Self {
-		Self::Copy
-	}
 }
 
 /// Implementation detail that represents all the possible states a Vorbis

@@ -1,63 +1,19 @@
 [package]
 name = "optivorbis"
-description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
-authors.workspace = true
-license = "AGPL-3.0-or-later OR BSD-3-Clause"
 version.workspace = true
-homepage.workspace = true
-repository.workspace = true
-documentation = "https://docs.rs/optivorbis"
-readme = "../../README.md"
-keywords.workspace = true
-categories.workspace = true
+authors.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+description = "A lossless, format-preserving, two-pass Vorbis optimization and repair library"
+documentation = "https://docs.rs/optivorbis"
+readme = "../../README.md"
+homepage.workspace = true
+repository.workspace = true
+license = "AGPL-3.0-or-later OR BSD-3-Clause"
+keywords.workspace = true
+categories.workspace = true
 # Run cargo diet to maintain this include list
-include = ["src/**/*", "LICENSE.BSD-3-Clause", "LICENSE", "build.rs"]
-
-[dependencies]
-ogg = "0.9.2"
-vorbis_bitpack.workspace = true
-
-indexmap = "2.8.0"
-bumpalo = "3.17.0"
-tinyvec = { version = "1.9.0", default-features = false, features = [
-  "alloc",
-  "rustc_1_57",
-] }
-
-getrandom = "0.3.1"
-rand_xoshiro = "0.7.0"
-
-thiserror = "2.0.12"
-ouroboros = "0.18.5"
-slice-group-by = "0.3.1"
-
-log.workspace = true
-
-wasm-bindgen = { version = "0.2.100", default-features = false, optional = true }
-console_log = { version = "1.0.0", features = ["color"], optional = true }
-console_error_panic_hook = { version = "0.1.7", optional = true }
-
-[lib]
-crate-type = ["lib", "cdylib"]
-
-[dev-dependencies]
-test-log = "0.2.18"
-oggvorbismeta = "0.2.0"
-
-[features]
-default = ["source-date-epoch"]
-
-source-date-epoch = []
-
-wasm-bindings = ["dep:wasm-bindgen"]
-wasm-web-bindings = [
-  "wasm-bindings",
-  "dep:console_log",
-  "dep:console_error_panic_hook",
-  "getrandom/wasm_js",
-]
+include = ["LICENSE", "LICENSE.BSD-3-Clause", "build.rs", "src/**/*"]
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--cfg", "docsrs"]
@@ -74,3 +30,40 @@ rustdoc-args = ["--cfg", "docsrs"]
 [package.metadata.wasm-pack.profile]
 release = { wasm-opt = ["-Oz", "--enable-bulk-memory", "--no-validation"] }
 profiling = { wasm-opt = ["-Oz", "--enable-bulk-memory", "--no-validation"] }
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+bumpalo.workspace = true
+console_error_panic_hook = { workspace = true, optional = true }
+console_log = { workspace = true, features = ["color"], optional = true }
+getrandom.workspace = true
+indexmap.workspace = true
+log.workspace = true
+ogg.workspace = true
+ouroboros.workspace = true
+rand_xoshiro.workspace = true
+slice-group-by.workspace = true
+thiserror.workspace = true
+tinyvec = { workspace = true, default-features = false, features = [
+  "alloc",
+  "rustc_1_57",
+] }
+vorbis_bitpack.workspace = true
+wasm-bindgen = { workspace = true, default-features = false, optional = true }
+
+[dev-dependencies]
+oggvorbismeta.workspace = true
+test-log.workspace = true
+
+[features]
+default = ["source-date-epoch"]
+source-date-epoch = []
+wasm-bindings = ["dep:wasm-bindgen"]
+wasm-web-bindings = [
+  "dep:console_error_panic_hook",
+  "dep:console_log",
+  "getrandom/wasm_js",
+  "wasm-bindings",
+]

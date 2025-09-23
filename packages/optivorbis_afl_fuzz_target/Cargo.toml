@@ -1,10 +1,9 @@
 [package]
 name = "optivorbis_afl_fuzz_target"
-description = "Fuzzing target for OptiVorbis and afl.rs"
-version = "0.0.1"
 edition.workspace = true
+description = "Fuzzing target for OptiVorbis and afl.rs"
 publish = false
 
 [dependencies]
+afl.workspace = true
 optivorbis.workspace = true
-afl = "0.15.16"

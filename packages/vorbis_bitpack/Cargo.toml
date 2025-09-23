@@ -1,20 +1,20 @@
 [package]
 name = "vorbis_bitpack"
-description = "Implementation of the Vorbis I bitpacking convention"
-authors.workspace = true
-license = "BSD-3-Clause"
 version = "0.2.0"
-repository.workspace = true
-documentation = "https://docs.rs/vorbis_bitpack"
-readme = true
-keywords = ["vorbis", "bitpacking", "bitpack", "compression", "serialization"]
-categories = ["compression", "no-std"]
+authors.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+description = "Implementation of the Vorbis I bitpacking convention"
+documentation = "https://docs.rs/vorbis_bitpack"
+readme = true
+repository.workspace = true
+license = "BSD-3-Clause"
+keywords = ["bitpack", "bitpacking", "compression", "serialization", "vorbis"]
+categories = ["compression", "no-std"]
 
 [dependencies]
-acid_io = { version = "0.1.0", optional = true }
-libm = { version = "0.2.11", optional = true }
+acid_io = { workspace = true, optional = true }
+libm = { workspace = true, optional = true }
 
 [features]
 no-std = ["dep:acid_io", "dep:libm"]

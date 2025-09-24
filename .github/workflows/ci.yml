@@ -179,6 +179,8 @@ jobs:
         uses: taiki-e/cache-cargo-install-action@v2
         with:
           tool: wasm-pack
+          # We require an unreleased PR for wasm-pack to support custom profiles: https://github.com/drager/wasm-pack/pull/1428
+          # This patch can be removed once the PR is included in a release
           git: https://github.com/drager/wasm-pack.git
           rev: cd1718aa
 

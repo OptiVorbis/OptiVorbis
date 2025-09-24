@@ -1,6 +1,3 @@
-// The wasm_bindgen macro generates warnings here
-#![allow(unreachable_pub)]
-
 use std::{io::Cursor, panic};
 
 use wasm_bindgen::prelude::*;
@@ -11,11 +8,13 @@ use crate::remuxer::{
 };
 
 #[wasm_bindgen(start)]
-pub fn main() {
+fn main() {
 	// Make logging and error handling use the console on web browsers
 	#[cfg(feature = "wasm-web-bindings")]
 	{
-		panic::set_hook(Box::new(console_error_panic_hook::hook));
+		panic::set_hook(Box::new(|hook_info| {
+			web_sys::console::error_1(&web_sys::js_sys::Error::new(&hook_info.to_string()).into());
+		}));
 		console_log::init().ok();
 	}
 }

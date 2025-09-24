@@ -17,7 +17,6 @@ categories = ["compression", "multimedia::audio"]
 acid_io = "0.1.0"
 afl = "0.15.16"
 bumpalo = "3.17.0"
-console_error_panic_hook = "0.1.7"
 console_log = "1.0.0"
 getopts = "0.2.21"
 getrandom = "0.3.1"
@@ -39,6 +38,7 @@ tinyvec = { version = "1.9.0", default-features = false, features = [
 ] }
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
 wasm-bindgen = { version = "0.2.100", default-features = false }
+web-sys = "0.3.80"
 
 [profile.release]
 strip = "symbols"

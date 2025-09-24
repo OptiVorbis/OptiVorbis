@@ -36,7 +36,6 @@ crate-type = ["cdylib", "lib"]
 
 [dependencies]
 bumpalo.workspace = true
-console_error_panic_hook = { workspace = true, optional = true }
 console_log = { workspace = true, features = ["color"], optional = true }
 getrandom.workspace = true
 indexmap.workspace = true
@@ -46,12 +45,10 @@ ouroboros.workspace = true
 rand_xoshiro.workspace = true
 slice-group-by.workspace = true
 thiserror.workspace = true
-tinyvec = { workspace = true, default-features = false, features = [
-  "alloc",
-  "rustc_1_57",
-] }
+tinyvec.workspace = true
 vorbis_bitpack.workspace = true
 wasm-bindgen = { workspace = true, default-features = false, optional = true }
+web-sys = { workspace = true, optional = true }
 
 [dev-dependencies]
 oggvorbismeta.workspace = true
@@ -62,8 +59,8 @@ default = ["source-date-epoch"]
 source-date-epoch = []
 wasm-bindings = ["dep:wasm-bindgen"]
 wasm-web-bindings = [
-  "dep:console_error_panic_hook",
   "dep:console_log",
+  "dep:web-sys",
   "getrandom/wasm_js",
   "wasm-bindings",
 ]

@@ -132,9 +132,11 @@ jobs:
         run: cargo doc
 
       - name: 🔨 Build CLI executable
+        env:
+          RUSTFLAGS: -Zunstable-options -Cpanic=immediate-abort
         run: cargo build --target ${{ matrix.target }} --release
           -Z build-std=panic_abort,core,std,alloc,proc_macro
-          -Z build-std-features=panic_immediate_abort
+          -Z build-std-features=
 
       - name: 📤 Upload CLI executable artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

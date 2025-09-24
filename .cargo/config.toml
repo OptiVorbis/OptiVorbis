@@ -3,8 +3,13 @@
 # This file is primarily useful for specifying custom rustflags
 
 [target.'cfg(all(target_os = "linux", target_arch = "aarch64"))']
-linker = 'aarch64-linux-gnu-gcc'
-runner = 'qemu-aarch64'
+linker = "aarch64-linux-gnu-gcc"
+runner = "qemu-aarch64"
 
 [target.wasm32-unknown-unknown]
-rustflags = ["--cfg", 'getrandom_backend="wasm_js"']
+rustflags = [
+  "--cfg",
+  'getrandom_backend="wasm_js"',
+  "-Zunstable-options",
+  "-Cpanic=immediate-abort",
+]

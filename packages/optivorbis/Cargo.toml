@@ -21,15 +21,22 @@ rustdoc-args = ["--cfg", "docsrs"]
 # We set custom wasm-opt flags for two reasons:
 # - First, since Rust 1.82, the wasm-opt version used by wasm_pack v0.13.1, v117,
 #   is unable to recognize the new LLVM default of using bulk memory WASM extensions,
-#   so we need to explicitly enable support for such extensions, and disable its
-#   wasm-validator pass, as we can't tell it to allow such feature, and rustc's output
-#   can be assumed to always valid WASM. See:
+#   so we need to explicitly enable support for such extensions. See:
 #   https://github.com/rustwasm/wasm-pack/issues/1441#issuecomment-2474250133
+#   https://github.com/rust-lang/rust/issues/137315
 # - Second, we want to optimize for size as much as possible, so we use the -Oz flag,
 #   which is more aggressive than the default -O flag, equivalent to -Os.
 [package.metadata.wasm-pack.profile]
-release = { wasm-opt = ["-Oz", "--enable-bulk-memory", "--no-validation"] }
-profiling = { wasm-opt = ["-Oz", "--enable-bulk-memory", "--no-validation"] }
+release = { wasm-opt = [
+  "-Oz",
+  "--enable-bulk-memory",
+  "--enable-nontrapping-float-to-int",
+] }
+profiling = { wasm-opt = [
+  "-Oz",
+  "--enable-bulk-memory",
+  "--enable-nontrapping-float-to-int",
+] }
 
 [lib]
 crate-type = ["cdylib", "lib"]

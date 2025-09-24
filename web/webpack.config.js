@@ -63,7 +63,7 @@ module.exports = {
       crateDirectory: path.resolve(__dirname, "..", "packages", "optivorbis"),
       outDir: "../../target/webpkg",
       extraArgs:
-        "-- --features=wasm-web-bindings -Z build-std=panic_abort,core,std,alloc,proc_macro -Z build-std-features=optimize_for_size",
+        "--profile=min-size-release -- --features=wasm-web-bindings -Z build-std=panic_abort,core,std,alloc,proc_macro -Z build-std-features=optimize_for_size",
       forceMode: "production",
     }),
   ],

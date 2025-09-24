@@ -47,6 +47,10 @@ lto = "fat"
 panic = "abort"
 codegen-units = 1
 
+[profile.min-size-release]
+inherits = "release"
+opt-level = "z"
+
 [profile.fuzzing]
 inherits = "release"
 overflow-checks = true

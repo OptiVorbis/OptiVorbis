@@ -174,7 +174,7 @@ Code contributions must pass CI checks and be deemed of enough quality by a repo
 - `packages/optivorbis_cli`: the OptiVorbis CLI.
 - `packages/vorbis_bitpack`: an implementation of bitwise reading and writing operations according to the Vorbis bitpacking convention.
 
-The website (`web`) is a standard npm project that uses WebPack and the OptiVorbis library WASM target JS bindings, built with [`wasm-pack`](https://rustwasm.github.io/wasm-pack/).
+The website (`web`) is a standard npm project that uses WebPack and the OptiVorbis library WASM target JS bindings, built with [`wasm-pack`](https://drager.github.io/wasm-pack/).
 
 # 🤝 Contact
 

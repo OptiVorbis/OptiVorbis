@@ -176,7 +176,7 @@ jobs:
           node-version: 22
 
       - name: 🧰 Install wasm-pack
-        uses: taiki-e/cache-cargo-install-action@v2
+        uses: taiki-e/cache-cargo-install-action@b33c63d3b3c85540f4eba8a4f71a5cc0ce030855 # v2
         with:
           tool: wasm-pack
           # We require an unreleased PR for wasm-pack to support custom profiles: https://github.com/drager/wasm-pack/pull/1428

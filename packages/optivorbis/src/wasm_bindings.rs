@@ -7,6 +7,10 @@ use crate::remuxer::{
 	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler}
 };
 
+#[cfg(all(target_arch = "wasm32", not(target_feature = "atomics")))]
+#[global_allocator]
+static GLOBAL_ALLOCATOR: rlsf::SmallGlobalTlsf = rlsf::SmallGlobalTlsf::new();
+
 #[wasm_bindgen(start)]
 fn main() {
 	// Make logging and error handling use the console on web browsers

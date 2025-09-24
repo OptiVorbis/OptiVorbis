@@ -28,6 +28,7 @@ oggvorbismeta = "0.2.0"
 optivorbis = { path = "packages/optivorbis", version = "0.3.0" }
 ouroboros = "0.18.5"
 rand_xoshiro = "0.7.0"
+rlsf = "0.2.1"
 slice-group-by = "0.3.1"
 stderrlog = { version = "0.6.0", default-features = false }
 test-log = "0.2.18"

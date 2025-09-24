@@ -50,6 +50,7 @@ log.workspace = true
 ogg.workspace = true
 ouroboros.workspace = true
 rand_xoshiro.workspace = true
+rlsf = { workspace = true, optional = true }
 slice-group-by.workspace = true
 thiserror.workspace = true
 tinyvec.workspace = true
@@ -64,7 +65,7 @@ test-log.workspace = true
 [features]
 default = ["source-date-epoch"]
 source-date-epoch = []
-wasm-bindings = ["dep:wasm-bindgen"]
+wasm-bindings = ["dep:rlsf", "dep:wasm-bindgen"]
 wasm-web-bindings = [
   "dep:console_log",
   "dep:web-sys",

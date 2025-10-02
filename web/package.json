@@ -16,7 +16,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "9.36.0",
-    "@tailwindcss/postcss": "4.1.13",
+    "@tailwindcss/postcss": "4.1.14",
     "@typescript-eslint/parser": "8.44.1",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.21",
@@ -34,7 +34,7 @@
     "postcss-loader": "8.2.0",
     "sharp": "0.34.4",
     "svg-inline-loader": "0.8.2",
-    "tailwindcss": "4.1.13",
+    "tailwindcss": "4.1.14",
     "ts-loader": "9.5.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.44.1",

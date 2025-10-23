@@ -201,8 +201,8 @@ impl<V> VorbisHuffmanTreeWalker<'_, '_, V> {
 /// A node in a Vorbis Huffman tree, holding an entry.
 #[derive(Debug)]
 struct VorbisHuffmanTreeNode<'tree, V> {
-	left_child: Option<&'tree mut VorbisHuffmanTreeNode<'tree, V>>,
-	right_child: Option<&'tree mut VorbisHuffmanTreeNode<'tree, V>>,
+	left_child: Option<&'tree mut Self>,
+	right_child: Option<&'tree mut Self>,
 	entry: Option<V>
 }
 

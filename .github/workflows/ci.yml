@@ -173,7 +173,7 @@ jobs:
       - name: 🧰 Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
-          node-version: 22
+          node-version-file: .nvmrc
 
       - name: 💨 Set up sccache
         uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9

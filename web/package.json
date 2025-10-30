@@ -14,6 +14,9 @@
   "workspaces": [
     "../target/webpkg"
   ],
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
   "devDependencies": {
     "@eslint/js": "9.38.0",
     "@tailwindcss/postcss": "4.1.16",

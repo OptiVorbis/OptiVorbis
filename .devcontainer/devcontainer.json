@@ -52,6 +52,6 @@
 	"features": {
 		"git": "latest",
 		"github-cli": "latest",
-		"node": "16"
+		"node": "24"
 	}
 }

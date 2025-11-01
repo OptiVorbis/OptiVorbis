@@ -15,7 +15,7 @@ categories = ["compression", "multimedia::audio"]
 
 [workspace.dependencies]
 acid_io = "0.1.0"
-afl = "0.16.0"
+afl = "0.17.0"
 bumpalo = "3.19.0"
 console_log = "1.0.0"
 getopts = "0.2.24"

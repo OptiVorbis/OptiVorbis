@@ -221,7 +221,7 @@
 #![warn(unused_import_braces)]
 #![warn(unused_qualifications)]
 #![warn(variant_size_differences)]
-#![warn(clippy::empty_enum)]
+#![warn(clippy::empty_enums)]
 #![warn(clippy::enum_glob_use)]
 #![warn(clippy::float_cmp_const)]
 #![warn(clippy::invalid_upcast_comparisons)]

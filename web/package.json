@@ -22,7 +22,7 @@
     "@tailwindcss/postcss": "4.1.17",
     "@typescript-eslint/parser": "8.46.4",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
-    "autoprefixer": "10.4.21",
+    "autoprefixer": "10.4.22",
     "css-loader": "7.1.2",
     "cssnano": "7.1.2",
     "eslint": "9.39.1",

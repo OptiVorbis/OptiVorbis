@@ -124,7 +124,7 @@ jobs:
 
       - name: ✔️ Run tests
         run:
-          cargo test --release --target ${{ matrix.target }} -Zdoctest-xcompile
+          cargo test --release --target ${{ matrix.target }}
           -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
       - name: 📚 Build documentation

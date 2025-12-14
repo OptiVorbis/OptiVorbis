@@ -63,9 +63,9 @@ jobs:
           - target: x86_64-pc-windows-gnu
             runner: windows-2022
           - target: x86_64-apple-darwin
-            runner: macos-13
+            runner: macos-15
           - target: aarch64-apple-darwin
-            runner: macos-14
+            runner: macos-15
 
     name: CI (${{ matrix.target }})
     runs-on: ${{ matrix.runner }}
@@ -123,8 +123,7 @@ jobs:
         run: cargo deny check
 
       - name: ✔️ Run tests
-        run:
-          cargo test --release --target ${{ matrix.target }}
+        run: cargo test --release --target ${{ matrix.target }}
           -p optivorbis -p optivorbis_cli -p vorbis_bitpack
 
       - name: 📚 Build documentation

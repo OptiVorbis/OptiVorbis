@@ -20,7 +20,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.2",
     "@tailwindcss/postcss": "4.1.18",
-    "@typescript-eslint/parser": "8.52.0",
+    "@typescript-eslint/parser": "8.53.0",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.23",
     "css-loader": "7.1.2",
@@ -40,7 +40,7 @@
     "tailwindcss": "4.1.18",
     "ts-loader": "9.5.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.52.0",
+    "typescript-eslint": "8.53.0",
     "webpack": "5.104.1",
     "webpack-cli": "6.0.1",
     "webpack-dev-server": "5.2.3"

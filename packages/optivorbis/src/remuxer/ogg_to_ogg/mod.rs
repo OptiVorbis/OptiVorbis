@@ -19,7 +19,7 @@ use ogg::{OggReadError, PacketReader, PacketWriteEndInfo, PacketWriter, PagePars
 pub use ogg_vorbis_stream_mangler::{OggVorbisStreamMangler, OggVorbisStreamPassthroughMangler};
 use rand_xoshiro::{
 	Xoshiro256PlusPlus,
-	rand_core::{RngCore, SeedableRng}
+	rand_core::{Rng, SeedableRng}
 };
 use thiserror::Error;
 

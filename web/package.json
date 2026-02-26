@@ -18,14 +18,14 @@
     "node": ">=24.0.0 <25.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.3",
+    "@eslint/js": "10.0.1",
     "@tailwindcss/postcss": "4.2.1",
     "@typescript-eslint/parser": "8.56.1",
     "@wasm-tool/wasm-pack-plugin": "1.7.0",
     "autoprefixer": "10.4.27",
     "css-loader": "7.1.4",
     "cssnano": "7.1.2",
-    "eslint": "9.39.3",
+    "eslint": "10.0.2",
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import": "2.32.0",
     "favicons": "7.2.0",

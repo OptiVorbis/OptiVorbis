@@ -80,7 +80,7 @@ jobs:
           fetch-depth: 0 # Keep the commit history for proper version information
 
       - name: 🧰 Install Rust toolchain
-        uses: dtolnay/rust-toolchain@nightly
+        uses: dtolnay/rust-toolchain@5b842231ba77f5c045dba54ac5560fed2db780e2 # nightly
         with:
           target: ${{ matrix.target }}
           components: rust-src, rustfmt, clippy
@@ -165,7 +165,7 @@ jobs:
           fetch-depth: 0 # Keep the commit history for proper version information
 
       - name: 🧰 Install Rust toolchain
-        uses: dtolnay/rust-toolchain@nightly
+        uses: dtolnay/rust-toolchain@5b842231ba77f5c045dba54ac5560fed2db780e2 # nightly
         with:
           components: rust-src
 

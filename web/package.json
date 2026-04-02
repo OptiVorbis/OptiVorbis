@@ -38,7 +38,7 @@
     "sharp": "0.34.5",
     "svg-inline-loader": "0.8.2",
     "tailwindcss": "4.2.2",
-    "ts-loader": "9.5.4",
+    "ts-loader": "9.5.7",
     "typescript": "5.9.3",
     "typescript-eslint": "8.58.0",
     "webpack": "5.105.4",

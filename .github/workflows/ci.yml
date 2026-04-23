@@ -40,7 +40,7 @@ jobs:
           toolchain: ${{ env.MSRV }}
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
+        uses: mozilla-actions/sccache-action@9e7fa8a12102821edf02ca5dbea1acd0f89a2696 # v0.0.10
 
       - name: ⚙️ Run tests
         run: cargo test -p optivorbis -p optivorbis_cli -p vorbis_bitpack
@@ -98,7 +98,7 @@ jobs:
           tool: cargo-deny
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
+        uses: mozilla-actions/sccache-action@9e7fa8a12102821edf02ca5dbea1acd0f89a2696 # v0.0.10
 
       - name: 📅 Gather build date and version metadata
         shell: bash
@@ -175,7 +175,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: 💨 Set up sccache
-        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
+        uses: mozilla-actions/sccache-action@9e7fa8a12102821edf02ca5dbea1acd0f89a2696 # v0.0.10
 
       - name: 🧰 Install wasm-pack
         uses: taiki-e/cache-cargo-install-action@f9eed3e4680f27610dc6d8c67be1b88593f7dade # v3

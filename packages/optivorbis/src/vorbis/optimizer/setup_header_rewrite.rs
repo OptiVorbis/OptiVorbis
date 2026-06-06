@@ -8,7 +8,7 @@ use vorbis_bitpack::{BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_wid
 
 use super::{
 	VorbisOptimizerError, audio_packet_rewrite::AudioPacketRewrite, ilog,
-	setup_header_parse::VorbisSetupData
+	setup_header_parse::{VorbisSetupData, lookup1_values}
 };
 use crate::vorbis::VectorLookupType;
 
@@ -85,10 +85,23 @@ fn optimize_and_write_codebooks<W: Write>(
 	// Codebook count. Guaranteed to be in [1, 256] by construction
 	packet_data.write_all(&[(codec_setup.codebook_configurations.len() - 1) as u8])?;
 
+	// Residue classbooks must still satisfy classifications^dimensions <= entries.
+	// Other books only need the decoded entry numbers, which suffix truncation preserves.
+	let mut min_entry_count = vec![0u32; codec_setup.codebook_configurations.len()];
+	for residue in &codec_setup.residue_configurations {
+		let classbook = residue.classbook as usize;
+		let classbook_configuration = &codec_setup.codebook_configurations[classbook];
+		let need = (residue.classifications as u32)
+			.saturating_pow(classbook_configuration.dimensions as u32);
+		min_entry_count[classbook] = min_entry_count[classbook].max(need);
+	}
+
 	// From now on, byte-wise writes are not necessarily equivalent to bitpacked writes
 	let mut bitpacker = BitpackWriter::new(packet_data);
 
-	for codebook_configuration in &mut codec_setup.codebook_configurations {
+	for (codebook_index, codebook_configuration) in
+		codec_setup.codebook_configurations.iter_mut().enumerate()
+	{
 		// Codebook sync pattern
 		bitpacker.write_unsigned_integer(0x564342, bitpacked_integer_width!(24))?;
 
@@ -97,13 +110,44 @@ fn optimize_and_write_codebooks<W: Write>(
 			bitpacked_integer_width!(16)
 		)?;
 
-		// We don't do any optimizations that may delete or add entries, so the count stays the same
-		bitpacker.write_unsigned_integer(
-			codebook_configuration.entry_count,
-			bitpacked_integer_width!(24)
-		)?;
-
+		// Truncate only an unused suffix. This preserves every decoded entry number and
+		// VQ vector; type-1 lookup books also keep lookup1_values unchanged.
+		let original_entry_count = codebook_configuration.entry_count;
+		let lookup_type = codebook_configuration.vector_lookup_type;
+		let dimensions = codebook_configuration.dimensions;
 		let optimal_codeword_lengths = codebook_configuration.codebook.optimal_codeword_lengths();
+
+		let used_entry_count = optimal_codeword_lengths
+			.iter()
+			.rposition(|&codeword_length| codeword_length != 0)
+			.map_or(0, |last_used_entry| last_used_entry as u32 + 1);
+
+		let mut new_entry_count = if used_entry_count == 0 {
+			// Keep all-unused codebooks exactly as they were.
+			original_entry_count
+		} else {
+			used_entry_count.max(min_entry_count[codebook_index])
+		};
+
+		if lookup_type == VectorLookupType::ImplicitlyPopulated
+			&& new_entry_count < original_entry_count
+		{
+			let target = lookup1_values(original_entry_count, dimensions);
+			let min_lookup_entry_count = target
+				.saturating_pow(dimensions as u32)
+				.min(original_entry_count);
+			new_entry_count = new_entry_count.max(min_lookup_entry_count);
+
+			while new_entry_count < original_entry_count
+				&& lookup1_values(new_entry_count, dimensions) != target
+			{
+				new_entry_count += 1;
+			}
+		}
+
+		bitpacker.write_unsigned_integer(new_entry_count, bitpacked_integer_width!(24))?;
+
+		let optimal_codeword_lengths = &optimal_codeword_lengths[..new_entry_count as usize];
 
 		// Single-entry codebooks are not iterated in windows below, so has_unused_entries could end
 		// up with an incorrect value. Handle that by checking the first entry now.
@@ -139,11 +183,8 @@ fn optimize_and_write_codebooks<W: Write>(
 		// for VQ lookup enabled codebooks, which needs some care and attention to get right, and
 		// replacing any references to the old entry numbers in the setup and audio packets.
 		//
-		// TODO similarly to reordering entries, it also may be possible to drop unused ones. Both
-		// of these optimizations only reduce the setup header bit cost, though. However, depending
-		// on the frequency of the codewords and the associated bit cost of the longer codeword vs.
-		// the smaller header, it might be better to assign them a codeword anyway, to fully take
-		// advantage of the ordered encoding
+		// Interleaved unused entries stay as holes. Compacting them would renumber later
+		// entries, which are observed as scalar values or VQ lookup indexes.
 		let use_ordered_format = codeword_lengths_are_sorted
 			&& !has_unused_entries
 			&& !optimal_codeword_lengths.is_empty();
@@ -176,7 +217,7 @@ fn optimize_and_write_codebooks<W: Write>(
 					// This can be assumed to be successful because entry_count is at most
 					// 2^24 and processed_entries <= entry_count, so ilog returns at most 24
 					BitpackedIntegerWidth::new(ilog(
-						codebook_configuration.entry_count as i32 - processed_entries
+						new_entry_count as i32 - processed_entries
 					))
 					.unwrap()
 				)?;
@@ -233,10 +274,22 @@ fn optimize_and_write_codebooks<W: Write>(
 				BitpackedIntegerWidth::new(codebook_configuration.codebook_vector_value_bits)
 					.unwrap();
 
+			// Match the multiplicand count derived from the truncated entry count.
+			let multiplicand_count = match lookup_type {
+				VectorLookupType::ImplicitlyPopulated => {
+					lookup1_values(new_entry_count, dimensions) as usize
+				}
+				VectorLookupType::ExplicitlyPopulated => {
+					(new_entry_count * dimensions as u32) as usize
+				}
+				VectorLookupType::NoLookup => 0
+			};
+
 			for multiplicand in codebook_configuration
 				.codebook_vector_multiplicands
 				.iter()
 				.copied()
+				.take(multiplicand_count)
 			{
 				bitpacker.write_unsigned_integer(multiplicand as u32, multiplicand_width)?;
 			}

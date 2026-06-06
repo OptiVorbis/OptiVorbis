@@ -904,7 +904,7 @@ fn parse_modes<R: Read>(
 /// The Vorbis I `lookup1_values` function, as defined in section 9.2.3 of the
 /// Vorbis I specification. Mathematically, it returns the
 /// `codebook_dimensions`-root of `codebook_entries`, rounded down to an integer.
-fn lookup1_values(codebook_entries: u32, codebook_dimensions: u16) -> u32 {
+pub(super) fn lookup1_values(codebook_entries: u32, codebook_dimensions: u16) -> u32 {
 	// codebook_entries is at most 2^24 - 1, so it fits in a f32.
 	// codebook_dimensions of zero does not make sense for codebooks used for vector
 	// lookup, but the specification does not say they're illegal otherwise. Therefore,

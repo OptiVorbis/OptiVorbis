@@ -7,10 +7,18 @@ use slice_group_by::GroupBy;
 use vorbis_bitpack::{BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_width};
 
 use super::{
-	VorbisOptimizerError, audio_packet_rewrite::AudioPacketRewrite, ilog,
+	VorbisOptimizerError,
+	audio_packet_rewrite::AudioPacketRewrite,
+	ilog,
 	setup_header_parse::{VorbisSetupData, lookup1_values}
 };
 use crate::vorbis::VectorLookupType;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct CodebookTruncation {
+	entry_count: u32,
+	multiplicand_count: usize
+}
 
 /// The Vorbis optimizer state reached when rewriting an optimized setup header.
 /// A state transition is made to the audio packet optimizing state.
@@ -115,39 +123,24 @@ fn optimize_and_write_codebooks<W: Write>(
 		let original_entry_count = codebook_configuration.entry_count;
 		let lookup_type = codebook_configuration.vector_lookup_type;
 		let dimensions = codebook_configuration.dimensions;
-		let optimal_codeword_lengths = codebook_configuration.codebook.optimal_codeword_lengths();
-
-		let used_entry_count = optimal_codeword_lengths
-			.iter()
-			.rposition(|&codeword_length| codeword_length != 0)
-			.map_or(0, |last_used_entry| last_used_entry as u32 + 1);
-
-		let mut new_entry_count = if used_entry_count == 0 {
-			// Keep all-unused codebooks exactly as they were.
-			original_entry_count
-		} else {
-			used_entry_count.max(min_entry_count[codebook_index])
-		};
-
-		if lookup_type == VectorLookupType::ImplicitlyPopulated
-			&& new_entry_count < original_entry_count
-		{
-			let target = lookup1_values(original_entry_count, dimensions);
-			let min_lookup_entry_count = target
-				.saturating_pow(dimensions as u32)
-				.min(original_entry_count);
-			new_entry_count = new_entry_count.max(min_lookup_entry_count);
-
-			while new_entry_count < original_entry_count
-				&& lookup1_values(new_entry_count, dimensions) != target
-			{
-				new_entry_count += 1;
-			}
-		}
+		let codebook_truncation = codebook_truncation(
+			original_entry_count,
+			dimensions,
+			lookup_type,
+			codebook_configuration.codebook.optimal_codeword_lengths(),
+			min_entry_count[codebook_index]
+		);
+		let new_entry_count = codebook_truncation.entry_count;
 
 		bitpacker.write_unsigned_integer(new_entry_count, bitpacked_integer_width!(24))?;
+		codebook_configuration.entry_count = new_entry_count;
 
-		let optimal_codeword_lengths = &optimal_codeword_lengths[..new_entry_count as usize];
+		codebook_configuration
+			.codebook_vector_multiplicands
+			.truncate(codebook_truncation.multiplicand_count);
+
+		let optimal_codeword_lengths =
+			&codebook_configuration.codebook.optimal_codeword_lengths()[..new_entry_count as usize];
 
 		// Single-entry codebooks are not iterated in windows below, so has_unused_entries could end
 		// up with an incorrect value. Handle that by checking the first entry now.
@@ -158,7 +151,7 @@ fn optimize_and_write_codebooks<W: Write>(
 		// replacing any references to the old codebook numbers
 		let mut has_unused_entries = optimal_codeword_lengths
 			.first()
-			.is_some_and(|first_entry_frequency| *first_entry_frequency == 0);
+			.is_some_and(|&first_codeword_length| first_codeword_length == 0);
 
 		let codeword_lengths_are_sorted = optimal_codeword_lengths.windows(2).fold(
 			true,
@@ -216,10 +209,8 @@ fn optimize_and_write_codebooks<W: Write>(
 					entries_per_codeword_length as u32,
 					// This can be assumed to be successful because entry_count is at most
 					// 2^24 and processed_entries <= entry_count, so ilog returns at most 24
-					BitpackedIntegerWidth::new(ilog(
-						new_entry_count as i32 - processed_entries
-					))
-					.unwrap()
+					BitpackedIntegerWidth::new(ilog(new_entry_count as i32 - processed_entries))
+						.unwrap()
 				)?;
 
 				processed_entries += entries_per_codeword_length as i32;
@@ -274,22 +265,11 @@ fn optimize_and_write_codebooks<W: Write>(
 				BitpackedIntegerWidth::new(codebook_configuration.codebook_vector_value_bits)
 					.unwrap();
 
-			// Match the multiplicand count derived from the truncated entry count.
-			let multiplicand_count = match lookup_type {
-				VectorLookupType::ImplicitlyPopulated => {
-					lookup1_values(new_entry_count, dimensions) as usize
-				}
-				VectorLookupType::ExplicitlyPopulated => {
-					(new_entry_count * dimensions as u32) as usize
-				}
-				VectorLookupType::NoLookup => 0
-			};
-
+			// The multiplicand suffix orphaned by entry truncation was already removed above.
 			for multiplicand in codebook_configuration
 				.codebook_vector_multiplicands
 				.iter()
 				.copied()
-				.take(multiplicand_count)
 			{
 				bitpacker.write_unsigned_integer(multiplicand as u32, multiplicand_width)?;
 			}
@@ -297,6 +277,49 @@ fn optimize_and_write_codebooks<W: Write>(
 	}
 
 	Ok(bitpacker)
+}
+
+fn codebook_truncation(
+	original_entry_count: u32,
+	dimensions: u16,
+	lookup_type: VectorLookupType,
+	optimal_codeword_lengths: &[u64],
+	min_entry_count: u32
+) -> CodebookTruncation {
+	let used_entry_prefix_len = optimal_codeword_lengths
+		.iter()
+		.rposition(|&codeword_length| codeword_length != 0)
+		.map_or(0, |last_used_entry| last_used_entry as u32 + 1);
+
+	let mut entry_count = if used_entry_prefix_len == 0 {
+		// Keep all-unused codebooks exactly as they were.
+		original_entry_count
+	} else {
+		used_entry_prefix_len.max(min_entry_count)
+	};
+
+	if lookup_type == VectorLookupType::ImplicitlyPopulated
+		&& entry_count < original_entry_count
+		&& dimensions != 0
+	{
+		// Clamp to the start of the original lookup1_values bucket.
+		let target = lookup1_values(original_entry_count, dimensions);
+		let lookup_value_floor = target
+			.saturating_pow(dimensions as u32)
+			.min(original_entry_count);
+		entry_count = entry_count.max(lookup_value_floor);
+	}
+
+	let multiplicand_count = match lookup_type {
+		VectorLookupType::ImplicitlyPopulated => lookup1_values(entry_count, dimensions) as usize,
+		VectorLookupType::ExplicitlyPopulated => entry_count as usize * dimensions as usize,
+		VectorLookupType::NoLookup => 0
+	};
+
+	CodebookTruncation {
+		entry_count,
+		multiplicand_count
+	}
 }
 
 /// Writes all the floor configurations as dictated by the Vorbis stream format.
@@ -553,4 +576,103 @@ fn write_modes<W: Write>(
 	}
 
 	Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+	use super::{CodebookTruncation, codebook_truncation, lookup1_values};
+	use crate::vorbis::VectorLookupType;
+
+	#[test]
+	fn codebook_truncation_drops_trailing_unused_entries() {
+		assert_eq!(
+			codebook_truncation(
+				4,
+				2,
+				VectorLookupType::ExplicitlyPopulated,
+				&[1, 2, 0, 0],
+				0
+			),
+			CodebookTruncation {
+				entry_count: 2,
+				multiplicand_count: 4
+			}
+		);
+	}
+
+	#[test]
+	fn codebook_truncation_keeps_interleaved_unused_entries() {
+		assert_eq!(
+			codebook_truncation(5, 2, VectorLookupType::NoLookup, &[1, 0, 2, 0, 0], 0),
+			CodebookTruncation {
+				entry_count: 3,
+				multiplicand_count: 0
+			}
+		);
+	}
+
+	#[test]
+	fn codebook_truncation_keeps_all_unused_codebooks() {
+		assert_eq!(
+			codebook_truncation(3, 2, VectorLookupType::NoLookup, &[0, 0, 0], 0),
+			CodebookTruncation {
+				entry_count: 3,
+				multiplicand_count: 0
+			}
+		);
+	}
+
+	#[test]
+	fn codebook_truncation_preserves_residue_classbook_minimum() {
+		assert_eq!(
+			codebook_truncation(4, 2, VectorLookupType::NoLookup, &[1, 0, 0, 0], 3),
+			CodebookTruncation {
+				entry_count: 3,
+				multiplicand_count: 0
+			}
+		);
+	}
+
+	#[test]
+	fn codebook_truncation_preserves_type1_lookup_value_count() {
+		let mut codeword_lengths = [0; 100];
+		codeword_lengths[0] = 1;
+
+		let truncation = codebook_truncation(
+			100,
+			5,
+			VectorLookupType::ImplicitlyPopulated,
+			&codeword_lengths,
+			0
+		);
+
+		assert_eq!(
+			truncation,
+			CodebookTruncation {
+				entry_count: 32,
+				multiplicand_count: 2
+			}
+		);
+	}
+
+	#[test]
+	fn type1_bucket_floor_preserves_lookup_value_count() {
+		const MAX_CODEBOOK_ENTRIES: u32 = 0xFF_FFFF;
+
+		for dimensions in 1..=u16::MAX {
+			for target in 1..=lookup1_values(MAX_CODEBOOK_ENTRIES, dimensions) {
+				let bucket_floor = target
+					.saturating_pow(dimensions as u32)
+					.min(MAX_CODEBOOK_ENTRIES);
+
+				assert_eq!(
+					lookup1_values(bucket_floor, dimensions),
+					target,
+					"lookup1_values bucket floor {bucket_floor} for target {target}, \
+					dimensions {dimensions} decodes as {}",
+					lookup1_values(bucket_floor, dimensions)
+				);
+			}
+		}
+	}
 }

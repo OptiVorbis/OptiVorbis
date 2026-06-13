@@ -14,6 +14,7 @@ and this project adheres to
 - Consecutive unused entries at the end of codebooks are now removed, slightly
   reducing setup header size. (Thanks to @MegaByte for [PR
   #187](https://github.com/OptiVorbis/OptiVorbis/pull/187)!)
+- Minor dependency updates.
 
 ## [0.3.0] - 2025-01-13
 

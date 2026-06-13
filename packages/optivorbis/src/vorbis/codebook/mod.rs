@@ -160,8 +160,8 @@ impl VorbisCodebook {
 	}
 
 	/// Computes the optimal codeword length for every entry, transitioning this
-	/// codebook into _optimizing mode_. The element in position `n` of the slice
-	/// represents the number of times the entry number `n` has been decoded so far.
+	/// codebook into _optimizing mode_. The element in position `n` of the returned
+	/// slice represents the length of the codeword for entry number `n`.
 	///
 	/// This is an in-place operation that does not consume any additional memory once
 	/// it finishes. It executes in O(n log n) the first time it is called, but the

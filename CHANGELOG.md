@@ -11,6 +11,9 @@ and this project adheres to
 ### Changed
 
 - Bump MSRV to 1.85 due to usage of the Rust 2024 edition.
+- Consecutive unused entries at the end of codebooks are now removed, slightly
+  reducing setup header size. (Thanks to @MegaByte for [PR
+  #187](https://github.com/OptiVorbis/OptiVorbis/pull/187)!)
 
 ## [0.3.0] - 2025-01-13
 

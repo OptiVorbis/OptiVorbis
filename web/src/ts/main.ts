@@ -1,5 +1,3 @@
-import '../css/main.css';
-
 // globalThis is not implemented by slightly older, ES6-compliant web browsers
 import 'core-js/stable/global-this';
 

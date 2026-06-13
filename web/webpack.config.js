@@ -8,9 +8,10 @@ const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 const dist = path.resolve(__dirname, "..", "target", "web");
 
+/** @type {import('webpack').Configuration} */
 module.exports = {
   mode: "production",
-  entry: "./src/ts/main.ts",
+  entry: ["./src/ts/main.ts", "./src/css/main.css"],
   module: {
     rules: [
       {

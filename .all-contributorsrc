@@ -3,9 +3,7 @@
   "projectOwner": "OptiVorbis",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "files": [
-    "README.md"
-  ],
+  "files": ["README.md"],
   "imageSize": 100,
   "commit": false,
   "commitConvention": "none",
@@ -33,37 +31,35 @@
       "name": "victorlf4",
       "avatar_url": "https://avatars.githubusercontent.com/u/33629877?v=4",
       "profile": "https://github.com/victorlf4",
-      "contributions": [
-        "ideas"
-      ]
+      "contributions": ["ideas"]
     },
     {
       "login": "Chocobo1",
       "name": "Chocobo1",
       "avatar_url": "https://avatars.githubusercontent.com/u/9395168?v=4",
       "profile": "https://myprojects.tzou.me/projects/",
-      "contributions": [
-        "platform"
-      ]
+      "contributions": ["platform"]
     },
     {
       "login": "MiguelDreamer",
       "name": "Miguel",
       "avatar_url": "https://avatars.githubusercontent.com/u/31966940?v=4",
       "profile": "https://github.com/MiguelDreamer",
-      "contributions": [
-        "design"
-      ]
+      "contributions": ["design"]
+    },
+    {
+      "login": "MegaByte",
+      "name": "Aaron Kaluszka",
+      "avatar_url": "https://avatars.githubusercontent.com/u/202012?v=4",
+      "profile": "https://kaluszka.com/",
+      "contributions": ["code"]
     },
     {
       "login": "sya-ri",
       "name": "sya-ri",
       "avatar_url": "https://avatars.githubusercontent.com/u/34268371?v=4",
       "profile": "https://github.com/sya-ri",
-      "contributions": [
-        "ideas",
-        "infra"
-      ]
+      "contributions": ["ideas", "infra"]
     }
   ],
   "contributorsPerLine": 7

@@ -1,5 +1,8 @@
 //! Contains the [`VorbisHuffmanTree`] definition and implementation.
 
+// Workaround for an unactionable nightly Clippy lint on #[self_referencing] expansion as of 2026-06-13
+#![allow(clippy::extra_unused_lifetimes)]
+
 use std::fmt::{Debug, Formatter};
 
 use bumpalo::Bump;

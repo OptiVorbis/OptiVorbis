@@ -704,4 +704,3 @@ fn map_eof_err_to_small_packet_err<T>(
 		_ => error.into()
 	})
 }
-

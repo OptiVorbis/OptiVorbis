@@ -2,8 +2,7 @@
 
 use std::{
 	cell::Cell,
-	io,
-	io::{ErrorKind, Read}
+	io::{self, ErrorKind, Read}
 };
 
 use huffman_codeword_lengths::VorbisCodebookNumberFrequenciesDecorator;

@@ -33,13 +33,22 @@ slice-group-by = "0.3.1"
 stderrlog = { version = "0.6.0", default-features = false }
 test-log = "0.2.19"
 thiserror = "2.0.18"
-tinyvec = { version = "1.10.0", default-features = false, features = [
-  "alloc",
-  "rustc_1_57",
-] }
+tinyvec = {
+  version = "1.10.0",
+  default-features = false,
+  features = [
+    "alloc",
+    "rustc_1_57",
+  ]
+}
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
 wasm-bindgen = { version = "0.2.108", default-features = false }
 web-sys = "0.3.85"
+
+[profile.bench]
+inherits = "release"
+debug = true
+strip = "none"
 
 [profile.release]
 strip = "symbols"
@@ -47,16 +56,11 @@ lto = "fat"
 panic = "abort"
 codegen-units = 1
 
-[profile.min-size-release]
-inherits = "release"
-opt-level = "z"
-
 [profile.fuzzing]
 inherits = "release"
 overflow-checks = true
 panic = "unwind"
 
-[profile.bench]
+[profile.min-size-release]
 inherits = "release"
-debug = true
-strip = "none"
+opt-level = "z"

@@ -7,8 +7,7 @@ use slice_group_by::GroupBy;
 use vorbis_bitpack::{BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_width};
 
 use super::{
-	VorbisOptimizerError,
-	audio_packet_rewrite::AudioPacketRewrite,
+	VorbisOptimizerError, audio_packet_rewrite::AudioPacketRewrite,
 	setup_header_parse::VorbisSetupData
 };
 use crate::vorbis::{VectorLookupType, ilog, lookup1_values};

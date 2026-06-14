@@ -7,3 +7,4 @@ publish = false
 [dependencies]
 afl.workspace = true
 optivorbis.workspace = true
+vorbis_rs.workspace = true

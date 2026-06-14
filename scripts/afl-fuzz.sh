@@ -13,7 +13,7 @@ fix_trouble_files_crc() {
 	# files to be accepted by non-instrumented code. The source of this program is
 	# available at https://gitlab.xiph.org/xiph/rogg
 	if command -v rogg_crcfix >/dev/null 2>&1; then
-		for file in "$FUZZ_OUTPUT_DIR"/default/crashes/* "$FUZZ_OUTPUT_DIR"/default/hangs/*; do
+		for file in "$FUZZ_OUTPUT_DIR"/*/crashes/* "$FUZZ_OUTPUT_DIR"/*/hangs/*; do
 			rogg_crcfix "$file" || true
 		done
 	fi
@@ -22,27 +22,42 @@ fix_trouble_files_crc() {
 cd "$(git rev-parse --show-toplevel)"
 
 for fuzz_target in packages/*_afl_fuzz_target; do
-	# Pass the fuzzing feature flag to disable CRC checks in the ogg library.
-	# See: https://github.com/RustAudio/ogg/pull/6
-	RUSTFLAGS='--cfg=fuzzing' cargo afl build --profile fuzzing \
-	-p "${fuzz_target#packages/}"
-done
-
-# Minimize corpus to whatever generates interesting cases
-for fuzz_target_package in packages/*_afl_fuzz_target; do
-	fuzz_target="${fuzz_target_package#packages/}"
-	echo "> Minimizing corpus for $fuzz_target"
-
-	cargo afl cmin -i packages/optivorbis/resources/test -o afl_fuzz_input -- \
-	"target/fuzzing/$fuzz_target"
+	# The ogg library has a fuzzing feature flag that disables CRC checks,
+	# set by cargo afl. See: https://github.com/RustAudio/ogg/pull/6
+	cargo afl build --profile fuzzing -p "${fuzz_target#packages/}"
 done
 
 # Launch the fuzzing
-trap 'fix_trouble_files_crc' INT QUIT TERM EXIT
+num_cores=$(nproc 2>/dev/null || echo 1)
+secondary_pids=""
+
+cleanup() {
+	if [ -n "$secondary_pids" ]; then
+		# shellcheck disable=SC2086
+		kill $secondary_pids 2>/dev/null || true
+	fi
+	fix_trouble_files_crc
+}
+trap 'cleanup' INT QUIT TERM EXIT
+
 for fuzz_target_package in packages/*_afl_fuzz_target; do
 	fuzz_target="${fuzz_target_package#packages/}"
-	echo "> Fuzzing $fuzz_target"
+	echo "> Fuzzing $fuzz_target with $num_cores core(s)"
 
-	AFL_AUTORESUME=1 cargo afl fuzz -i afl_fuzz_input -o "$FUZZ_OUTPUT_DIR" -- \
-	"target/fuzzing/$fuzz_target"
+	# Start one secondary fuzzer per extra available core
+	i=1
+	while [ "$i" -lt "$num_cores" ]; do
+		AFL_AUTORESUME=1 AFL_SKIP_CPUFREQ=1 AFL_NO_UI=1 \
+		cargo afl fuzz -S "secondary_$i" \
+			-i packages/optivorbis/resources/test -o "$FUZZ_OUTPUT_DIR" \
+			-- "target/fuzzing/$fuzz_target" >/dev/null 2>&1 &
+		secondary_pids="$secondary_pids $!"
+		i=$((i + 1))
+	done
+
+	# Run the main fuzzer in the foreground so AFL's built-in ncurses TUI is
+	# visible
+	AFL_AUTORESUME=1 AFL_SKIP_CPUFREQ=1 \
+	cargo afl fuzz -M main -i packages/optivorbis/resources/test -o "$FUZZ_OUTPUT_DIR" \
+		-- "target/fuzzing/$fuzz_target"
 done

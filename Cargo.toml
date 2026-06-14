@@ -42,6 +42,7 @@ tinyvec = {
   ]
 }
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
+vorbis_rs = { version = "0.5.5", default-features = false }
 wasm-bindgen = { version = "0.2.108", default-features = false }
 web-sys = "0.3.85"
 

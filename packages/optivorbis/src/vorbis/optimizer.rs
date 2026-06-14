@@ -705,36 +705,3 @@ fn map_eof_err_to_small_packet_err<T>(
 	})
 }
 
-/// The Vorbis I `ilog` function, as defined in section 9.2.1 of the Vorbis I
-/// specification. Mathematically, it returns the floor of the base-2 logarithm
-/// of the specified number plus one, except for 0 and negative numbers, where it
-/// returns zero. For zero and positive numbers, this is equivalent to the minimum
-/// number of bits required to represent integers in [0, n].
-const fn ilog(n: i32) -> u8 {
-	// Surprisingly, branching in the source code translates to better machine code
-	if n > 0 {
-		32 - n.leading_zeros() as u8
-	} else {
-		0
-	}
-}
-
-#[cfg(test)]
-mod tests {
-	use super::ilog;
-
-	#[test]
-	fn ilog_works() {
-		// Values from Vorbis I specification, section 9.2.1
-		assert_eq!(ilog(0), 0);
-		assert_eq!(ilog(1), 1);
-		assert_eq!(ilog(2), 2);
-		assert_eq!(ilog(3), 2);
-		assert_eq!(ilog(4), 3);
-		assert_eq!(ilog(7), 3);
-
-		// Additional checks
-		assert_eq!(ilog(i32::MAX), 31);
-		assert_eq!(ilog(i32::MIN), 0);
-	}
-}

@@ -8,13 +8,14 @@ use tinyvec::TinyVec;
 use vorbis_bitpack::BitpackReader;
 
 use super::{
-	VorbisIdentificationHeaderData, VorbisOptimizerError, ilog,
+	VorbisIdentificationHeaderData, VorbisOptimizerError,
 	setup_header_parse::{
 		CodebookConfiguration, Floor1Configuration, ResidueConfiguration, VorbisSetupData
 	}
 };
 use crate::vorbis::{
-	ResidueType, VectorLookupType, codebook::VorbisCodebook, optimizer::setup_header_parse::Mode
+	ResidueType, VectorLookupType, codebook::VorbisCodebook, ilog,
+	optimizer::setup_header_parse::Mode
 };
 
 /// Parses the specified audio packet, whose source is already wrapped in a

@@ -9,10 +9,9 @@ use vorbis_bitpack::{BitpackWriter, BitpackedIntegerWidth, bitpacked_integer_wid
 use super::{
 	VorbisOptimizerError,
 	audio_packet_rewrite::AudioPacketRewrite,
-	ilog,
-	setup_header_parse::{VorbisSetupData, lookup1_values}
+	setup_header_parse::VorbisSetupData
 };
-use crate::vorbis::VectorLookupType;
+use crate::vorbis::{VectorLookupType, ilog, lookup1_values};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 struct CodebookTruncation {

@@ -8,9 +8,11 @@ use vorbis_bitpack::BitpackReader;
 
 use super::{
 	AudioPacketAnalyze, VorbisCommentData, VorbisIdentificationHeaderData, VorbisOptimizerError,
-	common_header_validation, ilog
+	common_header_validation
 };
-use crate::vorbis::{PacketType, ResidueType, VectorLookupType, codebook::VorbisCodebook};
+use crate::vorbis::{
+	PacketType, ResidueType, VectorLookupType, codebook::VorbisCodebook, ilog, lookup1_values
+};
 
 /// A mutable reference to an immutable byte slice, used in [`parse_codebook_configurations`]
 /// to instantiate a bitpack reader without any cursor seek position tracking overhead.
@@ -901,32 +903,4 @@ fn parse_modes<R: Read>(
 	Ok(modes)
 }
 
-/// The Vorbis I `lookup1_values` function, as defined in section 9.2.3 of the
-/// Vorbis I specification. Mathematically, it returns the
-/// `codebook_dimensions`-root of `codebook_entries`, rounded down to an integer.
-pub(super) fn lookup1_values(codebook_entries: u32, codebook_dimensions: u16) -> u32 {
-	// codebook_entries is at most 2^24 - 1, so it fits in a f32.
-	// codebook_dimensions of zero does not make sense for codebooks used for vector
-	// lookup, but the specification does not say they're illegal otherwise. Therefore,
-	// let's handle that edge case to avoid division by zero
-	if codebook_dimensions == 0 {
-		u32::MAX
-	} else {
-		(codebook_entries as f32).powf(1.0 / codebook_dimensions as f32) as u32
-	}
-}
 
-#[cfg(test)]
-mod tests {
-	use super::lookup1_values;
-
-	#[test]
-	fn lookup1_values_works() {
-		assert_eq!(lookup1_values(100, 5), 2);
-		assert_eq!(lookup1_values(1, 5), 1);
-
-		assert_eq!(lookup1_values(0, u16::MAX), 0);
-		assert_eq!(lookup1_values(0xFFFFFF, 0), u32::MAX);
-		assert_eq!(lookup1_values(0xFFFFFF, u16::MAX), 1);
-	}
-}

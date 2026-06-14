@@ -109,3 +109,62 @@ try_from_impl! {
 	type Enum = ResidueType(u16) { Interleaved, Ordered, InterleavedVectors };
 	type Error = TryResidueTypeFromInt
 }
+
+/// The Vorbis I `ilog` function, as defined in section 9.2.1 of the Vorbis I
+/// specification. Mathematically, it returns the floor of the base-2 logarithm
+/// of the specified number plus one, except for 0 and negative numbers, where it
+/// returns zero. For zero and positive numbers, this is equivalent to the minimum
+/// number of bits required to represent integers in [0, n].
+const fn ilog(n: i32) -> u8 {
+	// Surprisingly, branching in the source code translates to better machine code
+	if n > 0 {
+		32 - n.leading_zeros() as u8
+	} else {
+		0
+	}
+}
+
+/// The Vorbis I `lookup1_values` function, as defined in section 9.2.3 of the
+/// Vorbis I specification. Mathematically, it returns the
+/// `codebook_dimensions`-root of `codebook_entries`, rounded down to an integer.
+fn lookup1_values(codebook_entries: u32, codebook_dimensions: u16) -> u32 {
+	// codebook_entries is at most 2^24 - 1, so it fits in a f32.
+	// codebook_dimensions of zero does not make sense for codebooks used for vector
+	// lookup, but the specification does not say they're illegal otherwise. Therefore,
+	// let's handle that edge case to avoid division by zero
+	if codebook_dimensions == 0 {
+		u32::MAX
+	} else {
+		(codebook_entries as f32).powf(1.0 / codebook_dimensions as f32) as u32
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::{ilog, lookup1_values};
+
+	#[test]
+	fn ilog_works() {
+		// Values from Vorbis I specification, section 9.2.1
+		assert_eq!(ilog(0), 0);
+		assert_eq!(ilog(1), 1);
+		assert_eq!(ilog(2), 2);
+		assert_eq!(ilog(3), 2);
+		assert_eq!(ilog(4), 3);
+		assert_eq!(ilog(7), 3);
+
+		// Additional checks
+		assert_eq!(ilog(i32::MAX), 31);
+		assert_eq!(ilog(i32::MIN), 0);
+	}
+
+	#[test]
+	fn lookup1_values_works() {
+		assert_eq!(lookup1_values(100, 5), 2);
+		assert_eq!(lookup1_values(1, 5), 1);
+
+		assert_eq!(lookup1_values(0, u16::MAX), 0);
+		assert_eq!(lookup1_values(0xFFFFFF, 0), u32::MAX);
+		assert_eq!(lookup1_values(0xFFFFFF, u16::MAX), 1);
+	}
+}

@@ -1,7 +1,7 @@
 //! Contains the helper [`process_audio_packet`] function to parse audio packets and
 //! execute callbacks when some interesting piece of data is read.
 
-use std::{cmp, io::Read};
+use std::io::Read;
 
 use log::trace;
 use tinyvec::TinyVec;
@@ -171,7 +171,7 @@ fn process_audio_packet_second_part<
 		TinyVec::<[bool; 8]>::with_capacity(identification_data.channels.get() as usize);
 
 	// By construction, mapping_mux has as many elements as audio channels
-	for submap_number in mapping_configuration.mapping_mux.iter().copied() {
+	for &submap_number in &mapping_configuration.mapping_mux {
 		let floor_number =
 			mapping_configuration.floor_and_residue_mappings[submap_number as usize].floor_number;
 		let floor_configuration = &codec_setup.floor_configurations[floor_number as usize];
@@ -214,12 +214,7 @@ fn process_audio_packet_second_part<
 			TinyVec::<[bool; 8]>::with_capacity(identification_data.channels.get() as usize);
 		let mut no_residue_vector_to_decode = true;
 
-		for (j, mapping_mux) in mapping_configuration
-			.mapping_mux
-			.iter()
-			.copied()
-			.enumerate()
-		{
+		for (j, &mapping_mux) in mapping_configuration.mapping_mux.iter().enumerate() {
 			if mapping_mux as usize == i {
 				let do_not_decode = no_residue[j];
 				residue_vectors_masks.push(do_not_decode);
@@ -366,8 +361,8 @@ fn process_residue<R: Read, T, F: FnMut(u16, u32, &mut T) -> Result<(), VorbisOp
 
 	// Vorbis I spec, § 8.6.2, common residue packet decode
 
-	let residue_begin = cmp::min(residue_configuration.begin, vector_size);
-	let residue_end = cmp::min(residue_configuration.end, vector_size);
+	let residue_begin = residue_configuration.begin.min(vector_size);
+	let residue_end = residue_configuration.end.min(vector_size);
 
 	let n_to_read = residue_end - residue_begin;
 

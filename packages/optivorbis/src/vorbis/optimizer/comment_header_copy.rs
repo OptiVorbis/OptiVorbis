@@ -48,8 +48,7 @@ impl CommentHeaderCopy {
 		// Vendor string. During analysis we might have reached EOP reading the comments header
 		// packet, and thus not have any vendor string available; in that case, just use an empty
 		// vendor string
-		let empty_vec = vec![];
-		let vendor_string = comment_data.vendor_string.as_ref().unwrap_or(&empty_vec);
+		let vendor_string = comment_data.vendor_string.as_deref().unwrap_or(&[]);
 		packet_data.extend_from_slice(&u32::try_from(vendor_string.len())?.to_le_bytes()[..]);
 		packet_data.extend_from_slice(vendor_string);
 

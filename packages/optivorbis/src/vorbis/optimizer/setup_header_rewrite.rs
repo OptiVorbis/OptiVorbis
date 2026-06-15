@@ -219,7 +219,7 @@ fn optimize_and_write_codebooks<W: Write>(
 			if has_unused_entries {
 				// Unordered, sparse format. Supports unused entries
 
-				for codeword_length in optimal_codeword_lengths.iter().copied() {
+				for &codeword_length in optimal_codeword_lengths {
 					let used_entry = codeword_length != 0;
 
 					bitpacker.write_flag(used_entry)?;
@@ -234,7 +234,7 @@ fn optimize_and_write_codebooks<W: Write>(
 			} else {
 				// Unordered, non-sparse format. Does not support unused entries
 
-				for codeword_length in optimal_codeword_lengths.iter().copied() {
+				for &codeword_length in optimal_codeword_lengths {
 					bitpacker.write_unsigned_integer(
 						(codeword_length - 1) as u32,
 						bitpacked_integer_width!(5)
@@ -263,12 +263,7 @@ fn optimize_and_write_codebooks<W: Write>(
 				BitpackedIntegerWidth::new(codebook_configuration.codebook_vector_value_bits)
 					.unwrap();
 
-			// The multiplicand suffix orphaned by entry truncation was already removed above.
-			for multiplicand in codebook_configuration
-				.codebook_vector_multiplicands
-				.iter()
-				.copied()
-			{
+			for &multiplicand in &codebook_configuration.codebook_vector_multiplicands {
 				bitpacker.write_unsigned_integer(multiplicand as u32, multiplicand_width)?;
 			}
 		}
@@ -351,12 +346,11 @@ fn write_floor_configurations<W: Write>(
 		let class_configuration = floor_configuration
 			.class_dimensions
 			.iter()
-			.copied()
-			.zip(floor_configuration.class_subclasses.iter().copied())
+			.zip(floor_configuration.class_subclasses.iter())
 			.zip(floor_configuration.class_masterbooks.iter())
 			.zip(floor_configuration.subclass_books.iter());
 
-		for (((class_dimensions, class_subclasses), class_masterbooks), subclass_books) in
+		for (((&class_dimensions, &class_subclasses), class_masterbooks), subclass_books) in
 			class_configuration
 		{
 			bitpacker
@@ -388,7 +382,7 @@ fn write_floor_configurations<W: Write>(
 
 		// The width is valid by construction, so unwrapping is safe
 		let range_bits_width = BitpackedIntegerWidth::new(floor_configuration.range_bits).unwrap();
-		for x_value in floor_configuration.x_list.iter().copied() {
+		for &x_value in &floor_configuration.x_list {
 			bitpacker.write_unsigned_integer(x_value as u32, range_bits_width)?;
 		}
 	}

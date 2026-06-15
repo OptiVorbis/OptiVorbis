@@ -76,7 +76,6 @@
 #![forbid(unsafe_op_in_unsafe_fn)]
 #![forbid(rustdoc::broken_intra_doc_links)]
 
-use core::cmp;
 #[cfg(not(feature = "no-std"))]
 use std::io::{Read, Result, Write};
 
@@ -304,7 +303,7 @@ impl<W: Write> BitpackWriter<W> {
 		// First, try to complete the pending byte with bits from this integer
 		let free_bits_in_byte_to_be_written = 8 - self.bits_to_be_written;
 		let bits_to_write_in_byte_to_be_written =
-			cmp::min(remaining_bits, free_bits_in_byte_to_be_written);
+			remaining_bits.min(free_bits_in_byte_to_be_written);
 		let bits_to_write_in_byte_to_be_written_width =
 			BitpackedIntegerWidth::__internal_unchecked_new(bits_to_write_in_byte_to_be_written);
 
@@ -502,10 +501,9 @@ fn float32_pack(float: f64) -> u32 {
 	//   which are ignored => the initial point position is 20.
 	// - Vorbis float:    xxxx_xxxx_xxxx_xxxx_xxxx_x. => the initial point position is 0
 	let exponent = ((float.to_bits() & 0x7FF0_0000_0000_0000) >> 52) as u32;
-	let adjusted_exponent = cmp::min(
-		exponent.saturating_sub(235 + 20),
-		VORBIS_FLOAT32_MAX_EXPONENT
-	);
+	let adjusted_exponent = exponent
+		.saturating_sub(235 + 20)
+		.min(VORBIS_FLOAT32_MAX_EXPONENT);
 	let exponent_component = adjusted_exponent << 21;
 
 	// Copy the mantissa, ignoring any least significant digits we cannot store.

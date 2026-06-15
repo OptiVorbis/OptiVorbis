@@ -39,12 +39,11 @@ impl<T: AsMut<[u64]> + AsRef<[u64]>> VorbisCodebookNumberFrequenciesDecorator<T>
 			// original frequencies array, and so on, skipping unused entries. The result is that the
 			// codeword length computation algorithm gets a randomly-indexable and sorted view of the
 			// original array with the unused entries removed
-			number_index_map = Vec::with_capacity(number_frequencies.len());
-			for (index, frequency) in number_frequencies.iter().copied().enumerate() {
-				if frequency != 0 {
-					number_index_map.push(index);
-				}
-			}
+			number_index_map = number_frequencies
+				.iter()
+				.enumerate()
+				.filter_map(|(index, &frequency)| (frequency != 0).then_some(index))
+				.collect::<Vec<_>>();
 			number_index_map
 				.sort_unstable_by(|i, j| number_frequencies[*j].cmp(&number_frequencies[*i]));
 			number_index_map.shrink_to_fit(); // Save memory in case there are lots of unused entries

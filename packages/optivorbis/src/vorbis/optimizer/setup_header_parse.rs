@@ -1,6 +1,6 @@
 //! Contains the supporting code for the [`VorbisSetupData`] Vorbis optimizer state.
 
-use std::{cmp, io::Read, mem};
+use std::{io::Read, mem};
 
 use indexmap::IndexSet;
 use log::{debug, info, trace};
@@ -400,7 +400,7 @@ fn parse_codebook_configurations<'pref, 'packet>(
 			// So just allocate space for 65535 multiplicands and let the vector grow if it
 			// really needs to
 			codebook_vector_multiplicands =
-				Vec::with_capacity(cmp::min(codebook_lookup_value_count.try_into()?, 65535));
+				Vec::with_capacity(usize::try_from(codebook_lookup_value_count)?.min(65535));
 			for _ in 0..codebook_lookup_value_count {
 				codebook_vector_multiplicands.push(bitpack_packet_read!(
 					bitpacker,
@@ -453,15 +453,16 @@ fn parse_floor1_configurations<R: Read>(
 		let partitions =
 			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 5, u8)?;
 
-		let mut partition_class_list = Vec::with_capacity(partitions as usize);
 		let mut maximum_class = -1;
-		for _ in 0..partitions {
-			let class =
-				bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 4, u8)?;
-			partition_class_list.push(class);
+		let partition_class_list = (0..partitions)
+			.map(|_| {
+				let class = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 4, u8)?;
 
-			maximum_class = cmp::max(class as i8, maximum_class);
-		}
+				maximum_class = (class as i8).max(maximum_class);
+
+				Ok::<_, VorbisOptimizerError>(class)
+			})
+			.collect::<Result<Vec<_>, _>>()?;
 
 		debug!(
 			"Floor {}: type {}, {} partitions, {} classes",
@@ -481,7 +482,7 @@ fn parse_floor1_configurations<R: Read>(
 			let class_dimension = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 3, u8)?
 				+ 1;
 			class_dimensions.push(class_dimension);
-			maximum_class_dimension = cmp::max(class_dimension, maximum_class_dimension);
+			maximum_class_dimension = class_dimension.max(maximum_class_dimension);
 
 			let current_subclass =
 				bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 2, u8)?;
@@ -507,24 +508,25 @@ fn parse_floor1_configurations<R: Read>(
 			}
 
 			let current_subclass_books_count = 1 << current_subclass;
-			let mut current_subclass_books = Vec::with_capacity(current_subclass_books_count);
-			for _ in 0..current_subclass_books_count {
-				// The codebook number 0 - 1 = -1 may be encoded on the stream. This is used to set
-				// floor values to zero during packet decode later
-				let codebook_number =
-					bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?
-						.checked_sub(1);
+			let current_subclass_books = (0..current_subclass_books_count)
+				.map(|_| {
+					// The codebook number 0 - 1 = -1 may be encoded on the stream. This is used to set
+					// floor values to zero during packet decode later
+					let codebook_number =
+						bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?
+							.checked_sub(1);
 
-				if let Some(codebook_number) =
-					codebook_number.filter(|n| *n as usize >= codebook_count)
-				{
-					return Err(VorbisOptimizerError::InvalidCodebookNumber(codebook_number));
-				}
+					if let Some(codebook_number) =
+						codebook_number.filter(|n| *n as usize >= codebook_count)
+					{
+						return Err(VorbisOptimizerError::InvalidCodebookNumber(codebook_number));
+					}
 
-				debug!("Floor {i} vector partition codebook: {codebook_number:?}");
+					debug!("Floor {i} vector partition codebook: {codebook_number:?}");
 
-				current_subclass_books.push(codebook_number);
-			}
+					Ok(codebook_number)
+				})
+				.collect::<Result<Vec<_>, _>>()?;
 
 			subclass_books.push(current_subclass_books);
 		}
@@ -539,7 +541,7 @@ fn parse_floor1_configurations<R: Read>(
 
 		let mut x_list =
 			IndexSet::with_capacity(partition_class_list.len() * maximum_class_dimension as usize);
-		for current_class in partition_class_list.iter().copied().map(|c| c as usize) {
+		for current_class in partition_class_list.iter().map(|&c| c as usize) {
 			for _ in 0..class_dimensions[current_class] {
 				if !x_list.insert(bitpack_packet_read!(
 					bitpacker,
@@ -598,10 +600,9 @@ fn parse_residue_configurations<R: Read>(
 		// is at stake. Try to fix the situation by using a zero-length residue, which should give
 		// an usable result.
 		// Upstream Vorbis issue: https://github.com/xiph/vorbis/issues/87
-		let residue_end = cmp::max(
-			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 24, u32)?,
-			residue_begin
-		);
+		let residue_end =
+			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 24, u32)?
+				.max(residue_begin);
 		let residue_partition_size = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 24, u32)?
 			+ 1;
 		let residue_classifications =
@@ -637,8 +638,7 @@ fn parse_residue_configurations<R: Read>(
 		}
 
 		// Read bitmap of partition classes and passes
-		let mut residue_cascade = Vec::with_capacity(residue_classifications as usize);
-		for _ in 0..residue_classifications {
+		let residue_cascade = (0..residue_classifications).map(|_| {
 			let low_bits =
 				bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 3, u8)?;
 			let high_bits = if bitpack_packet_read!(bitpacker, read_flag, header_length)? {
@@ -647,34 +647,38 @@ fn parse_residue_configurations<R: Read>(
 				0
 			};
 
-			residue_cascade.push((high_bits << 3) | low_bits);
-		}
+			Ok((high_bits << 3) | low_bits)
+		}).collect::<Result<Vec<_>, VorbisOptimizerError>>()?;
 
 		// Read codebooks to be used to decode a classification in a pass
-		let mut residue_books = Vec::with_capacity(residue_classifications as usize);
-		for (i, residue_cascade) in residue_cascade.iter().copied().enumerate() {
-			residue_books.push([None; 8]);
+		let residue_books = residue_cascade
+			.iter()
+			.enumerate()
+			.map(|(i, &residue_cascade)| {
+				let mut residue_books = [None; 8];
 
-			for (j, class_residue_book) in residue_books.last_mut().unwrap().iter_mut().enumerate()
-			{
-				if residue_cascade & (1 << j) != 0 {
-					let residue_book = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?;
+				for (j, class_residue_book) in residue_books.iter_mut().enumerate() {
+					if residue_cascade & (1 << j) != 0 {
+						let residue_book = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?;
 
-					// Check that the codebook exists. We skip checking whether it can be
-					// used for VQ because we do that later on audio packet decode, when the
-					// codebook is actually used for that
-					if codebook_configurations.get(residue_book as usize).is_none() {
-						return Err(VorbisOptimizerError::InvalidCodebookNumber(residue_book));
+						// Check that the codebook exists. We skip checking whether it can be
+						// used for VQ because we do that later on audio packet decode, when the
+						// codebook is actually used for that
+						if codebook_configurations.get(residue_book as usize).is_none() {
+							return Err(VorbisOptimizerError::InvalidCodebookNumber(residue_book));
+						}
+
+						trace!("Read residue book {residue_book} for classification {i}");
+
+						*class_residue_book = Some(residue_book);
+					} else {
+						// Unused. It's an error to try to decode this classification
 					}
-
-					trace!("Read residue book {residue_book} for classification {i}");
-
-					*class_residue_book = Some(residue_book);
-				} else {
-					// Unused. It's an error to try to decode this classification
 				}
-			}
-		}
+
+				Ok(residue_books)
+			})
+			.collect::<Result<Vec<_>, _>>()?;
 
 		residue_configurations.push(ResidueConfiguration {
 			residue_type,
@@ -725,56 +729,55 @@ fn parse_mapping_configurations<R: Read>(
 		debug!("Mapping {i} floor and residue submap count: {mapping_submap_count}");
 
 		// Read square polar channel mappings, if they are used
-		let mut channel_mappings;
-		if bitpack_packet_read!(bitpacker, read_flag, header_length)? {
+		let channel_mappings = if bitpack_packet_read!(bitpacker, read_flag, header_length)? {
 			let mapping_coupling_steps = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u16)?
 				+ 1;
 			let mapping_component_bits = ilog(audio_channels as i32 - 1); // At most 8: ilog(254) = 8
 
-			channel_mappings = Vec::with_capacity(mapping_coupling_steps as usize);
+			(0..mapping_coupling_steps)
+				.map(|j| {
+					let magnitude_channel = bitpack_packet_read!(
+						bitpacker,
+						read_unsigned_integer,
+						header_length,
+						mut mapping_component_bits,
+						u8
+					)?;
+					let angle_channel = bitpack_packet_read!(
+						bitpacker,
+						read_unsigned_integer,
+						header_length,
+						mut mapping_component_bits,
+						u8
+					)?;
 
-			for j in 0..mapping_coupling_steps {
-				let magnitude_channel = bitpack_packet_read!(
-					bitpacker,
-					read_unsigned_integer,
-					header_length,
-					mut mapping_component_bits,
-					u8
-				)?;
-				let angle_channel = bitpack_packet_read!(
-					bitpacker,
-					read_unsigned_integer,
-					header_length,
-					mut mapping_component_bits,
-					u8
-				)?;
+					if magnitude_channel == angle_channel
+						|| magnitude_channel >= audio_channels
+						|| angle_channel >= audio_channels
+					{
+						return Err(VorbisOptimizerError::InvalidChannelMapping {
+							magnitude_channel,
+							angle_channel,
+							audio_channels
+						});
+					}
 
-				if magnitude_channel == angle_channel
-					|| magnitude_channel >= audio_channels
-					|| angle_channel >= audio_channels
-				{
-					return Err(VorbisOptimizerError::InvalidChannelMapping {
+					trace!(
+						"Mapping {i}, channel mapping {j}: \
+						magnitude channel {magnitude_channel}, angle channel {angle_channel}"
+					);
+
+					Ok(ChannelMapping {
 						magnitude_channel,
-						angle_channel,
-						audio_channels
-					});
-				}
-
-				trace!(
-					"Mapping {i}, channel mapping {j}: \
-					magnitude channel {magnitude_channel}, angle channel {angle_channel}"
-				);
-
-				channel_mappings.push(ChannelMapping {
-					magnitude_channel,
-					angle_channel
-				});
-			}
+						angle_channel
+					})
+				})
+				.collect::<Result<Vec<_>, _>>()?
 		} else {
 			trace!("Not using channel mappings for mapping {i}");
 
-			channel_mappings = vec![];
-		}
+			vec![]
+		};
 
 		// Discard reserved field. The specification mandates that it is nonzero,
 		// so when debugging it's a great opportunity to check we're keeping stream
@@ -786,11 +789,8 @@ fn parse_mapping_configurations<R: Read>(
 		}
 
 		// Read channel multiplexing settings
-		let mut mapping_mux;
-		if mapping_submap_count > 1 {
-			mapping_mux = Vec::with_capacity(audio_channels as usize);
-
-			for _ in 0..audio_channels {
+		let mapping_mux = if mapping_submap_count > 1 {
+			(0..audio_channels).map(|_| {
 				let mux_submap = bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 4, u8)?;
 
 				if mux_submap >= mapping_submap_count {
@@ -800,21 +800,20 @@ fn parse_mapping_configurations<R: Read>(
 					});
 				}
 
-				mapping_mux.push(mux_submap);
-			}
+				Ok(mux_submap)
+			}).collect::<Result<Vec<_>, _>>()?
 		} else {
 			// The specification does not say how to handle populating mapping_mux when there is
 			// only a single submap, as in that case it is not read from the stream. What makes
 			// more sense, and stb_vorbis does, is considering that mapping_mux would be full
 			// of zeroes (i.e., each channel points to the only possible submap)
-			mapping_mux = vec![0; audio_channels as usize];
-		}
+			vec![0; audio_channels as usize]
+		};
 
 		trace!("Read mapping {i} channel floor and residue submapping settings: {mapping_mux:?}");
 
 		// Read the floor and residue used to decode submaps
-		let mut floor_and_residue_mappings = Vec::with_capacity(mapping_submap_count as usize);
-		for j in 0..mapping_submap_count {
+		let floor_and_residue_mappings = (0..mapping_submap_count).map(|j| {
 			// Discard unused time configuration placeholder. Surprisingly, the spec does not
 			// require validating it in any way
 			bitpack_packet_read!(bitpacker, read_unsigned_integer, header_length, const 8, u8)?;
@@ -833,11 +832,11 @@ fn parse_mapping_configurations<R: Read>(
 
 			info!("Mapping {i}, submap {j}: floor {floor_number}, residue {residue_number}");
 
-			floor_and_residue_mappings.push(FloorAndResidueMapping {
+			Ok(FloorAndResidueMapping {
 				floor_number,
 				residue_number
-			});
-		}
+			})
+		}).collect::<Result<Vec<_>, _>>()?;
 
 		mapping_configurations.push(MappingConfiguration {
 			channel_mappings,

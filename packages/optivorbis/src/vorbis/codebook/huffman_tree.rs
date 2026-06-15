@@ -93,8 +93,7 @@ impl VorbisHuffmanTree {
 			root_builder: |arena| {
 				let mut root = VorbisHuffmanTreeNode::default();
 
-				for (entry_number, codeword_length) in codeword_lengths.iter().copied().enumerate()
-				{
+				for (entry_number, &codeword_length) in codeword_lengths.iter().enumerate() {
 					// Ignore unused entries for sparse codebooks
 					if codeword_length == 0 {
 						continue;
@@ -131,7 +130,7 @@ impl VorbisHuffmanTree {
 		let mut root = VorbisHuffmanTreeNode::default();
 		let arena = Bump::new();
 
-		for (entry_number, codeword_length) in codeword_lengths.iter().copied().enumerate() {
+		for (entry_number, &codeword_length) in codeword_lengths.iter().enumerate() {
 			let codeword_length = codeword_length as u8;
 
 			// Ignore unused entries for sparse codebooks

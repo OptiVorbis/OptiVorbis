@@ -23,16 +23,14 @@ impl AudioPacketRewrite {
 	/// Creates a new instance of this optimizer state. This is relatively expensive,
 	/// as it will ask each codebook to generate its optimized codewords.
 	pub(super) fn new(mut codec_setup: VorbisSetupData) -> Self {
-		// Compute the optimal codeword for each codebook entry. Unused entries have None
-		let mut codebook_optimal_codewords =
-			Vec::with_capacity(codec_setup.codebook_configurations.len());
-		for codebook_configuration in &mut codec_setup.codebook_configurations {
-			codebook_optimal_codewords.push(codebook_configuration.codebook.optimal_codewords());
-		}
-
 		Self {
-			codec_setup,
-			codebook_optimal_codewords
+			// Compute the optimal codeword for each codebook entry. Unused entries have None
+			codebook_optimal_codewords: codec_setup
+				.codebook_configurations
+				.iter_mut()
+				.map(|codebook_configuration| codebook_configuration.codebook.optimal_codewords())
+				.collect(),
+			codec_setup
 		}
 	}
 

@@ -33,14 +33,10 @@ slice-group-by = "0.3.1"
 stderrlog = { version = "0.6.0", default-features = false }
 test-log = "0.2.19"
 thiserror = "2.0.18"
-tinyvec = {
-  version = "1.10.0",
-  default-features = false,
-  features = [
-    "alloc",
-    "rustc_1_57",
-  ]
-}
+tinyvec = { version = "1.10.0", default-features = false, features = [
+  "alloc",
+  "rustc_1_57",
+] }
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
 vorbis_rs = { version = "0.5.5", default-features = false }
 wasm-bindgen = { version = "0.2.108", default-features = false }

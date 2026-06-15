@@ -67,7 +67,7 @@ pub enum VorbisCodebookError {
 pub(super) struct VorbisCodebook {
 	pub(super) codebook_number: u16,
 	huffman_tree: VorbisHuffmanTree,
-	entry_decode_frequencies_or_lengths: Cell<Vec<u64>>,
+	pub(super) entry_decode_frequencies_or_lengths: Cell<Vec<u64>>,
 	recording_decode_frequencies: bool
 }
 

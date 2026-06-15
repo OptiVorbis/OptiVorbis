@@ -403,7 +403,7 @@ mod test {
 
 	#[test]
 	fn empty_huffman_tree_is_underspecified() {
-		// Observe that this tests uses a tree similar to the one that would result
+		// Observe that this test uses a tree similar to the one that would result
 		// from converting a codeword length list with a single zero
 		let tree = VorbisHuffmanTreeBuilder {
 			arena: Bump::new(),

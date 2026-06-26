@@ -42,7 +42,7 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.62.0",
     "webpack": "5.108.1",
-    "webpack-cli": "7.0.3",
+    "webpack-cli": "7.1.0",
     "webpack-dev-server": "5.2.5"
   },
   "dependencies": {

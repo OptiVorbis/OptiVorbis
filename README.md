@@ -152,8 +152,8 @@ Notably, the testing techniques included fuzzing, employing the AFL++ fuzzer. Wi
 
 The OptiVorbis library is licensed under either of
 
-- GNU Affero General Public License, Version 3 (`LICENSE` or https://www.gnu.org/licenses/agpl-3.0.html)
-- BSD 3-Clause "New" or "Revised" License (`LICENSE.BSD-3-Clause` or https://opensource.org/licenses/BSD-3-Clause)
+- GNU Affero General Public License, Version 3 (`LICENSE` or <https://www.gnu.org/licenses/agpl-3.0.html>)
+- BSD 3-Clause "New" or "Revised" License (`LICENSE.BSD-3-Clause` or <https://opensource.org/licenses/BSD-3-Clause>)
 
 at your option. The OptiVorbis CLI is licensed under the GNU Affero General Public License, Version 3 only. Other components (the web demo, etc.) are licensed according to the license files present in their root directory and their package metadata, if any.
 

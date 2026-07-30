@@ -47,7 +47,7 @@ In addition to these official distribution channels, OptiVorbis is also availabl
 
 ## Demo web page
 
-Just [visit the website](https://optivorbis.github.io/OptiVorbis): no installation required! Only a modern web browser that supports the required technologies is needed. Notably, Internet Explorer is not supported, but [you should no longer be using it](https://docs.microsoft.com/en-us/lifecycle/announcements/internet-explorer-11-end-of-support).
+Just [visit the website](https://optivorbis.github.io/OptiVorbis): no installation required! Only a modern web browser that supports the required technologies is needed.
 
 ## CLI
 

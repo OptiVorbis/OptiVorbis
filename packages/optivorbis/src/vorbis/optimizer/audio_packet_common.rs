@@ -342,20 +342,22 @@ fn process_residue<R: Read, T, F: FnMut(u16, u32, &mut T) -> Result<(), VorbisOp
 ) -> Result<(), VorbisOptimizerError> {
 	// Vorbis I spec, § 8.6.5. Format 2 decode can be implemented as format 1 decoding
 	// with different parameters
-	let residue_vectors_masks;
-	let vector_size; // At most 4096 (8192 / 2) * 255 (audio channels) = 2^13 * (2^8 - 1)
-	if residue_configuration.residue_type == ResidueType::InterleavedVectors {
-		// "If at least one vector is to be decoded, all the vectors are decoded"
-		// Because format 2 decode is reducible to a single vector format 1 decode,
-		// that is equivalent to stating that we just decode a single big vector in
-		// that case as usual. If this method is invoked, at least one residue vector
-		// is to be decoded
-		residue_vectors_masks = &[false][..];
-		vector_size = current_blocksize as u32 / 2 * original_residue_vectors_masks.len() as u32;
-	} else {
-		residue_vectors_masks = original_residue_vectors_masks;
-		vector_size = current_blocksize as u32 / 2;
-	}
+
+	// The vector size is at most 4096 (8192 / 2) * 255 (audio channels) = 2^13 * (2^8 - 1)
+	let (residue_vectors_masks, vector_size) =
+		if residue_configuration.residue_type == ResidueType::InterleavedVectors {
+			// "If at least one vector is to be decoded, all the vectors are decoded"
+			// Because format 2 decode is reducible to a single vector format 1 decode,
+			// that is equivalent to stating that we just decode a single big vector in
+			// that case as usual. If this method is invoked, at least one residue vector
+			// is to be decoded
+			(
+				&[false][..],
+				current_blocksize as u32 / 2 * original_residue_vectors_masks.len() as u32
+			)
+		} else {
+			(original_residue_vectors_masks, current_blocksize as u32 / 2)
+		};
 
 	let residue_vector_count = residue_vectors_masks.len();
 

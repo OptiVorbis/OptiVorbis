@@ -59,7 +59,7 @@ fn main() {
 				"decoded samples for channel {ch} must match"
 			);
 		}
-	})
+	});
 }
 
 fn decode_samples(data: &[u8]) -> Option<Vec<Vec<f32>>> {

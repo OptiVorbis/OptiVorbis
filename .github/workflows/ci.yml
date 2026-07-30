@@ -178,13 +178,9 @@ jobs:
         uses: mozilla-actions/sccache-action@9e7fa8a12102821edf02ca5dbea1acd0f89a2696 # v0.0.10
 
       - name: 🧰 Install wasm-pack
-        uses: taiki-e/cache-cargo-install-action@417450f3c33ee20393705369577571770643d4c7 # v3
+        uses: taiki-e/install-action@6a1bd70eaac3c8bdf093356838d7ee09fda951cf # v2
         with:
           tool: wasm-pack
-          # We require an unreleased PR for wasm-pack to support custom profiles: https://github.com/drager/wasm-pack/pull/1428
-          # This patch can be removed once the PR is included in a release
-          git: https://github.com/drager/wasm-pack.git
-          rev: cd1718aa
 
       - name: 📅 Gather build date and version metadata
         shell: bash

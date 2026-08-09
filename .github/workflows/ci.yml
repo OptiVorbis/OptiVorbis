@@ -144,8 +144,8 @@ jobs:
         with:
           name: OptiVorbis CLI (${{ matrix.target }})
           path: |
-            target/${{ matrix.target }}/release/optivorbis*
-            !target/${{ matrix.target }}/release/optivorbis.d
+            target/${{ matrix.target }}/release/optivorbis
+            target/${{ matrix.target }}/release/optivorbis.exe
 
   web_demo:
     name: Web demo

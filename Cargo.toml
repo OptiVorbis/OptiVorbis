@@ -7,7 +7,7 @@ default-members = ["packages/optivorbis", "packages/optivorbis_cli"]
 version = "0.3.0"
 authors = ["Alejandro González <me@alegon.dev>"]
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.87.0"
 homepage = "https://optivorbis.github.io/OptiVorbis"
 repository = "https://github.com/OptiVorbis/OptiVorbis"
 keywords = ["audio", "compression", "ogg", "optimization", "vorbis"]
@@ -32,15 +32,15 @@ rlsf = "0.2.3"
 slice-group-by = "0.3.1"
 stderrlog = { version = "0.6.0", default-features = false }
 test-log = "0.2.21"
-thiserror = "2.0.19"
+thiserror = "2.0.20"
 tinyvec = { version = "1.12.0", default-features = false, features = [
   "alloc",
   "rustc_1_57",
 ] }
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
-vorbis_rs = { version = "0.5.5", default-features = false }
-wasm-bindgen = { version = "0.2.126", default-features = false }
-web-sys = "0.3.103"
+vorbis_rs = { version = "0.5.6", default-features = false }
+wasm-bindgen = { version = "0.2.127", default-features = false }
+web-sys = "0.3.104"
 
 [profile.bench]
 inherits = "release"

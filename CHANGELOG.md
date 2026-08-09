@@ -10,6 +10,12 @@ and this project adheres to
 
 No changes yet.
 
+## [0.3.2] - 2026-08-09
+
+## Changed
+
+- Fixed `docs.rs` documentation build due to the removal of an unstable `rustdoc` feature.
+
 ## [0.3.1] - 2026-08-09
 
 ### Changed
@@ -144,7 +150,8 @@ No changes yet.
 
 - First public release.
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.4...v0.2.0

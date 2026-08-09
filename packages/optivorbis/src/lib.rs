@@ -229,7 +229,7 @@
 #![warn(clippy::use_self)]
 #![warn(clippy::used_underscore_binding)]
 #![warn(clippy::redundant_feature_names)]
-#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub use remuxer::{Remuxer, ogg_to_ogg::OggToOgg};
 #[doc(inline)]

@@ -15,9 +15,6 @@ categories.workspace = true
 # Run cargo diet to maintain this include list
 include = ["LICENSE", "LICENSE.BSD-3-Clause", "build.rs", "src/**/*"]
 
-[package.metadata.docs.rs]
-rustdoc-args = ["--cfg", "docsrs"]
-
 # We set custom wasm-opt flags for two reasons:
 # - First, since Rust 1.82, the wasm-opt version used by wasm_pack v0.13.1, v117,
 #   is unable to recognize the new LLVM default of using bulk memory WASM extensions,

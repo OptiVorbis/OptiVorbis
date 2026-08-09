@@ -191,7 +191,7 @@ jobs:
           echo "OPTIVORBIS_BUILD_DATE=$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
 
       - name: 🔨 Build web demo
-        run: npm ci
+        run: npm ci && npm run build
 
       - name: "🔍 Static analysis: ESLint"
         run: npm run lint

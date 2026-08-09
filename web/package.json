@@ -4,7 +4,6 @@
   "description": "Demo website for OptiVorbis",
   "private": true,
   "scripts": {
-    "preinstall": "webpack",
     "build": "webpack",
     "start": "webpack serve --open --mode=development",
     "lint": "npx eslint src/ts/**/*.ts *.js"
@@ -48,5 +47,8 @@
   "dependencies": {
     "core-js": "3.50.0",
     "optivorbis": "*"
+  },
+  "allowScripts": {
+    "unrs-resolver@1.12.2": true
   }
 }

@@ -12,9 +12,15 @@ No changes yet.
 
 ## [0.3.2] - 2026-08-09
 
-## Changed
+### Changed
 
-- Fixed `docs.rs` documentation build due to the removal of an unstable `rustdoc` feature.
+- Fixed `docs.rs` documentation build due to the removal of an unstable
+  `rustdoc` feature.
+
+### Removed
+
+- Windows CI artifacts do no longer contain a compiler-internal OptiVorbis DLL
+that was not meant for public consumption.
 
 ## [0.3.1] - 2026-08-09
 

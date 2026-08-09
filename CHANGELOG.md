@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes yet.
+
+## [0.3.1] - 2026-08-09
+
 ### Changed
 
 - Bump MSRV to 1.87 due to usage of the Rust 2024 edition and dependency updates.
@@ -140,7 +144,8 @@ and this project adheres to
 
 - First public release.
 
-[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.4...v0.2.0
 [0.1.4]: https://github.com/OptiVorbis/OptiVorbis/compare/v0.1.3...v0.1.4

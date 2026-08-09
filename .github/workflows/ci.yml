@@ -97,6 +97,12 @@ jobs:
         with:
           tool: cargo-deny
 
+      - name: 🧰 Install cargo-docs-rs
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        uses: taiki-e/install-action@6c6fd71fe4fb72c3697d269963d0e15df8adedad # v2
+        with:
+          tool: cargo-docs-rs
+
       - name: 💨 Set up sccache
         uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba # v0.0.11
 
@@ -130,7 +136,10 @@ jobs:
         if: matrix.target == 'x86_64-unknown-linux-musl'
         env:
           RUSTDOCFLAGS: -D warnings
-        run: cargo doc --workspace --no-deps
+        run: |
+          cargo docs-rs -p optivorbis
+          cargo docs-rs -p vorbis_bitpack
+          cargo doc --workspace --no-deps
 
       - name: 🔨 Build CLI executable
         env:

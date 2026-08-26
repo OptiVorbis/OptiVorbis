@@ -34,7 +34,7 @@
     "mini-css-extract-plugin": "2.10.2",
     "postcss": "8.5.26",
     "postcss-loader": "8.2.1",
-    "sharp": "0.35.3",
+    "sharp": "0.35.4",
     "svg-inline-loader": "0.8.2",
     "tailwindcss": "4.3.3",
     "ts-loader": "9.6.2",

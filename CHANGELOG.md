@@ -11,6 +11,7 @@ and this project adheres to
 ### Changed
 
 - Bump MSRV to 1.94 due to usage of newer TOML 1.1 syntax in Cargo manifests.
+- An unused dependency on the `rlsf` memory allocator is no longer compiled when OptiVorbis is built with the `wasm-bindings` feature for a non-WASM target.
 
 ## [0.3.2] - 2026-08-09
 

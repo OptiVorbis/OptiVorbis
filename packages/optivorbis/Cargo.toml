@@ -44,7 +44,6 @@ log.workspace = true
 ogg.workspace = true
 ouroboros.workspace = true
 rand_xoshiro.workspace = true
-rlsf = { workspace = true, optional = true }
 slice-group-by.workspace = true
 thiserror.workspace = true
 tinyvec.workspace = true
@@ -55,6 +54,9 @@ web-sys = { workspace = true, optional = true }
 [dev-dependencies]
 oggvorbismeta.workspace = true
 test-log.workspace = true
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+rlsf = { workspace = true, optional = true }
 
 [features]
 default = ["source-date-epoch"]

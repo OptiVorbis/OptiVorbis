@@ -7,7 +7,7 @@ use crate::remuxer::{
 	ogg_to_ogg::{OggToOgg as OggToOggRemuxer, OggVorbisStreamPassthroughMangler}
 };
 
-#[cfg(all(target_arch = "wasm32", not(target_feature = "atomics")))]
+#[cfg(target_arch = "wasm32")]
 #[global_allocator]
 static GLOBAL_ALLOCATOR: rlsf::SmallGlobalTlsf = rlsf::SmallGlobalTlsf::new();
 

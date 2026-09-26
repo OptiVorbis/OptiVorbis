@@ -308,7 +308,8 @@ impl<W: Write> BitpackWriter<W> {
 			BitpackedIntegerWidth::__internal_unchecked_new(bits_to_write_in_byte_to_be_written);
 
 		self.byte_to_be_written |= ((integer & ones_mask(bits_to_write_in_byte_to_be_written_width))
-			as u8) << self.bits_to_be_written;
+			as u8)
+			<< self.bits_to_be_written;
 
 		remaining_bits -= bits_to_write_in_byte_to_be_written;
 		self.bits_to_be_written += bits_to_write_in_byte_to_be_written;

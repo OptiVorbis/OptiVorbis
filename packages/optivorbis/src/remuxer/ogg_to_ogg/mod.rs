@@ -574,7 +574,8 @@ fn random_stream_serial_and_increment(
 			.as_mut();
 
 		#[cfg(feature = "source-date-epoch")]
-		let stream_serial_prng = stream_serial_prng.map_err(|_| RemuxError::InvalidSourceDateEpoch)?;
+		let stream_serial_prng =
+			stream_serial_prng.map_err(|_| RemuxError::InvalidSourceDateEpoch)?;
 		#[cfg(not(feature = "source-date-epoch"))]
 		// Seeding a PRNG can't fail when not parsing env vars
 		let stream_serial_prng = stream_serial_prng.unwrap();

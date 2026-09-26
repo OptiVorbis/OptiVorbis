@@ -39,7 +39,8 @@ impl AudioPacketRewrite {
 		&mut self,
 		packet: Cow<'packet, [u8]>,
 		identification_data: &VorbisIdentificationHeaderData
-	) -> Result<(Option<(Cow<'packet, [u8]>, Option<u16>)>, Option<Self>), VorbisOptimizerError> {
+	) -> Result<(Option<(Cow<'packet, [u8]>, Option<u16>)>, Option<Self>), VorbisOptimizerError>
+	{
 		trace!("Optimizing Vorbis audio packet");
 
 		let mut packet = &*packet;

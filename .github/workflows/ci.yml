@@ -197,7 +197,6 @@ jobs:
 
     permissions:
       contents: write # For writing to GHA cache
-      pages: write # For deploying to GitHub Pages
 
     steps:
       - name: 📥 Checkout source

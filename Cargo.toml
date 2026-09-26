@@ -20,9 +20,9 @@ bumpalo = "3.20.3"
 console_log = "1.1.0"
 getopts = "0.2.24"
 getrandom = "0.4.3"
-indexmap = "2.14.0"
+indexmap = "2.14.2"
 libm = "0.2.16"
-log = "0.4.33"
+log = "0.4.34"
 ogg = "0.9.2"
 oggvorbismeta = "0.2.0"
 optivorbis = { path = "packages/optivorbis", version = "0.3.2" }
@@ -32,15 +32,15 @@ rlsf = "0.2.3"
 slice-group-by = "0.3.1"
 stderrlog = { version = "0.6.0", default-features = false }
 test-log = "0.2.21"
-thiserror = "2.0.20"
-tinyvec = { version = "1.12.0", default-features = false, features = [
+thiserror = "2.0.21"
+tinyvec = { version = "1.13.3", default-features = false, features = [
   "alloc",
   "rustc_1_57",
 ] }
 vorbis_bitpack = { path = "packages/vorbis_bitpack", version = "0.2.0" }
 vorbis_rs = { version = "0.5.6", default-features = false }
-wasm-bindgen = { version = "0.2.127", default-features = false }
-web-sys = "0.3.104"
+wasm-bindgen = { version = "0.2.129", default-features = false }
+web-sys = "0.3.106"
 
 [profile.bench]
 inherits = "release"

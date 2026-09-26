@@ -22,8 +22,7 @@ env:
   CARGO_BUILD_WARNINGS: deny
 
 permissions:
-  # For checking out the repository
-  contents: read
+  contents: read # For checking out the repository
 
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.sha }}
@@ -79,7 +78,7 @@ jobs:
           - target: x86_64-unknown-linux-musl
             runner: ubuntu-26.04
           - target: aarch64-unknown-linux-musl
-            runner: ubuntu-26.04
+            runner: ubuntu-26.04-arm
           - target: x86_64-pc-windows-gnu
             runner: windows-2025
           - target: x86_64-apple-darwin
@@ -92,6 +91,9 @@ jobs:
 
     # Exclude in-repo PRs from running this job
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
+
+    permissions:
+      security-events: write # For uploading SARIF static analysis results
 
     steps:
       - name: 📥 Checkout source
@@ -106,23 +108,11 @@ jobs:
           target: ${{ matrix.target }}
           components: rust-src, rustfmt, clippy
 
-      - name: 🧰 Install ARM64 cross-compilation toolchain
-        if: startsWith(matrix.target, 'aarch64-unknown-linux')
-        run: |
-          sudo apt-get update
-          sudo apt-get install -yq gcc-aarch64-linux-gnu libc6-arm64-cross qemu-user
-
-      - name: 🧰 Install cargo-deny
+      - name: 🧰 Install static analysis and documentation tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
         uses: taiki-e/install-action@9983c65e42da123ff25d1f78505eb6de315aa172 # v2
         with:
-          tool: cargo-deny
-
-      - name: 🧰 Install cargo-docs-rs
-        if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: taiki-e/install-action@9983c65e42da123ff25d1f78505eb6de315aa172 # v2
-        with:
-          tool: cargo-docs-rs
+          tool: cargo-deny,cargo-docs-rs,clippy-sarif,sarif-fmt
 
       - name: 💨 Set up sccache
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -141,12 +131,13 @@ jobs:
           echo "OPTIVORBIS_BUILD_DATE=$(date -u +%Y-%m-%d)" >> "$GITHUB_ENV"
 
       - name: "🔍 Static analysis: run Clippy"
-        uses: giraffate/clippy-action@13b9d32482f25d29ead141b79e7e04e7900281e0 # v1
-        if: matrix.target == 'x86_64-unknown-linux-musl' && github.event_name != 'release'
-        with:
-          clippy_flags: --no-deps --all-targets --all-features --keep-going
-          reporter: github-check
-          fail_on_error: true
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          set -o pipefail
+          cargo clippy --no-deps --all-targets --all-features --keep-going --message-format=json \
+            | clippy-sarif \
+            | tee /tmp/clippy-results.sarif \
+            | sarif-fmt
 
       - name: "🔍 Static analysis: run rustfmt"
         if: matrix.target == 'x86_64-unknown-linux-musl'
@@ -182,6 +173,14 @@ jobs:
             target/${{ matrix.target }}/release/optivorbis
             target/${{ matrix.target }}/release/optivorbis.exe
 
+      - name: 📤 Upload Clippy static analysis results
+        if: always() && matrix.target == 'x86_64-unknown-linux-musl'
+        uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
+        continue-on-error: true
+        with:
+          sarif_file: /tmp/clippy-results.sarif
+          category: clippy
+
   web_demo:
     name: Web demo
 
@@ -194,9 +193,6 @@ jobs:
     defaults:
       run:
         working-directory: web
-
-    permissions:
-      contents: write # For writing to GHA cache
 
     steps:
       - name: 📥 Checkout source

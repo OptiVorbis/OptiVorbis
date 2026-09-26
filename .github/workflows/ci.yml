@@ -15,7 +15,7 @@ on:
       - published
 
 env:
-  MSRV: "1.87.0"
+  MSRV: "1.94.0"
 
   # Deny warnings on CI without invalidating build caches, see:
   # https://blog.rust-lang.org/2026/07/09/Rust-1.97.0/#cargo-support-for-denying-warnings

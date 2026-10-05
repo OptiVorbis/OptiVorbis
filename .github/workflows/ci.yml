@@ -110,7 +110,7 @@ jobs:
 
       - name: 🧰 Install static analysis and documentation tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
-        uses: taiki-e/install-action@e407f7bafb71fd004bc5c2da3032e5470cbb6ef0 # v2
+        uses: taiki-e/install-action@183e4297cca2404691e9380e1307288dced5c82a # v2
         with:
           tool: cargo-deny,cargo-docs-rs,clippy-sarif,sarif-fmt
 
@@ -226,7 +226,7 @@ jobs:
           echo 'SCCACHE_GHA_ENABLED=true' >> "$GITHUB_ENV"
 
       - name: 🧰 Install wasm-pack
-        uses: taiki-e/install-action@e407f7bafb71fd004bc5c2da3032e5470cbb6ef0 # v2
+        uses: taiki-e/install-action@183e4297cca2404691e9380e1307288dced5c82a # v2
         with:
           tool: wasm-pack
 

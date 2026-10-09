@@ -47,7 +47,7 @@ jobs:
           persist-credentials: false
 
       - name: 🧰 Install MSRV toolchain
-        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # v1
+        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
         with:
           toolchain: ${{ env.MSRV }}
 
@@ -103,7 +103,7 @@ jobs:
           persist-credentials: false
 
       - name: 🧰 Install Rust toolchain
-        uses: dtolnay/rust-toolchain@0e28dd9a7764e5f83064112bb1f24025a14c313c # nightly
+        uses: dtolnay/rust-toolchain@f0d5300ba8908d942c808f4d31c08471d7798ba3 # nightly
         with:
           target: ${{ matrix.target }}
           components: rust-src, rustfmt, clippy
@@ -205,7 +205,7 @@ jobs:
           persist-credentials: false
 
       - name: 🧰 Install Rust toolchain
-        uses: dtolnay/rust-toolchain@0e28dd9a7764e5f83064112bb1f24025a14c313c # nightly
+        uses: dtolnay/rust-toolchain@f0d5300ba8908d942c808f4d31c08471d7798ba3 # nightly
         with:
           components: rust-src
 
